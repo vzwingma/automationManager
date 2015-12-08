@@ -1,10 +1,10 @@
-# automationManager
+# Automation Manager
 Gestionnaire de tâches automatisées
 
 
-### SaveToBxCryptorBundle
+## SaveToBxCryptorBundle
 Bundle permettant de sauvegarder des documents vers les répertoires de Boxcryptor
 
 
-#### Installation sur Karaf
+### Installation sur Karaf
 > install -s mvn:com.terrier.utilities.automation.bundles/saveToBoxCryptorBundle/0.0.1-SNAPSHOT

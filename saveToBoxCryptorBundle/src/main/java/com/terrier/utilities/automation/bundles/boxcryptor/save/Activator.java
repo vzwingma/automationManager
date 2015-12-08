@@ -21,14 +21,28 @@ package com.terrier.utilities.automation.bundles.boxcryptor.save;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Activatr du bundle
+ * @author vzwingma
+ *
+ */
 public class Activator implements BundleActivator {
 
-    public void start(BundleContext context) {
-        System.out.println("Starting the bundle");
-    }
+	/* (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	 */
+	@Override
+	public void start(BundleContext context) throws Exception {
+		System.out.println("Demarrage du bundle");
+	}
 
-    public void stop(BundleContext context) {
-        System.out.println("Stopping the bundle");
-    }
+	/* (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		System.out.println("Arrêt du bundle");
+	}
 
+   
 }
