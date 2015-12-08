@@ -20,11 +20,16 @@ package com.terrier.utilities.automation.bundles.boxcryptor.save;
 
 import java.util.Hashtable;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.ManagedService;
+
+import com.terrier.utilities.automation.bundles.boxcryptor.save.business.BusinessService;
+import com.terrier.utilities.automation.bundles.boxcryptor.save.config.ConfigUpdater;
 
 /**
  * Activator du bundle
@@ -35,7 +40,6 @@ public class Activator implements BundleActivator {
 
 	
 	 private static final Logger LOGGER = Logger.getLogger( Activator.class );
-	 
 	 
 	 private static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.boxcryptor.save";
 	/* (non-Javadoc)

@@ -1,4 +1,4 @@
-package com.terrier.utilities.automation.bundles.boxcryptor.save;
+package com.terrier.utilities.automation.bundles.boxcryptor.save.config;
 
 import java.util.Dictionary;
 
@@ -22,7 +22,10 @@ public class ConfigUpdater implements ManagedService {
 	public void updated(@SuppressWarnings("rawtypes") Dictionary properties) throws ConfigurationException {
 		
 		if(properties != null){
-			LOGGER.info("Mise à jour du fichier de configuration : " + properties);
+			LOGGER.info("Mise à jour du fichier de configuration");
+		}
+		else{
+			LOGGER.error("Impossible de trouver le fichier de configuration");
 		}
 	}
 
