@@ -8,7 +8,9 @@
 		<version>0.0.1</version>
 	</parent>
 
-<!-- mvn archetype:generate -DarchetypeGroupId=org.apache.karaf.archetypes -DarchetypeArtifactId=karaf-bundle-archetype -DarchetypeVersion=2.2.11 -DgroupId=com.terrier.utilities.automation.bundles -DartifactId=saveToBoxCryptorBundle -Dversion=0.0.1-SNAPSHOT -Dpackage=com.terrier.utilities.automation.bundles.boxcryptor.save -->
+	<!-- mvn archetype:generate -DarchetypeGroupId=org.apache.karaf.archetypes 
+		-DarchetypeArtifactId=karaf-bundle-archetype -DarchetypeVersion=2.2.11 -DgroupId=com.terrier.utilities.automation.bundles 
+		-DartifactId=saveToBoxCryptorBundle -Dversion=0.0.1-SNAPSHOT -Dpackage=com.terrier.utilities.automation.bundles.boxcryptor.save -->
 	<artifactId>saveToBoxCryptorBundle</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
@@ -22,6 +24,17 @@
 			<artifactId>org.osgi.core</artifactId>
 			<version>4.2.0</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-service</artifactId>
+			<version>1.8.4</version>
 		</dependency>
 	</dependencies>
 

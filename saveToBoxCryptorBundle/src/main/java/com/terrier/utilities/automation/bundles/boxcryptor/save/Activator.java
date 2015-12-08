@@ -18,22 +18,37 @@
  */
 package com.terrier.utilities.automation.bundles.boxcryptor.save;
 
+import java.util.Hashtable;
+
+import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.service.cm.ManagedService;
 
 /**
- * Activatr du bundle
+ * Activator du bundle
  * @author vzwingma
  *
  */
 public class Activator implements BundleActivator {
 
+	
+	 private static final Logger LOGGER = Logger.getLogger( Activator.class );
+	 
+	 
+	 private static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.boxcryptor.save";
 	/* (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
-		System.out.println("Demarrage du bundle");
+		LOGGER.info("Demarrage du bundle");
+		
+		Hashtable<String, Object> properties = new Hashtable<String, Object>();
+		properties.put(Constants.SERVICE_PID, CONFIG_PID);
+		context.registerService(ManagedService.class.getName(), new ConfigUpdater() , properties);
+		LOGGER.info("Chargement du fichier de configuration /etc/" + CONFIG_PID + ".cfg");
 	}
 
 	/* (non-Javadoc)
@@ -41,7 +56,7 @@ public class Activator implements BundleActivator {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		System.out.println("Arrêt du bundle");
+		LOGGER.info("Arrêt du bundle");
 	}
 
    
