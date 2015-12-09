@@ -42,8 +42,9 @@ public class BusinessService implements Runnable {
 	@PostConstruct
 	public void startService(){
 		if(validateConfig()){
-			LOGGER.info("Démarrage du service");
-			scheduledThreadPool.scheduleAtFixedRate(this, 0L, 30L, TimeUnit.SECONDS);	
+			Long periode = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN));
+			LOGGER.info("Démarrage du scheduler : " + periode + " minutes");
+			scheduledThreadPool.scheduleAtFixedRate(this, 0L, periode, TimeUnit.MINUTES);	
 		}
 	}
 
@@ -67,19 +68,23 @@ public class BusinessService implements Runnable {
 	/**
 	 * @return validation de la configuration
 	 */
-	public boolean validateConfig(){
+	protected boolean validateConfig(){
 
-
-		LOGGER.info("Recherche des fichiers à sauvegarder dans " + getKey(ConfigKeyEnums.DOWNLOAD) );
-		LOGGER.info("Copie des fichiers à sauvegarder dans " + getKey(ConfigKeyEnums.BC_DIR) );
+		LOGGER.info("** Configuration **");
+		LOGGER.info(" > Recherche des fichiers à sauvegarder dans " + getKey(ConfigKeyEnums.DOWNLOAD) );
+		LOGGER.info(" > Copie des fichiers à sauvegarder dans " + getKey(ConfigKeyEnums.BC_DIR) );
 		int nbPatterns = Integer.parseInt(getKey(ConfigKeyEnums.FILES_NUMBER));
-		LOGGER.info("Nombre de pattern : " + nbPatterns);
-		if(getKey(ConfigKeyEnums.DOWNLOAD) != null && getKey(ConfigKeyEnums.BC_DIR) != null){
+		LOGGER.info(" > Nombre de pattern : " + nbPatterns);
+		LOGGER.info(" > Période de scan : " + getKey(ConfigKeyEnums.PERIOD_SCAN) + " minutes");
+		if(getKey(ConfigKeyEnums.DOWNLOAD) != null 
+				&& getKey(ConfigKeyEnums.BC_DIR) != null 
+				&& getKey(ConfigKeyEnums.PERIOD_SCAN) != null){
 
 			File source = new File(getKey(ConfigKeyEnums.DOWNLOAD));
 			File cible = new File(getKey(ConfigKeyEnums.BC_DIR));
 
 			if(source.exists() && cible.exists() && nbPatterns > 0){
+				LOGGER.info("** **");
 				return true;
 			}
 			else{
@@ -89,6 +94,7 @@ public class BusinessService implements Runnable {
 		else{
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
 		}
+		LOGGER.info("** **");
 		return false;
 	}
 
@@ -98,7 +104,7 @@ public class BusinessService implements Runnable {
 	 * Scan du download
 	 * @param scanDir répertoire à scanner
 	 */
-	public void scan(String scanDir){
+	protected void scan(String scanDir){
 
 		int nbPatterns = Integer.parseInt(getKey(ConfigKeyEnums.FILES_NUMBER));
 
@@ -176,7 +182,7 @@ public class BusinessService implements Runnable {
 
 
 	/**
-	 * @param key
+	 * @param key clé
 	 * @return valeur dans la config correspondante
 	 * @throws KeyNotFoundException
 	 */
@@ -185,7 +191,7 @@ public class BusinessService implements Runnable {
 	}
 
 	/**
-	 * @param key
+	 * @param key clé
 	 * @return valeur dans la config correspondante
 	 * @throws KeyNotFoundException
 	 */
