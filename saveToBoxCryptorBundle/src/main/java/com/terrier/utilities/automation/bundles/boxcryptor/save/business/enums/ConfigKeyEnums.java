@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.communs.enums;
+package com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums;
 
 /**
  * @author vzwingma

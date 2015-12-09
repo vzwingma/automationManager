@@ -18,7 +18,7 @@ import javax.inject.Singleton;
 import org.apache.log4j.Logger;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.save.Activator;
-import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
+import com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;

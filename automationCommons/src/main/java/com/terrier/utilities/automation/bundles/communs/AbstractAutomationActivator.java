@@ -13,8 +13,6 @@ import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 
-import com.terrier.utilities.automation.bundles.boxcryptor.save.Activator;
-
 /**
  * Activator de l'Automation Manager
  * @author vzwingma
@@ -23,7 +21,7 @@ import com.terrier.utilities.automation.bundles.boxcryptor.save.Activator;
 public abstract class AbstractAutomationActivator implements BundleActivator, ManagedService {
 
 
-	 private static final Logger LOGGER = Logger.getLogger( Activator.class );
+	 private static final Logger LOGGER = Logger.getLogger( AbstractAutomationActivator.class );
 	 
 	/* (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
