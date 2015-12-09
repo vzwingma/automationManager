@@ -1,0 +1,170 @@
+package com.terrier.utilities.automation.bundles.boxcryptor.save.business;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Singleton;
+
+import org.apache.log4j.Logger;
+
+import com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums.ConfigKeyEnums;
+import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
+import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
+
+/**
+ * Service métier
+ * @author vzwingma
+ *
+ */
+@Singleton
+public class SaveToBCBusinessService extends AbstractAutomationService {
+
+	private static final Logger LOGGER = Logger.getLogger( SaveToBCBusinessService.class );
+
+	private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(50);
+
+	// Nombre de patterns écrits
+	protected int nbPatterns = 0;
+
+
+	/* (non-Javadoc)
+	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#startService()
+	 */
+	@PostConstruct
+	public void startService() {
+		// Register config
+		super.registerToConfig("com.terrier.utilities.automation.bundles.boxcryptor.save");
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#notifyUpdateDictionnary()
+	 */
+	@Override
+	public void notifyUpdateDictionnary() {
+
+		LOGGER.info("** Configuration **");
+		int nbPatterns = 0;
+		while(getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, nbPatterns) != null){
+			nbPatterns++;
+		}
+		LOGGER.info(" > Nombre de pattern : " + nbPatterns);
+		this.nbPatterns = nbPatterns;
+		// arrêt du scheduler
+		scheduledThreadPool.shutdown();
+
+		// Démarrage du treatment
+		for (int p = 0; p < nbPatterns; p++) {
+			if(validateConfig(p)){
+				startTreatment(p);				
+			}
+		}
+		LOGGER.info("** **");
+	}
+
+
+	/**
+	 * Démarrage du traitement
+	 * @param p
+	 */
+	protected void startTreatment(int p){
+		Long periode = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+		SaveToBoxCryptorCallable callable = new SaveToBoxCryptorCallable(
+				getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p),
+				getKey(ConfigKeyEnums.FILES_PATTERN_IN, p),
+				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
+				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p));
+		LOGGER.info("Démarrage du scheduler : " + periode + " minutes");
+		scheduledThreadPool.scheduleAtFixedRate(callable, 0L, periode, TimeUnit.MINUTES);	
+	}
+	
+	
+	/**
+	 * @return validation de la configuration
+	 */
+	protected boolean validateConfig(int p){
+
+		boolean configValid = false;
+
+		LOGGER.info("** "+p+" **");
+		LOGGER.info(" > Période de scan 	: " + getKey(ConfigKeyEnums.PERIOD_SCAN, p) + " minutes");
+		LOGGER.info(" > Répertoire d'entrée	: " + getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p));
+		LOGGER.info(" > Répertoire de sortie: " + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p));
+		Long period = null;
+		try{
+			period = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+		}
+		catch(NumberFormatException e){
+			
+		}
+		configValid = period != null
+				&& getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p) != null
+				&& getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p) != null;
+
+		if(!configValid){
+			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
+		}
+		return configValid;
+	}
+
+
+
+
+	/**
+	 * @return the nbPatterns
+	 */
+	public int getNbPatterns() {
+		return nbPatterns;
+	}
+
+
+	/**
+	 * @param key clé
+	 * @return valeur dans la config correspondante
+	 */
+	protected String getKey(ConfigKeyEnums key){
+		try {
+			if(key != null){
+				return super.getConfig(key.getCodeKey());
+			}
+		} catch (KeyNotFoundException e) {
+			LOGGER.error("La clé "+key+" est introuvable");
+		}
+		return null;
+	}
+
+	/**
+	 * @param key clé
+	 * @return valeur dans la config correspondante
+	 * @throws KeyNotFoundException
+	 */
+	protected String getKey(final ConfigKeyEnums key, int indice){
+		try {
+			String keyValue = key != null ? key.getCodeKey() : null;
+
+			if(keyValue != null){
+				if(indice >= 0){
+					keyValue += "." + indice;
+				}
+				return super.getConfig(keyValue);
+			}
+			return null;
+		} catch (KeyNotFoundException e) {
+			return null;
+		}
+	}
+
+
+
+	/**
+	 * Arrêt du service
+	 */
+	@PreDestroy
+	public void stopService() {
+		scheduledThreadPool.shutdownNow();
+	}
+}

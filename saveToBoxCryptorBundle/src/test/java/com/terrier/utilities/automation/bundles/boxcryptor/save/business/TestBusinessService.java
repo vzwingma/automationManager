@@ -3,6 +3,7 @@
  */
 package com.terrier.utilities.automation.bundles.boxcryptor.save.business;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -38,7 +39,7 @@ import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.Del
 public class TestBusinessService {
 
 	
-	private BusinessService service;
+	private SaveToBCBusinessService service;
 
 	private static final Logger LOGGER = Logger.getLogger( TestBusinessService.class );
 	/**
@@ -47,7 +48,7 @@ public class TestBusinessService {
 	 */
 	@Before
 	public void mockDictionnary() throws KeyNotFoundException{
-		service = Mockito.spy(new BusinessService());
+		service = Mockito.spy(new SaveToBCBusinessService());
 		Properties properties = new Properties();
 		try {
 		    properties.load(new FileInputStream(new File("src/test/resources/test.bundles.boxcryptor.save.cfg")));
@@ -77,8 +78,12 @@ public class TestBusinessService {
 	@BeforeClass
 	public static void initFiles() throws IOException{
 		LOGGER.info("Création des fichiers init dans " + FileSystems.getDefault().getPath("src/test/resources/download/").toAbsolutePath() + " : " + Files.isDirectory(FileSystems.getDefault().getPath("src/test/resources/download/")));
-		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/_HUBICEU257005.pdf"));
-		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/Facture_Free_201512_2375646_593050686.pdf"));
+		if(!Files.exists(FileSystems.getDefault().getPath("src/test/resources/download/_HUBICEU257005.pdf"))){
+			Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/_HUBICEU257005.pdf"));
+		}
+		if(!Files.exists(FileSystems.getDefault().getPath("src/test/resources/download/Facture_Free_201512_2375646_593050686.pdf"))){
+			Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/Facture_Free_201512_2375646_593050686.pdf"));
+		}
 	}
 	
 	
@@ -86,22 +91,53 @@ public class TestBusinessService {
 	/**
 	 * Test copie
 	 * @throws IOException 
+	 * @throws InterruptedException 
 	 */
 	@Test
-	public void testCopie() throws IOException{
+	public void testCopieCloud() throws IOException, InterruptedException{
 		assertNotNull(service);
-		service.scan();
+		service.nbPatterns = 3;
+		// Scan
+		assertTrue(service.validateConfig(0));
+		service.startTreatment(0);
+		Thread.sleep(400);
+		// Verify
 		String cl = "_HUBIC_" +Calendar.getInstance().get(Calendar.YEAR) + (Calendar.getInstance().get(Calendar.MONTH)+1)+ ".pdf";
 		Path fichier1 = FileSystems.getDefault().getPath("src/test/resources/bc/Cloud/" + cl);
 		assertTrue(Files.exists(fichier1));
 		Files.delete(fichier1);
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/Cloud/"));
+	}
+		
+	/**
+	 * Test copie
+	 * @throws IOException 
+	 * @throws InterruptedException 
+	 */
+	@Test
+	public void testCopieFree() throws IOException, InterruptedException{
+		
+		assertTrue(service.validateConfig(1));
+		service.startTreatment(1);
+		Thread.sleep(400);
+		
 		Path fichier2 = FileSystems.getDefault().getPath("src/test/resources/bc/Free/Facture_Free_201512_2375646_593050686.pdf");
 		assertTrue(Files.exists(fichier2));
 		Files.delete(fichier2);
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/Free/"));
+	}
+	
+	/**
+	 * Test copie
+	 * @throws IOException 
+	 * @throws InterruptedException 
+	 */
+	@Test
+	public void testCopieDirectory() throws IOException, InterruptedException{
 		
-		
+		assertTrue(service.validateConfig(2));
+		service.startTreatment(2);
+		Thread.sleep(400);
 		Path dir1 = FileSystems.getDefault().getPath("src/test/resources/bc/directory/d1.txt");
 		assertTrue(Files.exists(dir1));
 		Path dir2 = FileSystems.getDefault().getPath("src/test/resources/bc/directory/subdirectory/d2.txt");
@@ -118,7 +154,9 @@ public class TestBusinessService {
 	@Test
 	public void testValidateService(){
 		assertNotNull(service);
-		assertTrue(service.validateConfig());
+		assertTrue(service.validateConfig(0));
+		assertTrue(service.validateConfig(1));
+		assertTrue(service.validateConfig(2));
 	}
 	
 }

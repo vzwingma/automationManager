@@ -10,8 +10,6 @@ package com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums;
 public enum ConfigKeyEnums {
 
 	PERIOD_SCAN("automation.bundle.boxcryptor.save.scan.period"),
-	// Nombre de type de fichier
-	FILES_NUMBER("automation.bundle.boxcryptor.save.nombre.pattern"),
 	// Répertoire download
 	FILES_DIRECTORY_IN("automation.bundle.boxcryptor.save.in.repertoire"),
 	// Pattern fichier en entrée
