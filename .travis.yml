@@ -1,0 +1,23 @@
+# Travis Lint : https://lint.travis-ci.org
+# Config secure
+language: java
+jdk:
+  - oraclejdk8
+env:
+  global:
+  - "ARTIFACTS_AWS_REGION=eu-west-1"
+  - "ARTIFACTS_S3_BUCKET=utilitaires"
+# travis encrypt ARTIFACTS_AWS_ACCESS_KEY_ID=
+  - secure: "nNyYN/BAXeFipwSGJPXNuzoYOk4SwpSydMltDTQDAG9zKQiOzzcN3MOXITxVJ7mH6HRpVb9VnYaj6yxV90aljLg0SYm6aazZp00zdterTXMN3valu6Bk4YD7C9Ne5C7py5kBp786+aDEMYgLKLL3+inHdtoqgZvo9jQeoJJ4qUG7HiXcfJgtVCUrlrJAKRvpULYPPXCQNpT2PhAFUAmV89utrNK+n+rFGVMrPAyk+qnYe0BpG4FwlTlvqVSAFq6CySTSxY/G7RwXOfjeGzZydG0/dXR6gqC89TvYzdO2ZNLSiOW7m2aNBVI/AXrUUkDP/LvmySIY9qYaIEb1RkHYLDnU3Nmc/gi/DX7v8GjfZdAf0sBH/PdaZsV/0jKzRCpx3TD/eFjB7Pd49F+yOKXnd3tJ3Tqu5KMxHT663u3N9KI4v8riZPEt4vnU9LUdwudIeIlN4/TK8rpD7S4u0nSDatUVQw0UkUlsvpJme6iI43Fs3lrOv0XJVf89x8u7bhPquCfFmScSNUdCNgt+O4SffUUWhJ4/sAauChc9G/nmh8kGi1wrQVhDej+A5md3h9/uUctqcasoW9sYZcTC7XoFwlp+WnMH7LLkW/P/p0SNVbMPS34BmrBFRm1qSenGJqy49KlAq+qnKgjKuZHxrEJDonhYP4spgiONurK8E2GM4A4="
+# travis encrypt ARTIFACTS_AWS_SECRET_ACCESS_KEY=
+  - secure: "RCS1Q3Hj0G4JnHmD3hU0To3eup1DldLA3S0YDawYK5zIujFcukKze0xbpgHI6Wbj5nAxb2Fo5TeX6ymuCjwl7Bbt/37xnpxrJZKxuAmH1dcveg/kaN6qGPw3ar2ebSnVXkg1MyQqNyTbQOHCSvvb9/Epz+53I9dLLzxQ1k8ppq03mjPQiznQtBbE6W1HoaUnBfUXA4LHdG5WAhBsGRfAOxs44DBbtqYRn92G0vn0P4NamF4lRCiGwvoWAfBWgiJOt0qs6C2OahVpYll7kTxR8OT4SjDau1j6H0MjE6Byfca4rJOFzYia2NYuIaHj2ICbicAVoLEkoi5XVgaC6AFSeJdcc4aDYWbLktpv+RAdkp3sZLo8YivOQIrQMaNXXqM1zPyM2N9AnsFu0beqrIDbgK3HSwnwkHL/jlVz5wjGaqOjSdV38C4vWIQKS3cBerHBbHWLQXpr0POYpHmOV4vGAtbrMXcXraD2bB501wLTtmsYBDeeKZCas/1lrr+nh8vYcmRvJDR8DEitrlz+//HRwy0SreJugmXsuhcn04ZkEKCjEaphKeCeYe34F1WLP//S80pZdDOrQhulFv+fC9FzS5F/6uG3qkt0LikMbLkn5upQUnHdICCdWJVNPtzVruneCwOTDo3hf9TCY0CUy9MrchWQzoMCkNGi0nWmXGULpUg="
+before_install:
+  - rvm reinstall ruby-head --binary
+install: 
+  - mvn clean install
+#before_script:
+#  - "gem install travis-artifacts"
+#after_script:
+#  - cd build/distributions
+#  - "travis-artifacts upload --path BoxCryptorListGenerator.zip --target-path artifacts/$TRAVIS_BUILD_NUMBER"
+#  - "travis-artifacts upload --path BoxCryptorListGenerator.zip --target-path artifacts/latest"
