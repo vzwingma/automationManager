@@ -1,6 +1,5 @@
 package com.terrier.utilities.automation.bundles.boxcryptor.save.business;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
@@ -61,7 +60,7 @@ public class BusinessService implements Runnable {
 	 */
 	@Override
 	public void run() {
-		scan(getKey(ConfigKeyEnums.DOWNLOAD));
+		scan();
 	}
 
 
@@ -71,25 +70,12 @@ public class BusinessService implements Runnable {
 	protected boolean validateConfig(){
 
 		LOGGER.info("** Configuration **");
-		LOGGER.info(" > Recherche des fichiers à sauvegarder dans " + getKey(ConfigKeyEnums.DOWNLOAD) );
-		LOGGER.info(" > Copie des fichiers à sauvegarder dans " + getKey(ConfigKeyEnums.BC_DIR) );
 		int nbPatterns = Integer.parseInt(getKey(ConfigKeyEnums.FILES_NUMBER));
 		LOGGER.info(" > Nombre de pattern : " + nbPatterns);
 		LOGGER.info(" > Période de scan : " + getKey(ConfigKeyEnums.PERIOD_SCAN) + " minutes");
-		if(getKey(ConfigKeyEnums.DOWNLOAD) != null 
-				&& getKey(ConfigKeyEnums.BC_DIR) != null 
-				&& getKey(ConfigKeyEnums.PERIOD_SCAN) != null){
-
-			File source = new File(getKey(ConfigKeyEnums.DOWNLOAD));
-			File cible = new File(getKey(ConfigKeyEnums.BC_DIR));
-
-			if(source.exists() && cible.exists() && nbPatterns > 0){
-				LOGGER.info("** **");
-				return true;
-			}
-			else{
-				LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
-			}
+		if(getKey(ConfigKeyEnums.PERIOD_SCAN) != null && nbPatterns > 0){
+			LOGGER.info("** **");
+			return true;
 		}
 		else{
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
@@ -104,29 +90,30 @@ public class BusinessService implements Runnable {
 	 * Scan du download
 	 * @param scanDir répertoire à scanner
 	 */
-	protected void scan(String scanDir){
+	protected void scan(){
 
 		int nbPatterns = Integer.parseInt(getKey(ConfigKeyEnums.FILES_NUMBER));
-
-		try {
+		for (int i = 0; i < nbPatterns; i++) {
+			String scanDir = getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, i);
+			LOGGER.info("Scan du répertoire  : " + scanDir);
 			if(Files.isDirectory(FileSystems.getDefault().getPath(scanDir))){
-				DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
-				for (Path fichier : downloadDirectoryPath) {
-					LOGGER.info("Traitement du fichier : " + fichier.getFileName().toString());
+				try{
+					DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
+					String regExMatch = getKey(ConfigKeyEnums.FILES_PATTERN_IN, i);
+					LOGGER.debug(" > Matcher : " + regExMatch);
+					if(regExMatch != null){
 
-					for (int i = 0; i < nbPatterns; i++) {
-						String regExMatch = getKey(ConfigKeyEnums.FILES_PATTERN_IN, i);
-						LOGGER.debug(" > Matcher : " + regExMatch);
-						if(regExMatch != null){
+						for (Path fichier : downloadDirectoryPath) {
+							LOGGER.info(" Traitement du fichier : " + fichier.getFileName().toString());
 							if(fichier.getFileName().toString().matches(regExMatch)){
-								LOGGER.debug(" > Match : " + regExMatch);
+								LOGGER.trace(" > Match avec " + regExMatch);
 								String outputPattern = getKey(ConfigKeyEnums.FILES_PATTERN_OUT, i);
 								if(outputPattern == null || outputPattern.isEmpty()){
 									outputPattern = fichier.getFileName().toString();
 								}
 								boolean resultat = copyToBoxcryptor(fichier, 
 										AutomationUtils.replacePatterns(outputPattern), 
-										getKey(ConfigKeyEnums.BC_DIR) + "/" + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i));		
+										getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i));		
 								if(resultat){
 									LOGGER.info("Copie réalisée vers BoxCrytor");
 									Files.delete(fichier);
@@ -136,17 +123,17 @@ public class BusinessService implements Runnable {
 								}
 							}
 						}
-						else{
-							LOGGER.warn("La clé ["+ConfigKeyEnums.FILES_PATTERN_IN.getCodeKey()+"."+i+"] n'existe pas dans le fichier de conf");
-						}
 					}
+					else{
+						LOGGER.warn("La clé ["+ConfigKeyEnums.FILES_PATTERN_IN.getCodeKey()+"."+i+"] n'existe pas dans le fichier de conf");
+					}
+				} catch (IOException e) {
+					LOGGER.error("Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
 				}
 			}
 			else{
 				LOGGER.error("Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath() + ". Ce n'est pas un répertoire");
 			}
-		} catch (IOException e) {
-			LOGGER.error("Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
 		}
 	}
 

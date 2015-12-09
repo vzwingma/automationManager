@@ -89,7 +89,7 @@ public class TestBusinessService {
 	@Test
 	public void testCopie() throws IOException{
 		assertNotNull(service);
-		service.scan(service.getKey(ConfigKeyEnums.DOWNLOAD));
+		service.scan();
 		String cl = "_HUBIC_" +Calendar.getInstance().get(Calendar.YEAR) + (Calendar.getInstance().get(Calendar.MONTH)+1)+ ".pdf";
 		Path fichier1 = FileSystems.getDefault().getPath("src/test/resources/bc/Cloud/" + cl);
 		assertTrue(Files.exists(fichier1));

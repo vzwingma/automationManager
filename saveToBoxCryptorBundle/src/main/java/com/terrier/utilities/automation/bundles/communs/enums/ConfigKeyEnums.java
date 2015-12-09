@@ -10,18 +10,16 @@ package com.terrier.utilities.automation.bundles.communs.enums;
 public enum ConfigKeyEnums {
 
 	PERIOD_SCAN("automation.bundle.boxcryptor.save.scan.period"),
-	// Répertoire download
-	DOWNLOAD("automation.bundle.boxcryptor.save.repertoire.download"),
-	// Répertoire BoxCryptor
-	BC_DIR("automation.bundle.boxcryptor.save.repertoire.boxcryptor"),
 	// Nombre de type de fichier
 	FILES_NUMBER("automation.bundle.boxcryptor.save.nombre.pattern"),
+	// Répertoire download
+	FILES_DIRECTORY_IN("automation.bundle.boxcryptor.save.in.repertoire"),
 	// Pattern fichier en entrée
-	FILES_PATTERN_IN("automation.bundle.boxcryptor.save.pattern.file.in"),
+	FILES_PATTERN_IN("automation.bundle.boxcryptor.save.in.pattern.file"),
 	// Pattern fichier en sortie
-	FILES_PATTERN_OUT("automation.bundle.boxcryptor.save.pattern.file.out"),
+	FILES_PATTERN_OUT("automation.bundle.boxcryptor.save.out.pattern.file"),
 	// Sous répertoire BC
-	FILES_DIRECTORY_OUT("automation.bundle.boxcryptor.save.pattern.directory.out"),
+	FILES_DIRECTORY_OUT("automation.bundle.boxcryptor.save.out.repertoire"),
 	;
 	
 	// Code de la clé dans le fichier de configuration
