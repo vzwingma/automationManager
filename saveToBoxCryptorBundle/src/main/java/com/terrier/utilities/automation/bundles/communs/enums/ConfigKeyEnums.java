@@ -10,7 +10,9 @@ package com.terrier.utilities.automation.bundles.communs.enums;
 public enum ConfigKeyEnums {
 
 	
-	DOWNLOAD("automation.bundle.boxcryptor.save.repertoire.download");
+	DOWNLOAD("automation.bundle.boxcryptor.save.repertoire.download"),
+	BC_DIR("automation.bundle.boxcryptor.save.repertoire.boxcryptor"),
+	;
 	
 	// Code de la clé dans le fichier de configuration
 	private String codeKey;
