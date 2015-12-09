@@ -28,6 +28,7 @@ import org.mockito.stubbing.Answer;
 
 import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
+import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.DeleteAllDirVisitor;
 
 /**
  * Test du business service

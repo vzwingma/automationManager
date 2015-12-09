@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -22,6 +21,7 @@ import com.terrier.utilities.automation.bundles.boxcryptor.save.Activator;
 import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
+import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;
 
 /**
  * Service métier
@@ -151,22 +151,7 @@ public class BusinessService implements Runnable {
 
 			Path fichierCible = FileSystems.getDefault().getPath(directoryCible);
 			LOGGER.debug(" > Copie du répertoire "+fichierSource+" vers : " + fichierCible);
-
-			
 			Files.walkFileTree(fichierSource, new CopyDirVisitor(fichierSource, fichierCible));
-//			if(!Files.exists(FileSystems.getDefault().getPath(directoryCible))){
-//				LOGGER.info("Création du répertoire");
-//				Files.createDirectories(FileSystems.getDefault().getPath(directoryCible));
-//			}
-//			if (!Files.exists( fichierCible)) {
-//				LOGGER.debug("Création du fichier");
-//				Files.createFile( fichierCible);
-//			}
-//			CopyOption[] options = new CopyOption[]{
-//					StandardCopyOption.REPLACE_EXISTING,
-//					StandardCopyOption.COPY_ATTRIBUTES
-//			}; 
-//			Files.copy(fichierSource, fichierCible, options);
 			return true;
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
