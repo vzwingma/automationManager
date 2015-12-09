@@ -101,13 +101,13 @@ public class BusinessService implements Runnable {
 				try{
 					DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
 					String regExMatch = getKey(ConfigKeyEnums.FILES_PATTERN_IN, i);
-					LOGGER.debug(" > Matcher : " + regExMatch);
+					LOGGER.trace(" > Matcher : " + regExMatch);
 					if(regExMatch != null && !regExMatch.isEmpty()){
 
 						for (Path fichier : downloadDirectoryPath) {
-							LOGGER.info(" Traitement du fichier : " + fichier.getFileName().toString());
+							LOGGER.trace(" Traitement du fichier : " + fichier.getFileName().toString());
 							if(fichier.getFileName().toString().matches(regExMatch)){
-								LOGGER.trace(" > Match avec " + regExMatch);
+								LOGGER.trace(fichier.getFileName().toString() + " > match avec " + regExMatch);
 								String outputPattern = getKey(ConfigKeyEnums.FILES_PATTERN_OUT, i);
 								if(outputPattern == null || outputPattern.isEmpty()){
 									outputPattern = fichier.getFileName().toString();
