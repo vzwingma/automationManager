@@ -16,8 +16,8 @@ before_install:
 install: 
   - mvn clean install
 before_script:
-  - "gem install travis-artifacts"
+#  - "gem install travis-artifacts"
 after_script:
-  - cd saveToBoxCryptorBundle/target
-  - "travis-artifacts upload --path saveToBoxCryptorBundle-*.jar --target-path artifacts/$TRAVIS_BUILD_NUMBER"
-  - "travis-artifacts upload --path saveToBoxCryptorBundle-*.jar --target-path artifacts/latest/saveToBoxCryptorBundle-latest.jar"
+#  - cd saveToBoxCryptorBundle/target
+#  - "travis-artifacts upload --path saveToBoxCryptorBundle-*.jar --target-path artifacts/$TRAVIS_BUILD_NUMBER"
+#  - "travis-artifacts upload --path saveToBoxCryptorBundle-*.jar --target-path artifacts/latest/saveToBoxCryptorBundle-latest.jar"
