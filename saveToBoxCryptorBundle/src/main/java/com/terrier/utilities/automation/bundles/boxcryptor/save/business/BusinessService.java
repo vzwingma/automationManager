@@ -126,7 +126,7 @@ public class BusinessService implements Runnable {
 								}
 								boolean resultat = copyToBoxcryptor(fichier, 
 										AutomationUtils.replacePatterns(outputPattern), 
-										getKey(ConfigKeyEnums.BC_DIR) + "\\" + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i));		
+										getKey(ConfigKeyEnums.BC_DIR) + "/" + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i));		
 								if(resultat){
 									LOGGER.info("Copie réalisée vers BoxCrytor");
 									Files.delete(fichier);
@@ -162,7 +162,7 @@ public class BusinessService implements Runnable {
 			if(outFileName == null || outFileName.isEmpty()){
 				outFileName = fichierSource.getFileName().toString();
 			}
-			Path fichierCible = FileSystems.getDefault().getPath(directoryCible + "\\" +outFileName);
+			Path fichierCible = FileSystems.getDefault().getPath(directoryCible + "/" +outFileName);
 			LOGGER.debug(" > Copie "+fichierSource+" vers : " + fichierCible + " :" );
 
 			if(!Files.exists(FileSystems.getDefault().getPath(directoryCible))){
