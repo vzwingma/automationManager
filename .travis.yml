@@ -6,7 +6,7 @@ jdk:
 env:
   global:
   - "ARTIFACTS_AWS_REGION=eu-west-1"
-  - "ARTIFACTS_S3_BUCKET=authenticationManager"
+  - "ARTIFACTS_S3_BUCKET=automationmanager"
 # travis encrypt ARTIFACTS_AWS_ACCESS_KEY_ID=
   - secure: "nuSRn1/BgjkfF7M3XYW+DxKUzhmgJx0vyvi8QPONYgiDN1FvGJmEu0Je32YUFq+/Pi5eBpDATZ2+Te0zEcPFWA9yzpvCq50icPVvtBA9KCC7u7cusB+v+NKuwX0NTM7pV7AiFK4nm7BiwtdjyA9UNt5V6umJQPbsoxlkuvPKSt6dxl9hRdoeBeypszBti58fs1x7w+glNwDQ9yx7bOkczjZwrUPDWQzet6Z1aYEsK/KjxAe4+6WsCIzxQa5CTovqBtXL9y8rkXaoc0V6pZ9dcyjgovYDtZMhQiT7BP7i5R4Ex2iD+FJQUpcthQ7kJCAwfMajqGoo/5m9RT75PQ3O06rwPQ+0lUI9ciu8Op7bFhcymA1Xt3MSWUJM8DrnKU5hcz/m/4fgO1Mh/IWVLTeqsXz4mB9G4S+s4rSfGCOzGCPVskkDQZPVcrFX6KSNFbC8qEV7eN2L5f2xWQRxETazPpvLCLNSzz1zbidQwBDqDZaECkQg4ZcvHsp4yIv4vokksrAre8/9sRw86DgAi5XKGjUccQClJZgMD4Unojtdjs/4E0og9VzBuT7KUiJOkzL/ecb2wR2zPvMMNYsZ8Z7s5ALWb/oCAX4dqjRQoNCAJzeRKolj09qlFh9q4d5O7a9Tjd+28AhC8xQ/oL1QI+aXX/6no2VnhBWpQAgZ2jrm7bA="
 # travis encrypt ARTIFACTS_AWS_SECRET_ACCESS_KEY=
