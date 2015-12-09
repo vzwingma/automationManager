@@ -13,6 +13,7 @@ import java.nio.file.StandardCopyOption;
 
 import org.apache.log4j.Logger;
 
+import com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums.CommandeEnum;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;
 
@@ -28,6 +29,7 @@ public class SaveToBoxCryptorCallable implements Runnable{
 	
 	// Paramètres
 	private int index;
+	private CommandeEnum commande;
 	private String repertoireSource; 
 	private String patternEntree; 
 	private String repertoireDestinataire; 
@@ -39,8 +41,9 @@ public class SaveToBoxCryptorCallable implements Runnable{
 	 * @param repertoireDestinataire répertoire destinataire (X: de boxcryptor)
 	 * @param patternSortie pattern de sortie (si modification)
 	 */
-	public SaveToBoxCryptorCallable(int index, String repertoireSource, String patternEntree, String repertoireDestinataire, String patternSortie){
+	public SaveToBoxCryptorCallable(int index, CommandeEnum commande, String repertoireSource, String patternEntree, String repertoireDestinataire, String patternSortie){
 		this.index = index;
+		this.commande = commande;
 		this.repertoireSource = repertoireSource;
 		this.patternEntree = patternEntree;
 		this.repertoireDestinataire = repertoireDestinataire;
@@ -75,7 +78,9 @@ public class SaveToBoxCryptorCallable implements Runnable{
 									repertoireDestinataire);		
 							if(resultat){
 								LOGGER.info("[" + index + "] Copie réalisée vers BoxCrytor");
-								Files.delete(fichier);
+								if(CommandeEnum.MOVE.equals(commande)){
+									Files.delete(fichier);
+								}
 							}
 							else{
 								LOGGER.error("[" + index + "] Erreur lors de la copie vers BoxCrytor");

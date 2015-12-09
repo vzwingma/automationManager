@@ -3,6 +3,7 @@
  */
 package com.terrier.utilities.automation.bundles.boxcryptor.save.business;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -106,6 +107,9 @@ public class TestBusinessService {
 		assertTrue(Files.exists(fichier1));
 		Files.delete(fichier1);
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/Cloud/"));
+		
+		assertTrue(Files.exists(FileSystems.getDefault().getPath("src/test/resources/download/_HUBICEU257005.pdf")));
+
 	}
 		
 	/**
@@ -119,6 +123,8 @@ public class TestBusinessService {
 		assertTrue(service.validateConfig(0));
 		service.startTreatment(0);
 		Thread.sleep(1000);
+		
+		assertFalse(Files.exists(FileSystems.getDefault().getPath("src/test/resources/download/Facture_Free_201512_2375646_593050686.pdf")));
 		
 		Path fichier2 = FileSystems.getDefault().getPath("src/test/resources/bc/Free/Facture_Free_201512_2375646_593050686.pdf");
 		assertTrue(Files.exists(fichier2));

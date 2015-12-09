@@ -14,6 +14,7 @@ import javax.inject.Singleton;
 
 import org.apache.log4j.Logger;
 
+import com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums.CommandeEnum;
 import com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
@@ -88,6 +89,7 @@ public class SaveToBCBusinessService extends AbstractAutomationService {
 		Long periode = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
 		SaveToBoxCryptorCallable callable = new SaveToBoxCryptorCallable(
 				p,
+				CommandeEnum.valueOf(getKey(ConfigKeyEnums.COMMANDE, p)),
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p),
 				getKey(ConfigKeyEnums.FILES_PATTERN_IN, p),
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
@@ -105,6 +107,7 @@ public class SaveToBCBusinessService extends AbstractAutomationService {
 		boolean configValid = false;
 
 		LOGGER.info("** "+p+" **");
+		LOGGER.info(" > Commande			: " + getKey(ConfigKeyEnums.COMMANDE, p));
 		LOGGER.info(" > Période de scan 	: " + getKey(ConfigKeyEnums.PERIOD_SCAN, p) + " minutes");
 		LOGGER.info(" > Répertoire d'entrée	: " + getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p));
 		LOGGER.info(" > Répertoire de sortie: " + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p));
@@ -116,6 +119,8 @@ public class SaveToBCBusinessService extends AbstractAutomationService {
 			
 		}
 		configValid = period != null
+				&& getKey(ConfigKeyEnums.COMMANDE, p) != null
+				&& CommandeEnum.valueOf(getKey(ConfigKeyEnums.COMMANDE, p)) != null
 				&& getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p) != null
 				&& getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p) != null;
 

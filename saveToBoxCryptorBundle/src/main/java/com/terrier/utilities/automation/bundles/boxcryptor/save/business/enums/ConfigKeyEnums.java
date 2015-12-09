@@ -9,7 +9,10 @@ package com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums;
  */
 public enum ConfigKeyEnums {
 
+	// Période scannée
 	PERIOD_SCAN("automation.bundle.boxcryptor.save.scan.period"),
+	// Commande : COPY ou MOVE
+	COMMANDE("automation.bundle.boxcryptor.save.commande"),
 	// Répertoire download
 	FILES_DIRECTORY_IN("automation.bundle.boxcryptor.save.in.repertoire"),
 	// Pattern fichier en entrée
