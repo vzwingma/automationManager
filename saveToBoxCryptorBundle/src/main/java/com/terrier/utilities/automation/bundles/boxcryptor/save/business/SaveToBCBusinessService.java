@@ -107,10 +107,10 @@ public class SaveToBCBusinessService extends AbstractAutomationService {
 		boolean configValid = false;
 
 		LOGGER.info("** "+p+" **");
-		LOGGER.info(" > Commande			: " + getKey(ConfigKeyEnums.COMMANDE, p));
-		LOGGER.info(" > Période de scan 	: " + getKey(ConfigKeyEnums.PERIOD_SCAN, p) + " minutes");
-		LOGGER.info(" > Répertoire d'entrée	: " + getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p));
-		LOGGER.info(" > Répertoire de sortie: " + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p));
+		LOGGER.info(p+" > Commande		: " + getKey(ConfigKeyEnums.COMMANDE, p));
+		LOGGER.info(p+" > Période de scan 	: " + getKey(ConfigKeyEnums.PERIOD_SCAN, p) + " minutes");
+		LOGGER.info(p+" > Répertoire d'entrée	: " + getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p));
+		LOGGER.info(p+" > Répertoire de sortie: " + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p));
 		Long period = null;
 		try{
 			period = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
