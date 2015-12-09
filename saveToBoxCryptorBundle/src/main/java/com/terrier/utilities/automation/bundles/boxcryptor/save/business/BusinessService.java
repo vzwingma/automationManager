@@ -13,6 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 
 import org.apache.log4j.Logger;
@@ -41,10 +42,17 @@ public class BusinessService implements Runnable {
 	@PostConstruct
 	public void startService(){
 		if(validateConfig()){
+			LOGGER.info("Démarrage du service");
 			scheduledThreadPool.scheduleAtFixedRate(this, 0L, 30L, TimeUnit.SECONDS);	
 		}
 	}
 
+	
+	@PreDestroy
+	public void stopService(){
+		LOGGER.info("Arrêt du service");
+		scheduledThreadPool.shutdownNow();
+	}
 
 
 	/* (non-Javadoc)
@@ -101,7 +109,7 @@ public class BusinessService implements Runnable {
 
 				for (int i = 0; i < nbPatterns; i++) {
 					String regExMatch = getKey(ConfigKeyEnums.FILES_PATTERN_IN, i);
-					LOGGER.trace(" > Matcher : " + regExMatch);
+					LOGGER.debug(" > Matcher : " + regExMatch);
 					if(regExMatch != null){
 						if(fichier.getFileName().toString().matches(regExMatch)){
 							LOGGER.debug(" > Match : " + regExMatch);
