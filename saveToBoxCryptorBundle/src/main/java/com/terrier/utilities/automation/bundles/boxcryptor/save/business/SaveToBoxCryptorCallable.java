@@ -18,6 +18,7 @@ import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;
 
 /**
+ * Traitement d'une copie ou d'un déplacement
  * @author vzwingma
  *
  */

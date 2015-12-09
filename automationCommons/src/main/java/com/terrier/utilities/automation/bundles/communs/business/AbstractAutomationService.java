@@ -19,7 +19,6 @@ import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundEx
  * @author vzwingma
  *
  */
-
 public abstract class AbstractAutomationService implements ManagedService {
 
 

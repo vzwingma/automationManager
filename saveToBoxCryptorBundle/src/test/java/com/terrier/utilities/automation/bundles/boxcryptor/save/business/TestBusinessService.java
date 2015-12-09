@@ -75,6 +75,9 @@ public class TestBusinessService {
 	
 
 	
+	/**
+	 * @throws IOException
+	 */
 	@BeforeClass
 	public static void initFiles() throws IOException{
 		LOGGER.info("Création des fichiers init dans " + FileSystems.getDefault().getPath("src/test/resources/download/").toAbsolutePath() + " : " + Files.isDirectory(FileSystems.getDefault().getPath("src/test/resources/download/")));
