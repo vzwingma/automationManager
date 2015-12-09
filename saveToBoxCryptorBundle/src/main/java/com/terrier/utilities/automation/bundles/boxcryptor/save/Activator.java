@@ -58,7 +58,5 @@ public class Activator extends AbstractAutomationActivator {
 		else{
 			throw new KeyNotFoundException(key);
 		}
-			
 	}
-   
 }
