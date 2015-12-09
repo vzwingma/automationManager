@@ -97,8 +97,8 @@ public class TestBusinessService {
 		assertNotNull(service);
 		service.nbPatterns = 3;
 		// Scan
-		assertTrue(service.validateConfig(0));
-		service.startTreatment(0);
+		assertTrue(service.validateConfig(1));
+		service.startTreatment(1);
 		Thread.sleep(400);
 		// Verify
 		String cl = "_HUBIC_" +Calendar.getInstance().get(Calendar.YEAR) + (Calendar.getInstance().get(Calendar.MONTH)+1)+ ".pdf";
@@ -116,9 +116,9 @@ public class TestBusinessService {
 	@Test
 	public void testCopieFree() throws IOException, InterruptedException{
 		
-		assertTrue(service.validateConfig(1));
-		service.startTreatment(1);
-		Thread.sleep(400);
+		assertTrue(service.validateConfig(0));
+		service.startTreatment(0);
+		Thread.sleep(1000);
 		
 		Path fichier2 = FileSystems.getDefault().getPath("src/test/resources/bc/Free/Facture_Free_201512_2375646_593050686.pdf");
 		assertTrue(Files.exists(fichier2));
