@@ -15,12 +15,17 @@ public enum ConfigKeyEnums {
 	FILES_NUMBER("automation.bundle.boxcryptor.save.nombre.pattern"),
 	FILES_PATTERN_IN("automation.bundle.boxcryptor.save.pattern.file.in"),
 	FILES_PATTERN_OUT("automation.bundle.boxcryptor.save.pattern.file.out"),
+	FILES_DIRECTORY_OUT("automation.bundle.boxcryptor.save.pattern.directory.out"),
 	;
 	
 	// Code de la clé dans le fichier de configuration
 	private String codeKey;
 	
 	
+	/**
+	 * Valeur de l'enum
+	 * @param value
+	 */
 	private ConfigKeyEnums(String value){
 		this.codeKey = value;
 	}
@@ -32,6 +37,4 @@ public enum ConfigKeyEnums {
 	public String getCodeKey() {
 		return codeKey;
 	}
-	
-	
 }

@@ -30,23 +30,24 @@
 			<artifactId>org.osgi.compendium</artifactId>
 			<version>4.2.0</version>
 		</dependency>
-
+	<!-- Log -->
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-service</artifactId>
 			<version>1.8.4</version>
 		</dependency>
+		<!-- Inject -->
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
-
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>org.ops4j.pax.cdi</groupId>
 			<artifactId>pax-cdi-api</artifactId>
 			<version>0.12.0</version>
-		</dependency>
+		</dependency> -->
 		<!-- TESTS -->
 		<dependency>
 			<groupId>junit</groupId>

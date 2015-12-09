@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Properties;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -68,6 +69,16 @@ public class TestBusinessService {
 		});
 	}
 	
+
+	
+	@BeforeClass
+	public static void initFiles() throws IOException{
+		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/", "_HUBICEU257005.pdf"));
+		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/", "Facture_Free_201512_2375646_593050686.pdf"));
+	}
+	
+	
+	
 	/**
 	 * Test copie
 	 * @throws IOException 
@@ -77,13 +88,14 @@ public class TestBusinessService {
 		assertNotNull(service);
 		service.scan(service.getKey(ConfigKeyEnums.DOWNLOAD));
 		String cl = "_HUBIC_" +Calendar.getInstance().get(Calendar.YEAR) + (Calendar.getInstance().get(Calendar.MONTH)+1)+ ".pdf";
-		Path fichier1 = FileSystems.getDefault().getPath("src/test/resources/bc/" + cl);
+		Path fichier1 = FileSystems.getDefault().getPath("src/test/resources/bc/Cloud/" + cl);
 		assertTrue(Files.exists(fichier1));
 		Files.delete(fichier1);
-		Path fichier2 = FileSystems.getDefault().getPath("src/test/resources/bc/Facture_Free_201512_2375646_593050686.pdf");
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/Cloud/"));
+		Path fichier2 = FileSystems.getDefault().getPath("src/test/resources/bc/Free/Facture_Free_201512_2375646_593050686.pdf");
 		assertTrue(Files.exists(fichier2));
 		Files.delete(fichier2);
-
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/Free/"));
 	}
 	
 	

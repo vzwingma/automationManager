@@ -8,7 +8,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +28,7 @@ import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
  *
  */
 @Singleton
-public class BusinessService implements Callable<Boolean> {
+public class BusinessService implements Runnable {
 
 	private static final Logger LOGGER = Logger.getLogger( BusinessService.class );
 
@@ -42,21 +41,20 @@ public class BusinessService implements Callable<Boolean> {
 	@PostConstruct
 	public void startService(){
 		if(validateConfig()){
-			scheduledThreadPool.schedule(this, 1, TimeUnit.MINUTES);	
+			scheduledThreadPool.scheduleAtFixedRate(this, 0L, 30L, TimeUnit.SECONDS);	
 		}
 	}
 
-	
-	/**
-	 * Appel périodique
-	 * @return résultat
-	 * @throws Exception
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
 	 */
 	@Override
-	public Boolean call() throws Exception {
+	public void run() {
 		scan(getKey(ConfigKeyEnums.DOWNLOAD));
-		return true;
 	}
+
 
 	/**
 	 * @return validation de la configuration
@@ -95,23 +93,36 @@ public class BusinessService implements Callable<Boolean> {
 	public void scan(String scanDir){
 
 		int nbPatterns = Integer.parseInt(getKey(ConfigKeyEnums.FILES_NUMBER));
-		
+
 		try {
 			DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
 			for (Path fichier : downloadDirectoryPath) {
 				LOGGER.info("Traitement du fichier : " + fichier.getFileName().toString());
-				
+
 				for (int i = 0; i < nbPatterns; i++) {
-					if(fichier.getFileName().toString().matches(getKey(ConfigKeyEnums.FILES_PATTERN_IN, i))){
-						LOGGER.debug(" > Match : " + getKey(ConfigKeyEnums.FILES_PATTERN_IN, i));
-						
-						String outputPattern = getKey(ConfigKeyEnums.FILES_PATTERN_OUT, i);
-						if(outputPattern == null || outputPattern.isEmpty()){
-							outputPattern = fichier.getFileName().toString();
+					String regExMatch = getKey(ConfigKeyEnums.FILES_PATTERN_IN, i);
+					LOGGER.trace(" > Matcher : " + regExMatch);
+					if(regExMatch != null){
+						if(fichier.getFileName().toString().matches(regExMatch)){
+							LOGGER.debug(" > Match : " + regExMatch);
+							String outputPattern = getKey(ConfigKeyEnums.FILES_PATTERN_OUT, i);
+							if(outputPattern == null || outputPattern.isEmpty()){
+								outputPattern = fichier.getFileName().toString();
+							}
+							boolean resultat = copyToBoxcryptor(fichier, 
+									AutomationUtils.replacePatterns(outputPattern), 
+									getKey(ConfigKeyEnums.BC_DIR) + "\\" + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i));		
+							if(resultat){
+								LOGGER.info("Copie réalisée vers BoxCrytor");
+								Files.delete(fichier);
+							}
+							else{
+								LOGGER.error("Erreur lors de la copie vers BoxCrytor");
+							}
 						}
-						copyToBoxcryptor(fichier, 
-								AutomationUtils.replacePatterns(outputPattern), 
-								getKey(ConfigKeyEnums.BC_DIR));					
+					}
+					else{
+						LOGGER.warn("La clé ["+ConfigKeyEnums.FILES_PATTERN_IN.getCodeKey()+"."+i+"] n'existe pas dans le fichier de conf");
 					}
 				}
 			}
@@ -120,31 +131,38 @@ public class BusinessService implements Callable<Boolean> {
 		}
 	}
 
-	
+
 	/**
 	 * 
 	 * @param fichierSource chemin vers le fichier source
 	 * @param outFileName pattern de sortie
 	 * @param directoryCible répertoire cible
 	 */
-	private void copyToBoxcryptor(Path fichierSource, String outFileName, String directoryCible){
+	private boolean copyToBoxcryptor(Path fichierSource, String outFileName, String directoryCible){
 		try {
 			if(outFileName == null || outFileName.isEmpty()){
 				outFileName = fichierSource.getFileName().toString();
 			}
 			Path fichierCible = FileSystems.getDefault().getPath(directoryCible + "\\" +outFileName);
 			LOGGER.debug(" > Copie "+fichierSource+" vers : " + fichierCible + " :" );
+
+			if(!Files.exists(FileSystems.getDefault().getPath(directoryCible))){
+				LOGGER.info("Création du répertoire");
+				Files.createDirectories(FileSystems.getDefault().getPath(directoryCible));
+			}
 			if (!Files.exists( fichierCible)) {
 				LOGGER.debug("Création du fichier");
 				Files.createFile( fichierCible);
 			}
 			CopyOption[] options = new CopyOption[]{
-				      StandardCopyOption.REPLACE_EXISTING,
-				      StandardCopyOption.COPY_ATTRIBUTES
-				    }; 
+					StandardCopyOption.REPLACE_EXISTING,
+					StandardCopyOption.COPY_ATTRIBUTES
+			}; 
 			Files.copy(fichierSource, fichierCible, options);
+			return true;
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
+			return false;
 		}
 	}
 
@@ -171,7 +189,6 @@ public class BusinessService implements Callable<Boolean> {
 				if(indice >= 0){
 					keyValue += "." + indice;
 				}
-				LOGGER.info(keyValue);
 				return Activator.getConfig(keyValue);
 			}
 			return null;
