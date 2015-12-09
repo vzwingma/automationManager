@@ -127,8 +127,12 @@ public class BusinessService implements Runnable {
 					}
 					else{
 						LOGGER.warn("Copie du répertoire complet");
-						copyDirToBoxcryptor(FileSystems.getDefault().getPath(scanDir), getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i));
-						LOGGER.info("Copie réalisée vers BoxCrytor");
+						if(copyDirToBoxcryptor(FileSystems.getDefault().getPath(scanDir), getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i))){
+							LOGGER.info("Copie réalisée vers BoxCrytor");
+						}
+						else{
+							LOGGER.error("Erreur lors de la copie vers BoxCrytor [" +getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i)+"]");
+						}
 					}
 				} catch (IOException e) {
 					LOGGER.error("Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
