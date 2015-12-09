@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.terrier.utilities.automation.bundles.boxcryptor.save.business;
 
 import java.io.File;
@@ -11,6 +8,10 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
@@ -28,9 +29,11 @@ import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
  *
  */
 @Singleton
-public class BusinessService  {
+public class BusinessService implements Callable<Boolean> {
 
 	private static final Logger LOGGER = Logger.getLogger( BusinessService.class );
+
+	private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
 
 
 	/**
@@ -39,10 +42,21 @@ public class BusinessService  {
 	@PostConstruct
 	public void startService(){
 		if(validateConfig()){
-			scan(getKey(ConfigKeyEnums.DOWNLOAD));
+			scheduledThreadPool.schedule(this, 1, TimeUnit.MINUTES);	
 		}
 	}
 
+	
+	/**
+	 * Appel périodique
+	 * @return résultat
+	 * @throws Exception
+	 */
+	@Override
+	public Boolean call() throws Exception {
+		scan(getKey(ConfigKeyEnums.DOWNLOAD));
+		return true;
+	}
 
 	/**
 	 * @return validation de la configuration
