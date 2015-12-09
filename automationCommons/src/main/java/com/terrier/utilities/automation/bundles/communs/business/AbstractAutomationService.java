@@ -7,11 +7,16 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
+import com.terrier.utilities.automation.bundles.communs.EventsTopicName;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 
 /**
@@ -62,11 +67,35 @@ public abstract class AbstractAutomationService implements ManagedService {
 
 
 	/**
-	 * Mise à jour du dictionnaire
+	 * Notification de Mise à jour du dictionnaire
 	 * @param dictionary dictionnaire
 	 */
 	public abstract void notifyUpdateDictionnary(); 
 	
+	
+	/**
+	 * Envoi d'un message pour publication
+	 * @param message
+	 */
+	public void sendNotificationEvent(String message)
+    {
+		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+        ServiceReference<EventAdmin> ref = context.getServiceReference(EventAdmin.class);
+        if (ref != null)  {
+            EventAdmin eventAdmin = context.getService(ref);
+
+            Dictionary<String, Object> properties = new Hashtable<String, Object>();
+            properties.put("message", message);
+            properties.put("time", System.currentTimeMillis());
+
+            Event reportGeneratedEvent = new Event(EventsTopicName.NOTIFIFY_MESSAGE.getTopicName(), properties);
+            LOGGER.info("Envoi du message ["+message+"] sur le topic ["+EventsTopicName.NOTIFIFY_MESSAGE.getTopicName()+"]");
+            eventAdmin.sendEvent(reportGeneratedEvent);
+        }
+        else{
+        	LOGGER.error("Erreur lors de la recherche de l'EventAdmin");
+        }
+    }
 	
 	/**
 	 * @param key clé à charger du fichier

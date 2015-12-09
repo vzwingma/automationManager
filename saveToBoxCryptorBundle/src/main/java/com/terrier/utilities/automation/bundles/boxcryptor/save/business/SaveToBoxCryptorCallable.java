@@ -14,6 +14,7 @@ import java.nio.file.StandardCopyOption;
 import org.apache.log4j.Logger;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums.CommandeEnum;
+import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;
 
@@ -22,7 +23,7 @@ import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.Cop
  * @author vzwingma
  *
  */
-public class SaveToBoxCryptorCallable implements Runnable{
+public class SaveToBoxCryptorCallable extends AbstractAutomationService implements Runnable {
 
 	
 
@@ -80,11 +81,16 @@ public class SaveToBoxCryptorCallable implements Runnable{
 							if(resultat){
 								LOGGER.info("[" + index + "] Copie réalisée vers BoxCrytor");
 								if(CommandeEnum.MOVE.equals(commande)){
+									// Suppression du fichier source
 									Files.delete(fichier);
+									// Et notification du déplacement
+									sendNotificationEvent("Copie de " +fichier.getFileName().toString()+ " vers BoxCryptor");
 								}
 							}
 							else{
 								LOGGER.error("[" + index + "] Erreur lors de la copie vers BoxCrytor");
+								// Et notification de l'erreur
+								sendNotificationEvent("Erreur lors de la copie de " +fichier.getFileName().toString()+ " vers BoxCryptor");
 							}
 						}
 					}
@@ -93,9 +99,12 @@ public class SaveToBoxCryptorCallable implements Runnable{
 					LOGGER.warn("[" + index + "] Copie du répertoire complet");
 					if(copyDirToBoxcryptor(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire)){
 						LOGGER.info("[" + index + "] Copie réalisée vers BoxCrytor");
+						sendNotificationEvent("Copie du répertoire " +scanDir+ " vers BoxCryptor");
 					}
 					else{
 						LOGGER.error("[" + index + "] Erreur lors de la copie vers BoxCrytor [" +repertoireDestinataire+"]");
+						// Et notification de l'erreur
+						sendNotificationEvent("Erreur lors de la copie du répertoire " +repertoireDestinataire+ " vers BoxCryptor");
 					}
 				}
 			} catch (IOException e) {
@@ -163,6 +172,11 @@ public class SaveToBoxCryptorCallable implements Runnable{
 			LOGGER.error(e.getMessage(), e);
 			return false;
 		}
+	}
+
+	@Override
+	public void notifyUpdateDictionnary() {
+		// Rien
 	}
 
 
