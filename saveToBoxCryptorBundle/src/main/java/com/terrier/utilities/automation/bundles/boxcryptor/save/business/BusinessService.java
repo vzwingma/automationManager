@@ -48,7 +48,7 @@ public class BusinessService implements Runnable {
 		}
 	}
 
-	
+
 	@PreDestroy
 	public void stopService(){
 		LOGGER.info("Arrêt du service");
@@ -109,39 +109,44 @@ public class BusinessService implements Runnable {
 		int nbPatterns = Integer.parseInt(getKey(ConfigKeyEnums.FILES_NUMBER));
 
 		try {
-			DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
-			for (Path fichier : downloadDirectoryPath) {
-				LOGGER.info("Traitement du fichier : " + fichier.getFileName().toString());
+			if(Files.isDirectory(FileSystems.getDefault().getPath(scanDir))){
+				DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
+				for (Path fichier : downloadDirectoryPath) {
+					LOGGER.info("Traitement du fichier : " + fichier.getFileName().toString());
 
-				for (int i = 0; i < nbPatterns; i++) {
-					String regExMatch = getKey(ConfigKeyEnums.FILES_PATTERN_IN, i);
-					LOGGER.debug(" > Matcher : " + regExMatch);
-					if(regExMatch != null){
-						if(fichier.getFileName().toString().matches(regExMatch)){
-							LOGGER.debug(" > Match : " + regExMatch);
-							String outputPattern = getKey(ConfigKeyEnums.FILES_PATTERN_OUT, i);
-							if(outputPattern == null || outputPattern.isEmpty()){
-								outputPattern = fichier.getFileName().toString();
-							}
-							boolean resultat = copyToBoxcryptor(fichier, 
-									AutomationUtils.replacePatterns(outputPattern), 
-									getKey(ConfigKeyEnums.BC_DIR) + "\\" + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i));		
-							if(resultat){
-								LOGGER.info("Copie réalisée vers BoxCrytor");
-								Files.delete(fichier);
-							}
-							else{
-								LOGGER.error("Erreur lors de la copie vers BoxCrytor");
+					for (int i = 0; i < nbPatterns; i++) {
+						String regExMatch = getKey(ConfigKeyEnums.FILES_PATTERN_IN, i);
+						LOGGER.debug(" > Matcher : " + regExMatch);
+						if(regExMatch != null){
+							if(fichier.getFileName().toString().matches(regExMatch)){
+								LOGGER.debug(" > Match : " + regExMatch);
+								String outputPattern = getKey(ConfigKeyEnums.FILES_PATTERN_OUT, i);
+								if(outputPattern == null || outputPattern.isEmpty()){
+									outputPattern = fichier.getFileName().toString();
+								}
+								boolean resultat = copyToBoxcryptor(fichier, 
+										AutomationUtils.replacePatterns(outputPattern), 
+										getKey(ConfigKeyEnums.BC_DIR) + "\\" + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i));		
+								if(resultat){
+									LOGGER.info("Copie réalisée vers BoxCrytor");
+									Files.delete(fichier);
+								}
+								else{
+									LOGGER.error("Erreur lors de la copie vers BoxCrytor");
+								}
 							}
 						}
-					}
-					else{
-						LOGGER.warn("La clé ["+ConfigKeyEnums.FILES_PATTERN_IN.getCodeKey()+"."+i+"] n'existe pas dans le fichier de conf");
+						else{
+							LOGGER.warn("La clé ["+ConfigKeyEnums.FILES_PATTERN_IN.getCodeKey()+"."+i+"] n'existe pas dans le fichier de conf");
+						}
 					}
 				}
 			}
+			else{
+				LOGGER.error("Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath() + ". Ce n'est pas un répertoire");
+			}
 		} catch (IOException e) {
-			LOGGER.error("Erreur lors du scan de " + scanDir, e);
+			LOGGER.error("Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
 		}
 	}
 
