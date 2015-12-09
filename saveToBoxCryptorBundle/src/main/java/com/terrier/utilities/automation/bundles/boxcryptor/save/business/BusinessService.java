@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -101,7 +102,7 @@ public class BusinessService implements Runnable {
 					DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
 					String regExMatch = getKey(ConfigKeyEnums.FILES_PATTERN_IN, i);
 					LOGGER.debug(" > Matcher : " + regExMatch);
-					if(regExMatch != null){
+					if(regExMatch != null && !regExMatch.isEmpty()){
 
 						for (Path fichier : downloadDirectoryPath) {
 							LOGGER.info(" Traitement du fichier : " + fichier.getFileName().toString());
@@ -125,7 +126,8 @@ public class BusinessService implements Runnable {
 						}
 					}
 					else{
-						LOGGER.warn("La clé ["+ConfigKeyEnums.FILES_PATTERN_IN.getCodeKey()+"."+i+"] n'existe pas dans le fichier de conf");
+						LOGGER.warn("Copie du répertoire complet");
+						copyDirToBoxcryptor(FileSystems.getDefault().getPath(scanDir), getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i));
 					}
 				} catch (IOException e) {
 					LOGGER.error("Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
@@ -144,13 +146,46 @@ public class BusinessService implements Runnable {
 	 * @param outFileName pattern de sortie
 	 * @param directoryCible répertoire cible
 	 */
+	private boolean copyDirToBoxcryptor(Path fichierSource, String directoryCible){
+		try {
+
+			Path fichierCible = FileSystems.getDefault().getPath(directoryCible);
+			LOGGER.debug(" > Copie du répertoire "+fichierSource+" vers : " + fichierCible);
+
+			
+			Files.walkFileTree(fichierSource, new CopyDirVisitor(fichierSource, fichierCible));
+//			if(!Files.exists(FileSystems.getDefault().getPath(directoryCible))){
+//				LOGGER.info("Création du répertoire");
+//				Files.createDirectories(FileSystems.getDefault().getPath(directoryCible));
+//			}
+//			if (!Files.exists( fichierCible)) {
+//				LOGGER.debug("Création du fichier");
+//				Files.createFile( fichierCible);
+//			}
+//			CopyOption[] options = new CopyOption[]{
+//					StandardCopyOption.REPLACE_EXISTING,
+//					StandardCopyOption.COPY_ATTRIBUTES
+//			}; 
+//			Files.copy(fichierSource, fichierCible, options);
+			return true;
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+			return false;
+		}
+	}
+	/**
+	 * 
+	 * @param fichierSource chemin vers le fichier source
+	 * @param outFileName pattern de sortie
+	 * @param directoryCible répertoire cible
+	 */
 	private boolean copyToBoxcryptor(Path fichierSource, String outFileName, String directoryCible){
 		try {
 			if(outFileName == null || outFileName.isEmpty()){
 				outFileName = fichierSource.getFileName().toString();
 			}
 			Path fichierCible = FileSystems.getDefault().getPath(directoryCible + "/" +outFileName);
-			LOGGER.debug(" > Copie "+fichierSource+" vers : " + fichierCible + " :" );
+			LOGGER.debug(" > Copie "+fichierSource+" vers : " + fichierCible);
 
 			if(!Files.exists(FileSystems.getDefault().getPath(directoryCible))){
 				LOGGER.info("Création du répertoire");

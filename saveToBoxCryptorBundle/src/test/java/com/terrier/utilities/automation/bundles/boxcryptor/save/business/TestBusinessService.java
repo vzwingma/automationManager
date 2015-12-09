@@ -99,6 +99,14 @@ public class TestBusinessService {
 		assertTrue(Files.exists(fichier2));
 		Files.delete(fichier2);
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/Free/"));
+		
+		
+		Path dir1 = FileSystems.getDefault().getPath("src/test/resources/bc/directory/d1.txt");
+		assertTrue(Files.exists(dir1));
+		Path dir2 = FileSystems.getDefault().getPath("src/test/resources/bc/directory/subdirectory/d2.txt");
+		assertTrue(Files.exists(dir2));
+		
+		Files.walkFileTree(FileSystems.getDefault().getPath("src/test/resources/bc/directory"), new DeleteAllDirVisitor());
 	}
 	
 	
