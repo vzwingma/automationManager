@@ -1,7 +1,11 @@
 package com.terrier.utilities.automation.bundles.boxcryptor.save.business;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -39,7 +43,11 @@ public class SaveToBCBusinessService extends AbstractAutomationService {
 		super.registerToConfig("com.terrier.utilities.automation.bundles.boxcryptor.save");
 	}
 
-
+	
+	/**
+	 * Liste des tâches schedulées
+	 */
+	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<ScheduledFuture<?>>();
 
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#notifyUpdateDictionnary()
@@ -54,10 +62,15 @@ public class SaveToBCBusinessService extends AbstractAutomationService {
 		}
 		LOGGER.info(" > Nombre de pattern : " + nbPatterns);
 		this.nbPatterns = nbPatterns;
-		// arrêt du scheduler
-		scheduledThreadPool.shutdown();
+		
+		// arrêt des tâches schedulées
+		for (Iterator<ScheduledFuture<?>> iterator = listeScheduled.iterator(); iterator.hasNext();) {
+			ScheduledFuture<?> scheduledFuture = (ScheduledFuture<?>) iterator.next();
+			scheduledFuture.cancel(true);
+			iterator.remove();
+		}
 
-		// Démarrage du treatment
+		// Démarrage des treatments reprogrammées
 		for (int p = 0; p < nbPatterns; p++) {
 			if(validateConfig(p)){
 				startTreatment(p);				
@@ -74,12 +87,13 @@ public class SaveToBCBusinessService extends AbstractAutomationService {
 	protected void startTreatment(int p){
 		Long periode = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
 		SaveToBoxCryptorCallable callable = new SaveToBoxCryptorCallable(
+				p,
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p),
 				getKey(ConfigKeyEnums.FILES_PATTERN_IN, p),
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
 				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p));
 		LOGGER.info("Démarrage du scheduler : " + periode + " minutes");
-		scheduledThreadPool.scheduleAtFixedRate(callable, 0L, periode, TimeUnit.MINUTES);	
+		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(callable, 0L, periode, TimeUnit.MINUTES));	
 	}
 	
 	

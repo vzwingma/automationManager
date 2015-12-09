@@ -8,16 +8,13 @@
 	</parent>
 	<artifactId>automationCommons</artifactId>
 	<name>[Automation] Commons</name>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>bundle</packaging>
-  <description>Commons OSGi bundle project.</description>
-  
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+	<description>Commons OSGi bundle project.</description>
 
-		
-		
+
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>

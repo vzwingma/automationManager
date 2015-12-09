@@ -122,7 +122,6 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Bundle-Activator>com.terrier.utilities.automation.bundles.boxcryptor.save.Activator</Bundle-Activator>
 						<Export-Package>com.terrier.utilities.automation.bundles.boxcryptor.save*;version=${project.version}</Export-Package>
 						<Import-Package>*</Import-Package>
 					</instructions>

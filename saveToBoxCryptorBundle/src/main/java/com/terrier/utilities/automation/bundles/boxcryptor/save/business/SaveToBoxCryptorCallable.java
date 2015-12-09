@@ -27,6 +27,7 @@ public class SaveToBoxCryptorCallable implements Runnable{
 	private static final Logger LOGGER = Logger.getLogger( SaveToBoxCryptorCallable.class );
 	
 	// Paramètres
+	private int index;
 	private String repertoireSource; 
 	private String patternEntree; 
 	private String repertoireDestinataire; 
@@ -38,7 +39,8 @@ public class SaveToBoxCryptorCallable implements Runnable{
 	 * @param repertoireDestinataire répertoire destinataire (X: de boxcryptor)
 	 * @param patternSortie pattern de sortie (si modification)
 	 */
-	public SaveToBoxCryptorCallable(String repertoireSource, String patternEntree, String repertoireDestinataire, String patternSortie){
+	public SaveToBoxCryptorCallable(int index, String repertoireSource, String patternEntree, String repertoireDestinataire, String patternSortie){
+		this.index = index;
 		this.repertoireSource = repertoireSource;
 		this.patternEntree = patternEntree;
 		this.repertoireDestinataire = repertoireDestinataire;
@@ -52,16 +54,16 @@ public class SaveToBoxCryptorCallable implements Runnable{
 	@Override
 	public void run() {
 		String scanDir = repertoireSource;
-		LOGGER.info("Scan du répertoire  : " + scanDir);
+		LOGGER.info("[" + index + "] Scan du répertoire  : " + scanDir);
 		if(Files.isDirectory(FileSystems.getDefault().getPath(scanDir))){
 			try{
 				DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
 				String regExMatch = patternEntree;
-				LOGGER.trace(" > Matcher : " + regExMatch);
+				LOGGER.trace("[" + index + "] > Matcher : " + regExMatch);
 				if(regExMatch != null && !regExMatch.isEmpty()){
 
 					for (Path fichier : downloadDirectoryPath) {
-						LOGGER.trace(" Traitement du fichier : " + fichier.getFileName().toString());
+						LOGGER.trace("[" + index + "] Traitement du fichier : " + fichier.getFileName().toString());
 						if(fichier.getFileName().toString().matches(regExMatch)){
 							LOGGER.trace(fichier.getFileName().toString() + " > match avec " + regExMatch);
 							String outputPattern = patternSortie;
@@ -72,30 +74,30 @@ public class SaveToBoxCryptorCallable implements Runnable{
 									AutomationUtils.replacePatterns(outputPattern), 
 									repertoireDestinataire);		
 							if(resultat){
-								LOGGER.info("Copie réalisée vers BoxCrytor");
+								LOGGER.info("[" + index + "] Copie réalisée vers BoxCrytor");
 								Files.delete(fichier);
 							}
 							else{
-								LOGGER.error("Erreur lors de la copie vers BoxCrytor");
+								LOGGER.error("[" + index + "] Erreur lors de la copie vers BoxCrytor");
 							}
 						}
 					}
 				}
 				else{
-					LOGGER.warn("Copie du répertoire complet");
+					LOGGER.warn("[" + index + "] Copie du répertoire complet");
 					if(copyDirToBoxcryptor(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire)){
-						LOGGER.info("Copie réalisée vers BoxCrytor");
+						LOGGER.info("[" + index + "] Copie réalisée vers BoxCrytor");
 					}
 					else{
-						LOGGER.error("Erreur lors de la copie vers BoxCrytor [" +repertoireDestinataire+"]");
+						LOGGER.error("[" + index + "] Erreur lors de la copie vers BoxCrytor [" +repertoireDestinataire+"]");
 					}
 				}
 			} catch (IOException e) {
-				LOGGER.error("Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
+				LOGGER.error("[" + index + "] Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
 			}
 		}
 		else{
-			LOGGER.error("Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath() + ". Ce n'est pas un répertoire");
+			LOGGER.error("[" + index + "] Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath() + ". Ce n'est pas un répertoire");
 		}
 	}
 	
@@ -112,7 +114,7 @@ public class SaveToBoxCryptorCallable implements Runnable{
 		try {
 
 			Path fichierCible = FileSystems.getDefault().getPath(directoryCible);
-			LOGGER.debug(" > Copie du répertoire "+fichierSource+" vers : " + fichierCible);
+			LOGGER.debug("[" + index + "]  > Copie du répertoire "+fichierSource+" vers : " + fichierCible);
 			Files.walkFileTree(fichierSource, new CopyDirVisitor(fichierSource, fichierCible));
 			return true;
 		} catch (IOException e) {
@@ -135,14 +137,14 @@ public class SaveToBoxCryptorCallable implements Runnable{
 				outFileName = fichierSource.getFileName().toString();
 			}
 			Path fichierCible = FileSystems.getDefault().getPath(directoryCible + "/" +outFileName);
-			LOGGER.debug(" > Copie "+fichierSource+" vers : " + fichierCible);
+			LOGGER.debug("[" + index + "]  > Copie "+fichierSource+" vers : " + fichierCible);
 
 			if(!Files.exists(FileSystems.getDefault().getPath(directoryCible))){
-				LOGGER.info("Création du répertoire");
+				LOGGER.info("[" + index + "] Création du répertoire");
 				Files.createDirectories(FileSystems.getDefault().getPath(directoryCible));
 			}
 			if (!Files.exists( fichierCible)) {
-				LOGGER.debug("Création du fichier");
+				LOGGER.debug("[" + index + "] Création du fichier");
 				Files.createFile( fichierCible);
 			}
 			CopyOption[] options = new CopyOption[]{
