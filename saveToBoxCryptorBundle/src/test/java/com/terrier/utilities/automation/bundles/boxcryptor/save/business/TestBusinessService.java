@@ -75,9 +75,9 @@ public class TestBusinessService {
 	
 	@BeforeClass
 	public static void initFiles() throws IOException{
-		LOGGER.info("Création d'un fichier init : " + FileSystems.getDefault().getPath("src/test/resources/download/").toAbsolutePath());
-		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/", "_HUBICEU257005.pdf"));
-		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/", "Facture_Free_201512_2375646_593050686.pdf"));
+		LOGGER.info("Création des fichiers init dans " + FileSystems.getDefault().getPath("src/test/resources/download/").toAbsolutePath() + " : " + Files.isDirectory(FileSystems.getDefault().getPath("src/test/resources/download/")));
+		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/_HUBICEU257005.pdf"));
+		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/Facture_Free_201512_2375646_593050686.pdf"));
 	}
 	
 	
