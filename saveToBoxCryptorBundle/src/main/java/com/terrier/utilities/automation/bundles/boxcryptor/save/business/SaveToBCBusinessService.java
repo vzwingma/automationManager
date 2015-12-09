@@ -15,7 +15,7 @@ import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomat
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 
 /**
- * Service métier
+ * Service métier de Save to BC
  * @author vzwingma
  *
  */
