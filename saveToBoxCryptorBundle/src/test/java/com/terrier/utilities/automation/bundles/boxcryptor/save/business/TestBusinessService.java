@@ -6,11 +6,16 @@ package com.terrier.utilities.automation.bundles.boxcryptor.save.business;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Calendar;
 import java.util.Properties;
 
 import org.junit.Before;
@@ -52,8 +57,37 @@ public class TestBusinessService {
 			}
 			
 		});
+		
+		when(service.getKey(any(ConfigKeyEnums.class), anyInt())).thenAnswer(new Answer<String>() {
+
+			@Override
+			public String answer(InvocationOnMock invocation) throws Throwable {
+				return properties.getProperty(((ConfigKeyEnums)invocation.getArguments()[0]).getCodeKey() + "." + invocation.getArguments()[1]);
+			}
+			
+		});
 	}
 	
+	/**
+	 * Test copie
+	 * @throws IOException 
+	 */
+	@Test
+	public void testCopie() throws IOException{
+		assertNotNull(service);
+		service.scan(service.getKey(ConfigKeyEnums.DOWNLOAD));
+		String cl = "_HUBIC_" +Calendar.getInstance().get(Calendar.YEAR) + (Calendar.getInstance().get(Calendar.MONTH)+1)+ ".pdf";
+		Path fichier1 = FileSystems.getDefault().getPath("src/test/resources/bc/" + cl);
+		assertTrue(Files.exists(fichier1));
+		Files.delete(fichier1);
+		Path fichier2 = FileSystems.getDefault().getPath("src/test/resources/bc/Facture_Free_201512_2375646_593050686.pdf");
+		assertTrue(Files.exists(fichier2));
+		Files.delete(fichier2);
+
+	}
+	
+	
+
 	/**
 	 * Test de validation du service
 	 */
@@ -63,13 +97,4 @@ public class TestBusinessService {
 		assertTrue(service.validateConfig());
 	}
 	
-	/**
-	 * Test copie
-	 */
-	@Test
-	public void testCopie(){
-		assertNotNull(service);
-		service.scan(service.getKey(ConfigKeyEnums.DOWNLOAD));
-		
-	}
 }

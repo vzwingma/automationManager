@@ -21,7 +21,6 @@ package com.terrier.utilities.automation.bundles.boxcryptor.save;
 import java.util.Dictionary;
 
 import com.terrier.utilities.automation.bundles.communs.AbstractAutomationActivator;
-import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 
 /**
@@ -52,12 +51,12 @@ public class Activator extends AbstractAutomationActivator {
 	 * @param key clé à charger du fichier
 	 * @return valeur de la clé dans la configuration
 	 */
-	public static String getConfig(ConfigKeyEnums key) throws KeyNotFoundException{
+	public static String getConfig(String key) throws KeyNotFoundException{
 		if(Activator.dictionary != null && key != null){
-			return dictionary.get(key.getCodeKey());
+			return dictionary.get(key);
 		}
 		else{
-			throw new KeyNotFoundException(key != null ? key.getCodeKey() : null);
+			throw new KeyNotFoundException(key);
 		}
 			
 	}
