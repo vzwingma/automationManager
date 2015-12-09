@@ -128,6 +128,7 @@ public class BusinessService implements Runnable {
 					else{
 						LOGGER.warn("Copie du répertoire complet");
 						copyDirToBoxcryptor(FileSystems.getDefault().getPath(scanDir), getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, i));
+						LOGGER.info("Copie réalisée vers BoxCrytor");
 					}
 				} catch (IOException e) {
 					LOGGER.error("Erreur lors du scan de " + FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
@@ -158,6 +159,9 @@ public class BusinessService implements Runnable {
 			return false;
 		}
 	}
+	
+	
+	
 	/**
 	 * 
 	 * @param fichierSource chemin vers le fichier source
