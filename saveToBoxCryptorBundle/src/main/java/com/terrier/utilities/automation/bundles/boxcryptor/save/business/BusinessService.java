@@ -3,38 +3,45 @@
  */
 package com.terrier.utilities.automation.bundles.boxcryptor.save.business;
 
-import java.util.Hashtable;
-
+import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
 import org.apache.log4j.Logger;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.service.cm.ManagedService;
 
-import com.terrier.utilities.automation.bundles.boxcryptor.save.config.ConfigUpdater;
+import com.terrier.utilities.automation.bundles.boxcryptor.save.Activator;
+import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
+import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 
 /**
+ * Service métier
  * @author vzwingma
  *
  */
 @Singleton
-public class BusinessService {
+public class BusinessService  {
 
 	private static final Logger LOGGER = Logger.getLogger( BusinessService.class );
 
+	
+	
+	@PostConstruct
+	public void initService(){
 
-	private static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.boxcryptor.save";
-
-	public BusinessService(){
-		LOGGER.info("Businessservice");
+			LOGGER.info("Recherche des fichiers à sauvegarder dans " + getKey(ConfigKeyEnums.DOWNLOAD) );
 	}
 
-
-	public void initConfig(BundleContext context){
-		Hashtable<String, Object> properties = new Hashtable<String, Object>();
-		properties.put(Constants.SERVICE_PID, CONFIG_PID);
-		context.registerService(ManagedService.class.getName(), new ConfigUpdater() , properties);
-		LOGGER.info("Chargement du fichier de configuration /etc/" + CONFIG_PID + ".cfg");
+	
+	
+	/**
+	 * @param key
+	 * @return valeur dans la config correspondante
+	 * @throws KeyNotFoundException
+	 */
+	protected String getKey(ConfigKeyEnums key){
+		try {
+			return Activator.getConfig(key);
+		} catch (KeyNotFoundException e) {
+			return null;
+		}
 	}
 }

@@ -40,8 +40,27 @@
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
-			<optional>false</optional>
+
 		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.cdi</groupId>
+			<artifactId>pax-cdi-api</artifactId>
+			<version>0.12.0</version>
+		</dependency>
+		<!-- TESTS -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>2.0.2-beta</version>
+			<scope>test</scope>
+		</dependency>
+
 
 	</dependencies>
 
@@ -63,7 +82,8 @@
 					<configuration>
 					</configuration>
 				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -100,15 +120,15 @@
 		</pluginManagement>
 		<plugins>
 
-            <plugin>
-                <groupId>org.apache.aries.blueprint</groupId>
-                <artifactId>blueprint-maven-plugin</artifactId>
-                <configuration>
-                    <scanPaths>
-                        <scanPath>com.terrier.utilities.automation.bundles.boxcryptor.save.business</scanPath>
-                    </scanPaths>
-                </configuration>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.aries.blueprint</groupId>
+				<artifactId>blueprint-maven-plugin</artifactId>
+				<configuration>
+					<scanPaths>
+						<scanPath>com.terrier.utilities.automation.bundles.boxcryptor.save.business</scanPath>
+					</scanPaths>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.felix</groupId>

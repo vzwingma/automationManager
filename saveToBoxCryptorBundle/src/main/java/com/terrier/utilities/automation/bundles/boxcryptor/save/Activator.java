@@ -18,50 +18,48 @@
  */
 package com.terrier.utilities.automation.bundles.boxcryptor.save;
 
-import java.util.Hashtable;
+import java.util.Dictionary;
 
-import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.service.cm.ManagedService;
-
-import com.terrier.utilities.automation.bundles.boxcryptor.save.business.BusinessService;
-import com.terrier.utilities.automation.bundles.boxcryptor.save.config.ConfigUpdater;
+import com.terrier.utilities.automation.bundles.communs.AbstractAutomationActivator;
+import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
+import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 
 /**
  * Activator du bundle
  * @author vzwingma
  *
  */
-public class Activator implements BundleActivator {
+public class Activator extends AbstractAutomationActivator {
 
+
+	private static Dictionary<String, String> dictionary;
 	
-	 private static final Logger LOGGER = Logger.getLogger( Activator.class );
+	/* (non-Javadoc)
+	 * @see com.terrier.utilities.automation.bundles.communs.AbstractAutomationActivator#getConfigurationPID()
+	 */
+	@Override
+	public String getConfigurationPID() {
+		return "com.terrier.utilities.automation.bundles.boxcryptor.save";
+	}
+
+	@Override
+	public void updateDictionnary(Dictionary<String, String> dictionary) {
+		Activator.dictionary = dictionary;
+	}
 	 
-	 private static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.boxcryptor.save";
-	/* (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	
+	/**
+	 * @param key clé à charger du fichier
+	 * @return valeur de la clé dans la configuration
 	 */
-	@Override
-	public void start(BundleContext context) throws Exception {
-		LOGGER.info("Demarrage du bundle");
-		
-		Hashtable<String, Object> properties = new Hashtable<String, Object>();
-		properties.put(Constants.SERVICE_PID, CONFIG_PID);
-		context.registerService(ManagedService.class.getName(), new ConfigUpdater() , properties);
-		LOGGER.info("Chargement du fichier de configuration /etc/" + CONFIG_PID + ".cfg");
+	public static String getConfig(ConfigKeyEnums key) throws KeyNotFoundException{
+		if(Activator.dictionary != null && key != null){
+			return dictionary.get(key.getCodeKey());
+		}
+		else{
+			throw new KeyNotFoundException(key != null ? key.getCodeKey() : null);
+		}
+			
 	}
-
-	/* (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		LOGGER.info("Arrêt du bundle");
-	}
-
    
 }
