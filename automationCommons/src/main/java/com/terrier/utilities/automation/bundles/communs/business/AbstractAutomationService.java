@@ -74,12 +74,13 @@ public abstract class AbstractAutomationService implements ManagedService {
 	 */
 	public abstract void notifyUpdateDictionnary(); 
 	
+
 	
 	/**
 	 * Envoi d'un message pour publication
 	 * @param message message à envoyer
 	 */
-	public void sendNotificationMessage(TypeMessagingEnum typeMessage, String message)
+	public void sendNotificationMessage(TypeMessagingEnum typeMessage, EventsTopicNameEnum topicName, String titreMessage, String message)
     {
 		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
         ServiceReference<EventAdmin> ref = context.getServiceReference(EventAdmin.class);
@@ -87,6 +88,7 @@ public abstract class AbstractAutomationService implements ManagedService {
             EventAdmin eventAdmin = context.getService(ref);
 
             Dictionary<String, Object> properties = new Hashtable<String, Object>();
+            properties.put(EventPropertyNameEnum.TITRE_MESSAGE.name(), titreMessage);
             properties.put(EventPropertyNameEnum.MESSAGE.name(), message);
             properties.put(EventPropertyNameEnum.TIME.name(), System.currentTimeMillis());
             properties.put(EventPropertyNameEnum.TYPE_MESSAGE.name(), typeMessage);

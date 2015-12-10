@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums.CommandeEnum;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;
 
@@ -116,6 +118,13 @@ public class SaveToBoxCryptorCallable extends AbstractAutomationService implemen
 		}
 	}
 	
+	/**
+	 * Envoi d'un email de notification
+	 * @param message
+	 */
+	private void sendNotificationMessage(String message){
+		sendNotificationMessage(TypeMessagingEnum.EMAIL, EventsTopicNameEnum.NOTIFIFY_MESSAGE, "Copie vers BoxCryptor", message);
+	}
 	
 
 

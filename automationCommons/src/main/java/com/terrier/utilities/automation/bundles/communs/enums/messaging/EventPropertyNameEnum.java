@@ -13,6 +13,7 @@ public enum EventPropertyNameEnum {
 	
 	MESSAGE,
 	TIME,
+	TITRE_MESSAGE,
 	TYPE_MESSAGE
 	;
 }

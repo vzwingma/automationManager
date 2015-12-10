@@ -7,7 +7,7 @@ package com.terrier.utilities.automation.bundles.boxcryptor.save.business.enums;
  * @author vzwingma
  *
  */
-public enum ConfigKeyEnums {
+public enum ConfigKeyEnums  {
 
 	// Période scannée
 	PERIOD_SCAN("automation.bundle.boxcryptor.save.scan.period"),
