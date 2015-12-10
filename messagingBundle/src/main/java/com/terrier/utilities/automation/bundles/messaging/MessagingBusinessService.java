@@ -50,7 +50,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 */
 	@Override
 	public void notifyUpdateDictionnary() {
-		// TODO Auto-generated method stub
+		// Pas de modification
 		
 	}
 
