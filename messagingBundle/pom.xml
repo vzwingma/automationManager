@@ -1,22 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>AutomationManager</artifactId>
 		<groupId>com.terrier.utilities.automation.bundles</groupId>
+		<artifactId>AutomationManager</artifactId>
 		<version>0.0.1</version>
 	</parent>
-
-	<!-- mvn archetype:generate -DarchetypeGroupId=org.apache.karaf.archetypes 
-		-DarchetypeArtifactId=karaf-bundle-archetype -DarchetypeVersion=2.2.11 -DgroupId=com.terrier.utilities.automation.bundles 
-		-DartifactId=saveToBoxCryptorBundle -Dversion=0.0.1-SNAPSHOT -Dpackage=com.terrier.utilities.automation.bundles.boxcryptor.save -->
-	<artifactId>saveToBoxCryptorBundle</artifactId>
+	<artifactId>messagingBundle</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
-	<name>[Automation] Save to Boxcryptor</name>
-	<description>saveToBoxCryptorBundle OSGi bundle project.</description>
+
+	<name>[Automation] Messaging Service</name>
+	<description>Service de messaging SMS ou Mail</description>
 
 	<dependencies>
 		<dependency>
@@ -61,7 +57,7 @@
 				<artifactId>blueprint-maven-plugin</artifactId>
 				<configuration>
 					<scanPaths>
-						<scanPath>com.terrier.utilities.automation.bundles.boxcryptor.save.business</scanPath>
+						<scanPath>com.terrier.utilities.automation.bundles.messaging</scanPath>
 					</scanPaths>
 				</configuration>
 			</plugin>
@@ -75,7 +71,7 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Export-Package>com.terrier.utilities.automation.bundles.boxcryptor.save*;version=${project.version}</Export-Package>
+						<Export-Package>com.terrier.utilities.automation.bundles.messaging*;version=${project.version}</Export-Package>
 						<Import-Package>*</Import-Package>
 					</instructions>
 				</configuration>
