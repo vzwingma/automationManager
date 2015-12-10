@@ -16,7 +16,9 @@ import org.osgi.service.cm.ManagedService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
-import com.terrier.utilities.automation.bundles.communs.EventsTopicName;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventPropertyNameEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 
 /**
@@ -75,9 +77,9 @@ public abstract class AbstractAutomationService implements ManagedService {
 	
 	/**
 	 * Envoi d'un message pour publication
-	 * @param message
+	 * @param message message à envoyer
 	 */
-	public void sendNotificationEvent(String message)
+	public void sendNotificationMessage(TypeMessagingEnum typeMessage, String message)
     {
 		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
         ServiceReference<EventAdmin> ref = context.getServiceReference(EventAdmin.class);
@@ -85,11 +87,11 @@ public abstract class AbstractAutomationService implements ManagedService {
             EventAdmin eventAdmin = context.getService(ref);
 
             Dictionary<String, Object> properties = new Hashtable<String, Object>();
-            properties.put("message", message);
-            properties.put("time", System.currentTimeMillis());
-
-            Event reportGeneratedEvent = new Event(EventsTopicName.NOTIFIFY_MESSAGE.getTopicName(), properties);
-            LOGGER.info("Envoi du message ["+message+"] sur le topic ["+EventsTopicName.NOTIFIFY_MESSAGE.getTopicName()+"]");
+            properties.put(EventPropertyNameEnum.MESSAGE.name(), message);
+            properties.put(EventPropertyNameEnum.TIME.name(), System.currentTimeMillis());
+            properties.put(EventPropertyNameEnum.TYPE_MESSAGE.name(), typeMessage);
+            Event reportGeneratedEvent = new Event(EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName(), properties);
+            LOGGER.info("Envoi du message ["+message+"] sur le topic ["+EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName()+"]");
             eventAdmin.sendEvent(reportGeneratedEvent);
         }
         else{

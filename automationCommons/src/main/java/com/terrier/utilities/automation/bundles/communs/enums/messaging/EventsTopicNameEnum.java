@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.communs;
+package com.terrier.utilities.automation.bundles.communs.enums.messaging;
 
 /**
  * @author vzwingma
  *
  */
-public enum EventsTopicName {
+public enum EventsTopicNameEnum {
 
 	
 	NOTIFIFY_MESSAGE("com/terrier/utilities/automation/message/notify");
@@ -20,7 +20,7 @@ public enum EventsTopicName {
 	 * Valeur de l'enum
 	 * @param value
 	 */
-	private EventsTopicName(String topicName){
+	private EventsTopicNameEnum(String topicName){
 		this.topicName = topicName;
 	}
 

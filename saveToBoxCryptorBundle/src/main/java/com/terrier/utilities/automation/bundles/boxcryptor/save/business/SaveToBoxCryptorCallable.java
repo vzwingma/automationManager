@@ -84,13 +84,13 @@ public class SaveToBoxCryptorCallable extends AbstractAutomationService implemen
 									// Suppression du fichier source
 									Files.delete(fichier);
 									// Et notification du déplacement
-									sendNotificationEvent("Copie de " +fichier.getFileName().toString()+ " vers BoxCryptor");
+									sendNotificationMessage("Copie de " +fichier.getFileName().toString()+ " vers BoxCryptor");
 								}
 							}
 							else{
 								LOGGER.error("[" + index + "] Erreur lors de la copie vers BoxCrytor");
 								// Et notification de l'erreur
-								sendNotificationEvent("Erreur lors de la copie de " +fichier.getFileName().toString()+ " vers BoxCryptor");
+								sendNotificationMessage("Erreur lors de la copie de " +fichier.getFileName().toString()+ " vers BoxCryptor");
 							}
 						}
 					}
@@ -99,12 +99,12 @@ public class SaveToBoxCryptorCallable extends AbstractAutomationService implemen
 					LOGGER.warn("[" + index + "] Copie du répertoire complet");
 					if(copyDirToBoxcryptor(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire)){
 						LOGGER.info("[" + index + "] Copie réalisée vers BoxCrytor");
-						sendNotificationEvent("Copie du répertoire " +scanDir+ " vers BoxCryptor");
+						sendNotificationMessage("Copie du répertoire " +scanDir+ " vers BoxCryptor");
 					}
 					else{
 						LOGGER.error("[" + index + "] Erreur lors de la copie vers BoxCrytor [" +repertoireDestinataire+"]");
 						// Et notification de l'erreur
-						sendNotificationEvent("Erreur lors de la copie du répertoire " +repertoireDestinataire+ " vers BoxCryptor");
+						sendNotificationMessage("Erreur lors de la copie du répertoire " +repertoireDestinataire+ " vers BoxCryptor");
 					}
 				}
 			} catch (IOException e) {

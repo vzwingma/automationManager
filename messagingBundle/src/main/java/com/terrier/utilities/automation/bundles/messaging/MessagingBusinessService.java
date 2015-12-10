@@ -12,8 +12,8 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
-import com.terrier.utilities.automation.bundles.communs.EventsTopicName;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 
 /**
  * Classe de service de messaging
@@ -37,9 +37,9 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	public void initService(){
 		registerToConfig("com.terrier.utilities.automation.bundles.messaging");
 		
-		LOGGER.info("Enregistrement de l'eventHandler " + eventMessages + " sur le topic : " + EventsTopicName.NOTIFIFY_MESSAGE.getTopicName());
+		LOGGER.info("Enregistrement de l'eventHandler " + eventMessages + " sur le topic : " + EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
 		Dictionary<String, String[]> props = new Hashtable<String, String[]>();
-        props.put(EventConstants.EVENT_TOPIC, new String[]{EventsTopicName.NOTIFIFY_MESSAGE.getTopicName()});
+        props.put(EventConstants.EVENT_TOPIC, new String[]{EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName()});
 		FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(EventHandler.class.getName(), eventMessages , props);
 	}
 	

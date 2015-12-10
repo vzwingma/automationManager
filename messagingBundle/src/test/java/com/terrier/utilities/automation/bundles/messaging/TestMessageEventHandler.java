@@ -11,7 +11,7 @@ import java.util.Hashtable;
 import org.junit.Test;
 import org.osgi.service.event.Event;
 
-import com.terrier.utilities.automation.bundles.communs.EventsTopicName;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 
 /**
  * Test du message EventHandler
@@ -30,7 +30,7 @@ public class TestMessageEventHandler {
 		properties.put("message", "test message");
 		properties.put("time", System.currentTimeMillis());
 
-		Event reportGeneratedEvent = new Event(EventsTopicName.NOTIFIFY_MESSAGE.getTopicName(), properties);
+		Event reportGeneratedEvent = new Event(EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName(), properties);
 		// Test
 		handler.handleEvent(reportGeneratedEvent);
 	}
