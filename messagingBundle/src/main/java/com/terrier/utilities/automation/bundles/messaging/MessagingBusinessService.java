@@ -83,6 +83,9 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		if(!configValid){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
 		}
+		else{
+			LOGGER.info("La configuration est correcte.");
+		}
 		return configValid;
 	}
 
