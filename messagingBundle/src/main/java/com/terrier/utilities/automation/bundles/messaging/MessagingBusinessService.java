@@ -74,6 +74,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		LOGGER.info(" > URL du service	: " + getConfig(MessagingConfigKeyEnums.EMAIL_URL));
 		LOGGER.info(" > Domaine du service	: " + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
 		LOGGER.info(" > Service	du service : " + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
+		LOGGER.info(" > Clé du service : " + (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? "**********" : null));
 		LOGGER.info(" > Destinataires	: " + getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
 
 		boolean configValid = true;
@@ -106,7 +107,6 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		        client.resource(getConfig(MessagingConfigKeyEnums.EMAIL_URL) + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN) + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
 		    MultivaluedMapImpl formData = getFormData(titre, message);
 		    Builder b = webResource.type(MediaType.APPLICATION_FORM_URLENCODED);
-		    System.out.println(b);
 			ClientResponse response = b.post(ClientResponse.class, formData);
 			LOGGER.info("Resultat : " + response);
 			return response != null && response.getStatus() == 200;

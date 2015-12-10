@@ -97,6 +97,6 @@ public class TestEmailAPI {
 		assertFalse(service.sendNotificationEmail("test", "message de test"));
 		//verify
 		verify(mockClient, times(2)).addFilter(any(ClientFilter.class));
-		verify(mockClient, times(2)).resource(eq("https://api.mailgun.net/v3/sandboxc3830b67ded34305912ad73326e9af2f.mailgun.org/messages"));
+		verify(mockClient, times(2)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
 	}
 }

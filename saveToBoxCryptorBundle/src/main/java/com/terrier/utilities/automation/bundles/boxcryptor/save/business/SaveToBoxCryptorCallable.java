@@ -86,6 +86,9 @@ public class SaveToBoxCryptorCallable extends AbstractAutomationService implemen
 									// Suppression du fichier source
 									Files.delete(fichier);
 									// Et notification du déplacement
+									sendNotificationMessage("Déplacement de " +fichier.getFileName().toString()+ " vers BoxCryptor");
+								}
+								else{
 									sendNotificationMessage("Copie de " +fichier.getFileName().toString()+ " vers BoxCryptor");
 								}
 							}

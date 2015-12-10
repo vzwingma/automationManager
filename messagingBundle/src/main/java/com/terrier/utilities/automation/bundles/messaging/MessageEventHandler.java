@@ -30,24 +30,28 @@ public class MessageEventHandler implements EventHandler {
 	@Override
 	public void handleEvent(Event event) {
 
-		StringBuilder sb = new StringBuilder("{");
+		StringBuilder sb = new StringBuilder("\n{");
 		for (String propertyName : event.getPropertyNames()) {
 			sb.append(propertyName)
 			.append("=")
 			.append(event.getProperty(propertyName))
-			.append("; ");
+			.append("; \n ");
 		}
 		sb.append("}");
 		LOGGER.info("Topic [" + event.getTopic() + "] Réception du message [" + sb.toString() + "]");
 
 
 		//Envoi d'un email
-		if(event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()) != null && 
-				TypeMessagingEnum.EMAIL.name().equals(event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()))){
+		if(event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()) != null 
+				&& 
+				TypeMessagingEnum.EMAIL.equals(event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()))){
            String titre = (String)event.getProperty(EventPropertyNameEnum.TITRE_MESSAGE.name());
            String message = (String)event.getProperty(EventPropertyNameEnum.MESSAGE.name());
            
            messagingService.sendNotificationEmail(titre, message);
+		}
+		else{
+			LOGGER.warn("Aucune configuration pour ce message de type " + event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()));
 		}
 	}
 
