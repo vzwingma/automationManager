@@ -68,7 +68,7 @@ public abstract class AbstractAutomationService implements ManagedService {
 
 	/**
 	 * Notification de Mise à jour du dictionnaire
-	 * @param dictionary dictionnaire
+	 * Pour être notifié, il est nécessaire d'appeler la méthode registerToConfig(String configPID)
 	 */
 	public abstract void notifyUpdateDictionnary(); 
 	
