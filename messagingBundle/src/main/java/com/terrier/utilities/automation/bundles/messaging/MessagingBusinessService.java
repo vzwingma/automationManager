@@ -12,6 +12,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -86,7 +87,9 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		// Si correct, reprogrammation de la tâche d'envoi
 		if(configValid){
 			// arrêt des tâches schedulées
-			sendEmailScheduled.cancel(true);
+			if(sendEmailScheduled != null){
+				sendEmailScheduled.cancel(true);
+			}
 			String apiURL = getConfig(MessagingConfigKeyEnums.EMAIL_URL) + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN) + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE);
 			sendEmailScheduled = scheduledThreadPool.scheduleAtFixedRate(
 					new SendEmailTaskRunnable(
@@ -95,7 +98,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 							getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN),
 							getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES),
 							this.messagesSendingQueue
-					), 0L, periodeEnvoiMail, TimeUnit.MINUTES);
+					), 3L, periodeEnvoiMail, TimeUnit.MINUTES);
+			LOGGER.info("La tâche d'envoi des mails est programmée");
 		}
 		else{
 			LOGGER.error("Impossible d'envoyer les emails à cause d'une erreur de configuration");
@@ -111,7 +115,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		LOGGER.info("**  **");
 		LOGGER.info(" > URL du service	: " + getConfig(MessagingConfigKeyEnums.EMAIL_URL));
 		LOGGER.info(" > Domaine du service	: " + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
-		LOGGER.info(" > Service	du service : " + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
+		LOGGER.info(" > Nom du service : " + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
 		LOGGER.info(" > Clé du service : " + (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? "**********" : null));
 		LOGGER.info(" > Destinataires	: " + getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
 
@@ -157,13 +161,19 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 * @return le résulat de l'envoi
 	 */
 	public void sendNotificationEmail(String titre, String message){
-		LOGGER.info("Ajout du message [" +message+ "] dans la liste des envois");
+		LOGGER.info("Ajout du message [" +message+ "] dans la liste des envois ["+titre+"]");
 		List<String> messagesToSend = messagesSendingQueue.getOrDefault(titre, new ArrayList<String>());
 		messagesToSend.add(message);
 		messagesSendingQueue.put(titre, messagesToSend);
 	}
 	
 
+	
+	@PreDestroy
+	public void arretTask(){
+		LOGGER.warn("Arrêt de la tâche d'envoi de mails");
+		this.scheduledThreadPool.shutdown();
+	}
 	
 
 	/**

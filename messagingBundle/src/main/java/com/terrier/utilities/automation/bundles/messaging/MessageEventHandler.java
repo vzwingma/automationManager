@@ -41,7 +41,7 @@ public class MessageEventHandler implements EventHandler {
 			.append("; \n ");
 		}
 		sb.append("}");
-		LOGGER.info("Topic [" + event.getTopic() + "] Réception du message [" + sb.toString() + "]");
+		LOGGER.debug("Topic [" + event.getTopic() + "] Réception du message [" + sb.toString() + "]");
 
 
 		//Envoi d'un email
