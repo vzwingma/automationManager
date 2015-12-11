@@ -124,6 +124,10 @@ public class TestSaveToTaskRunnable {
 		spyTask.run();
 		verify(spyTask, times(2)).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
 		
+		
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/d1.txt"));
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory/d2.txt"));
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory"));
 	}
 
 }
