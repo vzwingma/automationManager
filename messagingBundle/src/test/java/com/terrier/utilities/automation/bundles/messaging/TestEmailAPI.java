@@ -28,6 +28,7 @@ import java.util.Properties;
 import javax.ws.rs.core.MediaType;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -136,11 +137,34 @@ public class TestEmailAPI {
 		assertEquals(1, queue.keySet().size());
 		assertEquals(1, queue.get("test2").size());
 		assertNull(queue.get("test"));
-		
+
 		// Run
 		runnable.run();
 		// Cette fois tout est passé
 		assertNull(queue.get("test2"));
 		assertNull(queue.get("test"));
 	}
+
+	/**
+	 * Test pour appeler l'API réelle
+	 */
+	@Ignore
+	public void testRealAPI(){
+
+		assertNotNull(service);
+		// Préparation
+		service.sendNotificationEmail("test", "message de test1");
+		service.sendNotificationEmail("test", "message de test2");
+	
+		Map<String, List<String>> queue = service.getMessagesSendingQueue();
+
+		SendEmailTaskRunnable runnable = new SendEmailTaskRunnable(
+				"key-", 
+				"https://api.mailgun.net/v3/sandboxc3830b67ded34305912ad73326e9af2f.mailgun.org/messages", 
+				"sandboxc.mailgun.org", 
+				"vincent.zwingmann@gmail.com", 
+				queue);
+		runnable.run();
+	}
+
 }

@@ -121,12 +121,12 @@ public class SendEmailTaskRunnable implements Runnable {
 		formData.add("to", this.listeDestinataires);
 		formData.add("subject", titre);
 
-		StringBuilder messageAEnvoyer = new StringBuilder("<b>Liste des messages</b>\n");
+		StringBuilder messageAEnvoyer = new StringBuilder("<h3>Liste des messages</h3><ul>");
 		for (String msg : messages) {
-			messageAEnvoyer.append(msg).append("\n");
+			messageAEnvoyer.append("<li>").append(msg).append("</li>");
 		}
-
-		formData.add("text", messageAEnvoyer.toString());
+		messageAEnvoyer.append("</ul>");
+		formData.add("html", messageAEnvoyer.toString());
 		return formData;
 	}
 
