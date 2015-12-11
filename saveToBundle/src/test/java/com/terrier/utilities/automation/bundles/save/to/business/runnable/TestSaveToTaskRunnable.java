@@ -61,7 +61,7 @@ public class TestSaveToTaskRunnable {
 				CommandeEnum.COPY, 
 				"src/test/resources/download", 
 				"_HUBIC[A-Za-z0-9_]*.pdf", 
-				"src/test/resouces/bc", 
+				"src/test/resources/bc", 
 				null));
 
 		Mockito.doNothing().when(spyTask).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
