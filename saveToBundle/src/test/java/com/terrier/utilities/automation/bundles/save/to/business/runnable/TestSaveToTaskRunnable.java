@@ -54,9 +54,10 @@ public class TestSaveToTaskRunnable {
 	/**
 	 * Test de copie
 	 * @throws IOException
+	 * @throws InterruptedException 
 	 */
 	@Test
-	public void testCopieFile() throws IOException{
+	public void testCopieFile() throws IOException, InterruptedException{
 		SaveToTaskRunnable spyTask = spy(new SaveToTaskRunnable(0, 
 				CommandeEnum.COPY, 
 				"src/test/resources/download", 
@@ -78,6 +79,7 @@ public class TestSaveToTaskRunnable {
 
 		// 3nd traitement, la copie est réalisée car changement
 		Files.delete(FileSystems.getDefault().getPath(CHEMIN_FICHIER));
+		Thread.sleep(2000);
 		Files.createFile(FileSystems.getDefault().getPath(CHEMIN_FICHIER));
 
 		spyTask.run();
@@ -104,6 +106,7 @@ public class TestSaveToTaskRunnable {
 
 		Mockito.doNothing().when(spyTask).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
 		when(spyTask.copyDirTo(any(Path.class), anyString())).thenCallRealMethod();
+		LOGGER.info("*** 1er traitement ***");
 		// Premier traitement, la copie est réalisée
 		spyTask.run();
 
@@ -111,12 +114,14 @@ public class TestSaveToTaskRunnable {
 		verify(spyTask, times(1)).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
 
 		// 2nd traitement, la copie n'est pas réalisée (toujours un seul appel)
+		LOGGER.info("*** 2ème traitement ***");
 		spyTask.run();
 		verify(spyTask, times(1)).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
 		
 		// 3nd traitement, la copie est réalisée car changement
+		LOGGER.info("*** 3ème traitement ***");
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
-		Thread.sleep(500);
+		Thread.sleep(2000);
 		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
 
 		spyTask.run();
