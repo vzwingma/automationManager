@@ -115,7 +115,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 
 		LOGGER.info("**  **");
 		LOGGER.info(" > URL du service	: " + getConfig(MessagingConfigKeyEnums.EMAIL_URL));
-		LOGGER.info(" > Domaine du service	: " + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
+		LOGGER.info(" > Domaine du service : " + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
 		LOGGER.info(" > Nom du service : " + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
 		LOGGER.info(" > Clé du service : " + (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? "**********" : null));
 		LOGGER.info(" > Destinataires	: " + getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
