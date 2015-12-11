@@ -83,5 +83,42 @@ public class TestSaveToTaskRunnable {
 		spyTask.run();
 		verify(spyTask, times(2)).copyFichierTo(any(Path.class), eq("_HUBICEU257005.pdf"), anyString());
 	}
+	
+	
+	
+
+
+	/**
+	 * Test de copie
+	 * @throws IOException
+	 */
+	@Test
+	public void testCopieRepertoire() throws IOException{
+		SaveToTaskRunnable spyTask = spy(new SaveToTaskRunnable(0, 
+				CommandeEnum.COPY, 
+				"src/test/resources/download/directory", 
+				null, 
+				"src/test/resources/bc", 
+				null));
+
+		Mockito.doNothing().when(spyTask).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
+		when(spyTask.copyDirTo(any(Path.class), anyString())).thenCallRealMethod();
+		// Premier traitement, la copie est réalisée
+		spyTask.run();
+
+		assertNotNull(spyTask.getDateDernierScan());
+		verify(spyTask, times(1)).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
+
+		// 2nd traitement, la copie n'est pas réalisée (toujours un seul appel)
+		spyTask.run();
+		verify(spyTask, times(1)).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
+		
+		// 3nd traitement, la copie est réalisée car changement
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
+		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
+
+		spyTask.run();
+		verify(spyTask, times(2)).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
+	}
 
 }

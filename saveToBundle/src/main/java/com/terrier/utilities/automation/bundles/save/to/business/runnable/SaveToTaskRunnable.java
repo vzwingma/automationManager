@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +107,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 				if(fichier.getFileName().toString().matches(regExMatch)){
 					LOGGER.trace("{} > match avec {}", fichier.getFileName().toString(), regExMatch);
 					// Vérification vis à vis de la date de modification
-					
+
 					if(dateDernierScan == null || Files.getLastModifiedTime(fichier).toMillis() > dateDernierScan.getTimeInMillis()){
 						String outputPattern = patternSortie;
 						if(patternSortie == null || patternSortie.isEmpty()){
@@ -150,11 +151,13 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 	 */
 	private void traitementRepertoireSaveTo(String scanDir, Calendar dateDernierScan){
 		LOGGER.warn("[{}] Copie du répertoire complet", index);
-		if(copyDirTo(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire)){
-			LOGGER.info("[{}] Copie réalisée vers BoxCrytor", index);
-			sendNotificationMessage("Copie du répertoire ", scanDir, " vers BoxCryptor");
+		int nbFichiersCopies = copyDirTo(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire).get();
+		
+		if(nbFichiersCopies > 0){
+			LOGGER.info("[{}] Copie réalisée vers BoxCrytor : {} fichiers copiés", index, nbFichiersCopies);
+			sendNotificationMessage("Copie du répertoire ", scanDir, " vers BoxCryptor : ", ""+nbFichiersCopies, " fichiers copiés");
 		}
-		else{
+		else if(nbFichiersCopies < 0){
 			LOGGER.error("[{}] Erreur lors de la copie de [{}] vers BoxCrytor [{}]", index, scanDir, repertoireDestinataire);
 			// Et notification de l'erreur
 			sendNotificationMessage("Erreur lors de la copie du répertoire ", scanDir, " vers ", repertoireDestinataire);
@@ -184,17 +187,21 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 	 * @param outFileName pattern de sortie
 	 * @param directoryCible répertoire cible
 	 */
-	private boolean copyDirTo(Path fichierSource, String directoryCible){
+	protected AtomicInteger copyDirTo(Path fichierSource, String directoryCible){
+		
+		AtomicInteger nbFichiersCopies = new AtomicInteger(0);
 		try {
-
 			Path fichierCible = FileSystems.getDefault().getPath(directoryCible);
-			LOGGER.debug("[{}]  > Copie du répertoire {} vers : {}", index, fichierSource, fichierCible);
-			Files.walkFileTree(fichierSource, new CopyDirVisitor(fichierSource, fichierCible));
-			return true;
+			if(fichierCible != null && fichierSource != null){
+				LOGGER.debug("[{}]  > Copie du répertoire {} vers : {}", index, fichierSource, fichierCible);
+				
+				Files.walkFileTree(fichierSource, new CopyDirVisitor(fichierSource, fichierCible, nbFichiersCopies, this.dateDernierScan));
+			}
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
-			return false;
+			nbFichiersCopies = new AtomicInteger(-1);
 		}
+		return nbFichiersCopies;
 	}
 
 
@@ -243,7 +250,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 		// Rien
 	}
 
-	
+
 	protected Calendar getDateDernierScan(){
 		return this.dateDernierScan;
 	}
