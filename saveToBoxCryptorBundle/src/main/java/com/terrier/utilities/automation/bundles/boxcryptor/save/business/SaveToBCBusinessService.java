@@ -87,7 +87,7 @@ public class SaveToBCBusinessService extends AbstractAutomationService {
 	 */
 	protected void startTreatment(int p){
 		Long periode = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
-		SaveToBoxCryptorCallable callable = new SaveToBoxCryptorCallable(
+		SaveToBoxCryptorRunnable copyRunnable = new SaveToBoxCryptorRunnable(
 				p,
 				CommandeEnum.valueOf(getKey(ConfigKeyEnums.COMMANDE, p)),
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p),
@@ -95,7 +95,7 @@ public class SaveToBCBusinessService extends AbstractAutomationService {
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
 				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p));
 		LOGGER.info("Démarrage du scheduler : " + periode + " minutes");
-		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(callable, 0L, periode, TimeUnit.MINUTES));	
+		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, 0L, periode, TimeUnit.MINUTES));	
 	}
 	
 	

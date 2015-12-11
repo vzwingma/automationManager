@@ -25,11 +25,11 @@ import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.Cop
  * @author vzwingma
  *
  */
-public class SaveToBoxCryptorCallable extends AbstractAutomationService implements Runnable {
+public class SaveToBoxCryptorRunnable extends AbstractAutomationService implements Runnable {
 
 	
 
-	private static final Logger LOGGER = Logger.getLogger( SaveToBoxCryptorCallable.class );
+	private static final Logger LOGGER = Logger.getLogger( SaveToBoxCryptorRunnable.class );
 	
 	// Paramètres
 	private int index;
@@ -45,7 +45,7 @@ public class SaveToBoxCryptorCallable extends AbstractAutomationService implemen
 	 * @param repertoireDestinataire répertoire destinataire (X: de boxcryptor)
 	 * @param patternSortie pattern de sortie (si modification)
 	 */
-	public SaveToBoxCryptorCallable(int index, CommandeEnum commande, String repertoireSource, String patternEntree, String repertoireDestinataire, String patternSortie){
+	public SaveToBoxCryptorRunnable(int index, CommandeEnum commande, String repertoireSource, String patternEntree, String repertoireDestinataire, String patternSortie){
 		this.index = index;
 		this.commande = commande;
 		this.repertoireSource = repertoireSource;

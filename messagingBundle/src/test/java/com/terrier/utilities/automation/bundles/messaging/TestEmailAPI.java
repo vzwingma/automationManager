@@ -4,14 +4,16 @@
 package com.terrier.utilities.automation.bundles.messaging;
 
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +21,8 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.ws.rs.core.MediaType;
@@ -66,14 +70,6 @@ public class TestEmailAPI {
 				return properties.getProperty(((MessagingConfigKeyEnums)invocation.getArguments()[0]).getCodeKey());
 			}
 		});
-
-		when(service.getClient()).thenReturn(mockClient);
-		doCallRealMethod().when(mockClient).addFilter(any());
-		WebResource mockWebResource = mock(WebResource.class);
-		when(mockClient.resource(anyString())).thenReturn(mockWebResource);
-		WebResource.Builder mockWebResourceBuilder = mock(WebResource.Builder.class);
-		when(mockWebResource.type(eq(MediaType.APPLICATION_FORM_URLENCODED))).thenReturn(mockWebResourceBuilder);
-		when(mockWebResourceBuilder.post(eq(ClientResponse.class), any())).thenReturn(new ClientResponse(200, null, null, null), new ClientResponse(500, null, null, null));
 	}
 	/**
 	 * Validation de la configuration
@@ -83,20 +79,68 @@ public class TestEmailAPI {
 		assertTrue(service.validateConfig());
 	}
 
+
+
+	@Test
+	public void testAjoutEmailsToQueue(){
+		// Send email
+		service.sendNotificationEmail("test", "message de test1");
+		service.sendNotificationEmail("test", "message de test2");
+		service.sendNotificationEmail("test2", "message de test3");
+
+		Map<String, List<String>> queue = service.getMessagesSendingQueue();
+		assertEquals(2, queue.keySet().size());
+		assertEquals(2, queue.get("test").size());
+		assertEquals(1, queue.get("test2").size());
+
+	}
 	/**
 	 * Test d'envoi
 	 */
 	@Test
 	public void testEnvoiMail(){
 		assertNotNull(service);
-		service.notifyUpdateDictionnary();
+		// Préparation
+		service.sendNotificationEmail("test", "message de test1");
+		service.sendNotificationEmail("test", "message de test2");
+		service.sendNotificationEmail("test2", "message de test3");
 
-		// Send email
-		assertTrue(service.sendNotificationEmail("test", "message de test"));
-		// 400 ensuite
-		assertFalse(service.sendNotificationEmail("test", "message de test"));
-		//verify
-		verify(mockClient, times(2)).addFilter(any(ClientFilter.class));
-		verify(mockClient, times(2)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
+		Map<String, List<String>> queue = service.getMessagesSendingQueue();
+
+		SendEmailTaskRunnable runnable = spy(
+				new SendEmailTaskRunnable(
+						"123", 
+						"https://api.mailgun.net/v3/sandboxc.mailgun.org/messages", 
+						"sandboxc.mailgun.org", 
+						"toto@world.com", 
+						queue));
+
+		when(runnable.getClient()).thenReturn(mockClient);
+		doCallRealMethod().when(mockClient).addFilter(any());
+		WebResource mockWebResource = mock(WebResource.class);
+		when(mockClient.resource(anyString())).thenReturn(mockWebResource);
+		WebResource.Builder mockWebResourceBuilder = mock(WebResource.Builder.class);
+		when(mockWebResource.type(eq(MediaType.APPLICATION_FORM_URLENCODED))).thenReturn(mockWebResourceBuilder);
+		when(mockWebResourceBuilder.post(eq(ClientResponse.class), any())).thenReturn(
+				new ClientResponse(500, null, null, null), 
+				new ClientResponse(200, null, null, null),
+				new ClientResponse(200, null, null, null));
+
+		// Run
+		runnable.run();
+
+		//verify : Création du client 1 fois
+		verify(mockClient, times(1)).addFilter(any(ClientFilter.class));
+		verify(mockClient, times(1)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
+		// Mais envoi de test par contre, test2 reste
+		assertEquals(1, queue.keySet().size());
+		assertEquals(1, queue.get("test2").size());
+		assertNull(queue.get("test"));
+		
+		// Run
+		runnable.run();
+		// Cette fois tout est passé
+		assertNull(queue.get("test2"));
+		assertNull(queue.get("test"));
 	}
 }

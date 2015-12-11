@@ -7,6 +7,7 @@ package com.terrier.utilities.automation.bundles.messaging.enums;
  */
 public enum MessagingConfigKeyEnums {
 
+	EMAIL_PERIODE_ENVOI("automation.bundle.messaging.email.send.period"),
 	EMAIL_KEY("automation.bundle.messaging.email.key"),
 	EMAIL_URL("automation.bundle.messaging.email.mailgun.url"),
 	EMAIL_DOMAIN("automation.bundle.messaging.email.mailgun.domain"),

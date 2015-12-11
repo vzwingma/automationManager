@@ -27,6 +27,9 @@ public class MessageEventHandler implements EventHandler {
 
 	@Inject private MessagingBusinessService messagingService;
 
+	/* (non-Javadoc)
+	 * @see org.osgi.service.event.EventHandler#handleEvent(org.osgi.service.event.Event)
+	 */
 	@Override
 	public void handleEvent(Event event) {
 
