@@ -94,7 +94,7 @@ public abstract class AbstractAutomationService implements ManagedService {
             properties.put(EventPropertyNameEnum.TIME.name(), System.currentTimeMillis());
             properties.put(EventPropertyNameEnum.TYPE_MESSAGE.name(), typeMessage);
             Event reportGeneratedEvent = new Event(EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName(), properties);
-            LOGGER.info("Envoi du message [{}] sur le topic [{}]", message, EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
+            LOGGER.debug("Envoi du message [{}] sur le topic [{}]", message, EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
             eventAdmin.sendEvent(reportGeneratedEvent);
         }
         else{
