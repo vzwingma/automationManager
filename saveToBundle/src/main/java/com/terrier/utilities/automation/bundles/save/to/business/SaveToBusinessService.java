@@ -12,7 +12,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
@@ -28,7 +29,7 @@ import com.terrier.utilities.automation.bundles.save.to.business.runnable.SaveTo
 @Singleton
 public class SaveToBusinessService extends AbstractAutomationService {
 
-	private static final Logger LOGGER = Logger.getLogger( SaveToBusinessService.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( SaveToBusinessService.class );
 
 	private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(50);
 
@@ -62,7 +63,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 		while(getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, nbPatterns) != null){
 			nbPatterns++;
 		}
-		LOGGER.info(" > Nombre de pattern : " + nbPatterns);
+		LOGGER.info(" > Nombre de pattern : {}", nbPatterns);
 		this.nbPatterns = nbPatterns;
 		
 		// arrêt des tâches schedulées
@@ -95,7 +96,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				getKey(ConfigKeyEnums.FILES_PATTERN_IN, p),
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
 				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p));
-		LOGGER.info("Démarrage du scheduler : " + periode + " minutes");
+		LOGGER.info("Démarrage du scheduler : {} minutes", periode);
 		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, 0L, periode, TimeUnit.MINUTES));	
 	}
 	
@@ -108,10 +109,10 @@ public class SaveToBusinessService extends AbstractAutomationService {
 		boolean configValid = false;
 
 		LOGGER.info("** "+p+" **");
-		LOGGER.info(p+" > Commande		: " + getKey(ConfigKeyEnums.COMMANDE, p));
-		LOGGER.info(p+" > Période de scan 	: " + getKey(ConfigKeyEnums.PERIOD_SCAN, p) + " minutes");
-		LOGGER.info(p+" > Répertoire d'entrée	: " + getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p));
-		LOGGER.info(p+" > Répertoire de sortie: " + getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p));
+		LOGGER.info(p+" > Commande : {}", getKey(ConfigKeyEnums.COMMANDE, p));
+		LOGGER.info(p+" > Période de scan : {} minutes", getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+		LOGGER.info(p+" > Répertoire d'entrée : {}", getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p));
+		LOGGER.info(p+" > Répertoire de sortie : {}", getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p));
 		Long period = null;
 		try{
 			period = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
@@ -152,7 +153,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				return super.getConfig(key.getCodeKey());
 			}
 		} catch (KeyNotFoundException e) {
-			LOGGER.error("La clé "+key+" est introuvable");
+			LOGGER.error("La clé {} est introuvable", key);
 		}
 		return null;
 	}

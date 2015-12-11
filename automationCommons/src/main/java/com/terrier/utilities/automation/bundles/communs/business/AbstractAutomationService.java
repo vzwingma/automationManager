@@ -6,7 +6,6 @@ package com.terrier.utilities.automation.bundles.communs.business;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
@@ -15,6 +14,8 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventPropertyNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
@@ -29,7 +30,7 @@ import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundEx
 public abstract class AbstractAutomationService implements ManagedService {
 
 
-	private static final Logger LOGGER = Logger.getLogger( AbstractAutomationService.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( AbstractAutomationService.class );
 
 	// Dictionnaire
 	private Dictionary<String, String> dictionnaire;
@@ -42,11 +43,11 @@ public abstract class AbstractAutomationService implements ManagedService {
 	 * @param configPID nom du fichier de configuration
 	 */
 	public void registerToConfig(String configPID){
-		LOGGER.info("Enregistrement au fichier de configuration : " + configPID);
+		LOGGER.info("Enregistrement au fichier de configuration : {}", configPID);
 		Hashtable<String, Object> properties = new Hashtable<String, Object>();
 		properties.put(Constants.SERVICE_PID, configPID);
 		FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(ManagedService.class.getName(), this , properties);
-		LOGGER.info("Chargement du fichier de configuration /etc/" + configPID + ".cfg");
+		LOGGER.info("Chargement du fichier de configuration /etc/{}.cfg", configPID);
 	}
 
 
@@ -93,7 +94,7 @@ public abstract class AbstractAutomationService implements ManagedService {
             properties.put(EventPropertyNameEnum.TIME.name(), System.currentTimeMillis());
             properties.put(EventPropertyNameEnum.TYPE_MESSAGE.name(), typeMessage);
             Event reportGeneratedEvent = new Event(EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName(), properties);
-            LOGGER.info("Envoi du message ["+message+"] sur le topic ["+EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName()+"]");
+            LOGGER.info("Envoi du message [{}] sur le topic [{}]", message, EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
             eventAdmin.sendEvent(reportGeneratedEvent);
         }
         else{

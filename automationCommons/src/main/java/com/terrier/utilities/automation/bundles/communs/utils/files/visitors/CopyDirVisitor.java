@@ -29,6 +29,9 @@ public class CopyDirVisitor extends SimpleFileVisitor<Path> {
     }
     
     
+    /* (non-Javadoc)
+     * @see java.nio.file.SimpleFileVisitor#preVisitDirectory(java.lang.Object, java.nio.file.attribute.BasicFileAttributes)
+     */
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
         Path targetPath = toPath.resolve(fromPath.relativize(dir));
@@ -38,6 +41,9 @@ public class CopyDirVisitor extends SimpleFileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
+    /* (non-Javadoc)
+     * @see java.nio.file.SimpleFileVisitor#visitFile(java.lang.Object, java.nio.file.attribute.BasicFileAttributes)
+     */
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         Files.copy(file, toPath.resolve(fromPath.relativize(file)), copyOption);

@@ -11,7 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -28,8 +29,7 @@ public class SendEmailTaskRunnable implements Runnable {
 
 
 
-
-	private static final Logger LOGGER = Logger.getLogger( SendEmailTaskRunnable.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( SendEmailTaskRunnable.class );
 
 	/**
 	 * Liste 
@@ -60,7 +60,7 @@ public class SendEmailTaskRunnable implements Runnable {
 	public void run() {
 		LOGGER.info("Envoi des messages");
 		boolean resultat = sendAllMessages();
-		LOGGER.info("> Résulat des envois : " + resultat);
+		LOGGER.info("> Résulat des envois : {}", resultat);
 	}
 
 
@@ -86,11 +86,11 @@ public class SendEmailTaskRunnable implements Runnable {
 				LOGGER.info("> Resultat : " + response);
 				boolean resultat = response != null && response.getStatus() == 200;
 				if(resultat){
-					LOGGER.debug("Suppression des messages de [" + groupeMessages.getKey()  + "] de la liste d'envoi");
+					LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi", groupeMessages.getKey());
 					gmIterator.remove();
 				}
 				else{
-					LOGGER.error("Erreur lors de l'envoi, les messages de [" + groupeMessages.getKey()  + "] sont reprogrammés pour la prochaine échéance");
+					LOGGER.error("Erreur lors de l'envoi, les messages de [{}] sont reprogrammés pour la prochaine échéance", groupeMessages.getKey());
 				}
 				allResponses &= resultat;
 			}

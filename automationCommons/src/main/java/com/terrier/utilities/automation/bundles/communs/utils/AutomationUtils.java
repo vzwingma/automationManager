@@ -19,7 +19,12 @@ public class AutomationUtils {
 	public static final String PATTERN_IN = "\\{";
 	public static final String PATTERN_OUT = "\\}";
 	
-	public static String replacePatterns(String source){
+	/**
+	 * @param source donnée source à remplacer
+	 * Le pattern est de la forme {{yyyyMMdd}} avec à l'intérieur un format de date {@link SimpleDateFormat}
+	 * @return données remplacée par le pattern
+	 */
+	public static String replaceDatePatterns(String source){
 		if(source == null){
 			return null;
 		}

@@ -6,9 +6,10 @@ package com.terrier.utilities.automation.bundles.messaging;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.log4j.Logger;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventPropertyNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
@@ -22,7 +23,7 @@ import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMess
 public class MessageEventHandler implements EventHandler {
 
 
-	private static final Logger LOGGER = Logger.getLogger( MessagingBusinessService.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( MessagingBusinessService.class );
 
 
 	@Inject private MessagingBusinessService messagingService;
@@ -41,7 +42,7 @@ public class MessageEventHandler implements EventHandler {
 			.append("; \n ");
 		}
 		sb.append("}");
-		LOGGER.debug("Topic [" + event.getTopic() + "] Réception du message [" + sb.toString() + "]");
+		LOGGER.debug("Topic [{}] Réception du message [{}]", event.getTopic(), sb.toString());
 
 
 		//Envoi d'un email
@@ -54,7 +55,7 @@ public class MessageEventHandler implements EventHandler {
            messagingService.sendNotificationEmail(titre, message);
 		}
 		else{
-			LOGGER.warn("Aucune configuration pour ce message de type " + event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()));
+			LOGGER.warn("Aucune configuration pour ce message de type {}", event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()));
 		}
 	}
 

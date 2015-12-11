@@ -19,17 +19,17 @@ import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.DeleteAllDirVisitor;
-import com.terrier.utilities.automation.bundles.save.to.business.SaveToBusinessService;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.ConfigKeyEnums;
 
 /**
@@ -42,7 +42,7 @@ public class TestBusinessService {
 	
 	private SaveToBusinessService service;
 
-	private static final Logger LOGGER = Logger.getLogger( TestBusinessService.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( TestBusinessService.class );
 	/**
 	 * Mock dictionnary
 	 * @throws KeyNotFoundException

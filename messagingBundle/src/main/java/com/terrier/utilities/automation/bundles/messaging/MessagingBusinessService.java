@@ -16,10 +16,11 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.log4j.Logger;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
@@ -37,7 +38,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 
 
 
-	private static final Logger LOGGER = Logger.getLogger( MessagingBusinessService.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( MessagingBusinessService.class );
 	
 	private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
 	
@@ -70,7 +71,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	public void initService(){
 		registerToConfig("com.terrier.utilities.automation.bundles.messaging");
 		
-		LOGGER.info("Enregistrement de l'eventHandler " + eventMessages + " sur le topic : " + EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
+		LOGGER.info("Enregistrement de l'eventHandler {} sur le topic : {}", eventMessages, EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
 		Dictionary<String, String[]> props = new Hashtable<String, String[]>();
         props.put(EventConstants.EVENT_TOPIC, new String[]{EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName()});
 		FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(EventHandler.class.getName(), eventMessages , props);
@@ -114,27 +115,27 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	protected boolean validateConfig(){
 
 		LOGGER.info("**  **");
-		LOGGER.info(" > URL du service	: " + getConfig(MessagingConfigKeyEnums.EMAIL_URL));
-		LOGGER.info(" > Domaine du service : " + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
-		LOGGER.info(" > Nom du service : " + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
-		LOGGER.info(" > Clé du service : " + (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? "**********" : null));
-		LOGGER.info(" > Destinataires	: " + getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
+		LOGGER.info(" > URL du service	: {}", getConfig(MessagingConfigKeyEnums.EMAIL_URL));
+		LOGGER.info(" > Domaine du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
+		LOGGER.info(" > Nom du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
+		LOGGER.info(" > Clé du service : {}", (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? "**********" : null));
+		LOGGER.info(" > Destinataires : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
 
 		boolean configValid = true;
 		try{
 			Long periodeEnvoiMail = Long.parseLong(getConfig(MessagingConfigKeyEnums.EMAIL_PERIODE_ENVOI));
-			LOGGER.info(" > Période d'envoi	: " + periodeEnvoiMail + " minutes");
+			LOGGER.info(" > Période d'envoi	: {} minutes", periodeEnvoiMail);
 			if(periodeEnvoiMail > 0){
 				this.periodeEnvoiMail = periodeEnvoiMail;
 			}
 			else{
 				configValid = false;
-				LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : " + periodeEnvoiMail);
+				LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", periodeEnvoiMail);
 			}
 			
 		}
 		catch(NumberFormatException e){
-			LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : " + getConfig(MessagingConfigKeyEnums.EMAIL_PERIODE_ENVOI));
+			LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", getConfig(MessagingConfigKeyEnums.EMAIL_PERIODE_ENVOI));
 			configValid = false;
 		}
 		
@@ -162,7 +163,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 * @return le résulat de l'envoi
 	 */
 	public void sendNotificationEmail(String titre, String message){
-		LOGGER.info("Ajout du message [" +message+ "] dans la liste des envois ["+titre+"]");
+		LOGGER.info("Ajout du message [{}] dans la liste des envois [{}]", message, titre);
 		List<String> messagesToSend = messagesSendingQueue.getOrDefault(titre, new ArrayList<String>());
 		messagesToSend.add(message);
 		messagesSendingQueue.put(titre, messagesToSend);
@@ -196,7 +197,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 				return super.getConfig(key.getCodeKey());
 			}
 		} catch (KeyNotFoundException e) {
-			LOGGER.error("La clé "+key+" est introuvable");
+			LOGGER.error("La clé {} est introuvable", key);
 		}
 		return null;
 	}

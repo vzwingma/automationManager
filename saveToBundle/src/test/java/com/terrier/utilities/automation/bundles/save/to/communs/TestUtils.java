@@ -25,6 +25,6 @@ public class TestUtils {
 		Calendar c = Calendar.getInstance();
 		String cl = "_HUBIC_" +c.get(Calendar.YEAR) + (c.get(Calendar.MONTH)+1)+ ".pdf";
 		
-		assertEquals(cl, AutomationUtils.replacePatterns("_HUBIC_{{yyyyMM}}.pdf"));
+		assertEquals(cl, AutomationUtils.replaceDatePatterns("_HUBIC_{{yyyyMM}}.pdf"));
 	}
 }
