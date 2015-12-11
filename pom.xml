@@ -20,9 +20,9 @@
 		</plugins>
 	</build>
 	<modules>
-		<module>saveToBoxCryptorBundle</module>
 		<module>automationCommons</module>
 		<module>messagingBundle</module>
+		<module>saveToBundle</module>
 	</modules>
 
 	<dependencies>

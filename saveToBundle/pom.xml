@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>AutomationManager</artifactId>
+		<groupId>com.terrier.utilities.automation.bundles</groupId>
+		<version>0.0.1</version>
+	</parent>
+
+	<!-- mvn archetype:generate -DarchetypeGroupId=org.apache.karaf.archetypes 
+		-DarchetypeArtifactId=karaf-bundle-archetype -DarchetypeVersion=2.2.11 -DgroupId=com.terrier.utilities.automation.bundles 
+		-DartifactId=saveToBoxCryptorBundle -Dversion=0.0.1-SNAPSHOT -Dpackage=com.terrier.utilities.automation.bundles.save.to -->
+	<artifactId>saveToBundle</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<name>[Automation] SaveTo</name>
+	<description>Save To OSGi bundle project.</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>automationCommons</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- Inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.aries.blueprint</groupId>
+					<artifactId>blueprint-maven-plugin</artifactId>
+					<version>1.2.0</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>blueprint-generate</goal>
+							</goals>
+							<phase>process-classes</phase>
+						</execution>
+					</executions>
+					<configuration>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.aries.blueprint</groupId>
+				<artifactId>blueprint-maven-plugin</artifactId>
+				<configuration>
+					<scanPaths>
+						<scanPath>com.terrier.utilities.automation.bundles.save.to.business</scanPath>
+					</scanPaths>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>3.0.1</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Export-Package>com.terrier.utilities.automation.bundles.save.to*;version=${project.version}</Export-Package>
+						<Import-Package>*</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
