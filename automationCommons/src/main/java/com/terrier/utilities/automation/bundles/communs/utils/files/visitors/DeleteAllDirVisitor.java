@@ -31,7 +31,7 @@ public class DeleteAllDirVisitor extends SimpleFileVisitor<Path> {
 	 */
 	@Override
 	public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-		Files.delete(file);
+		Files.deleteIfExists(file);
 		return FileVisitResult.CONTINUE;
 	}
 }

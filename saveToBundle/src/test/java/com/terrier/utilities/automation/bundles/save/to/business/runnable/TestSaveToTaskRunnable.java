@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
+import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.DeleteAllDirVisitor;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.CommandeEnum;
 
 /**
@@ -119,6 +120,7 @@ public class TestSaveToTaskRunnable {
 
 		spyTask.run();
 		verify(spyTask, times(2)).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
+		
 	}
 
 }
