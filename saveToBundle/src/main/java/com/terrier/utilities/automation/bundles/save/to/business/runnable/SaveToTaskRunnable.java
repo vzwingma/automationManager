@@ -224,7 +224,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 				LOGGER.info("[{}] Création du répertoire", index);
 				Files.createDirectories(FileSystems.getDefault().getPath(directoryCible));
 			}
-			if (fichierCible != null && !fichierCible.equals("/null") && !Files.exists(fichierCible)) {
+			if (fichierCible != null && !fichierCible.toString().equals("/null") && !Files.exists(fichierCible)) {
 				LOGGER.debug("[{}] Création du fichier {}", index, fichierCible);
 				Files.createFile(fichierCible);
 			}
