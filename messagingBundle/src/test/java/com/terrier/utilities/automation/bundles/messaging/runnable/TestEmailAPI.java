@@ -1,13 +1,11 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.messaging;
+package com.terrier.utilities.automation.bundles.messaging.runnable;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -18,28 +16,20 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.core.MediaType;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
-import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
-import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigKeyEnums;
 
 /**
  * @author vzwingma
@@ -47,66 +37,19 @@ import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigK
  */
 public class TestEmailAPI {
 
-
-	private MessagingBusinessService service;
-
 	private Client mockClient = mock(Client.class);
-
-	/**
-	 * Mock dictionnary
-	 * @throws KeyNotFoundException
-	 */
-	@Before
-	public void mockDictionnary() throws KeyNotFoundException{
-		service = Mockito.spy(new MessagingBusinessService());
-		Properties properties = new Properties();
-		try {
-			properties.load(new FileInputStream(new File("src/test/resources/com.terrier.utilities.automation.bundles.messaging.cfg")));
-		} catch (IOException e) { e.printStackTrace();}
-
-		when(service.getConfig(any(MessagingConfigKeyEnums.class))).thenAnswer(new Answer<String>() {
-
-			@Override
-			public String answer(InvocationOnMock invocation) throws Throwable {
-				return properties.getProperty(((MessagingConfigKeyEnums)invocation.getArguments()[0]).getCodeKey());
-			}
-		});
-	}
-	/**
-	 * Validation de la configuration
-	 */
-	@Test
-	public void testConfig(){
-		assertTrue(service.validateConfig());
-	}
-
-
-
-	@Test
-	public void testAjoutEmailsToQueue(){
-		// Send email
-		service.sendNotificationEmail("test", "message de test1");
-		service.sendNotificationEmail("test", "message de test2");
-		service.sendNotificationEmail("test2", "message de test3");
-
-		Map<String, List<String>> queue = service.getMessagesSendingQueue();
-		assertEquals(2, queue.keySet().size());
-		assertEquals(2, queue.get("test").size());
-		assertEquals(1, queue.get("test2").size());
-
-	}
+	
 	/**
 	 * Test d'envoi
 	 */
 	@Test
 	public void testEnvoiMail(){
-		assertNotNull(service);
 		// Préparation
-		service.sendNotificationEmail("test", "message de test1");
-		service.sendNotificationEmail("test", "message de test2");
-		service.sendNotificationEmail("test2", "message de test3");
+		Map<String, List<String>> queue = new ConcurrentHashMap<>();
+		addToQueue(queue, "test", "message de test1");
+		addToQueue(queue, "test", "message de test2");
+		addToQueue(queue, "test2", "message de test3");
 
-		Map<String, List<String>> queue = service.getMessagesSendingQueue();
 
 		SendEmailTaskRunnable runnable = spy(
 				new SendEmailTaskRunnable(
@@ -151,13 +94,11 @@ public class TestEmailAPI {
 	@Ignore
 	public void testRealAPI(){
 
-		assertNotNull(service);
 		// Préparation
-		service.sendNotificationEmail("test", "message de test1");
-		service.sendNotificationEmail("test", "message de test2");
+		Map<String, List<String>> queue = new ConcurrentHashMap<>();
+		addToQueue(queue, "test", "message de test1");
+		addToQueue(queue, "test", "message de test2");
 	
-		Map<String, List<String>> queue = service.getMessagesSendingQueue();
-
 		SendEmailTaskRunnable runnable = new SendEmailTaskRunnable(
 				"key-", 
 				"https://api.mailgun.net/v3/sandboxc3830b67ded34305912ad73326e9af2f.mailgun.org/messages", 
@@ -167,4 +108,16 @@ public class TestEmailAPI {
 		runnable.run();
 	}
 
+	
+	/**
+	 * Ajout dans la queue d'envoi
+	 * @param messagesSendingQueue
+	 * @param titre
+	 * @param message
+	 */
+	private void addToQueue(Map<String, List<String>> messagesSendingQueue, String titre, String message){
+		List<String> messagesToSend = messagesSendingQueue.getOrDefault(titre, new ArrayList<String>());
+		messagesToSend.add(message);
+		messagesSendingQueue.put(titre, messagesToSend);
+	}
 }

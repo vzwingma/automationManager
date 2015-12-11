@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.messaging;
+package com.terrier.utilities.automation.bundles.messaging.runnable;
 
 import java.util.Iterator;
 import java.util.List;
@@ -90,7 +90,7 @@ public class SendEmailTaskRunnable implements Runnable {
 					gmIterator.remove();
 				}
 				else{
-					LOGGER.warn("Erreur lors de l'envoi, les messages de [" + groupeMessages.getKey()  + "] sont reprogrammés pour la prochaine échéance");
+					LOGGER.error("Erreur lors de l'envoi, les messages de [" + groupeMessages.getKey()  + "] sont reprogrammés pour la prochaine échéance");
 				}
 				allResponses &= resultat;
 			}

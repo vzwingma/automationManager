@@ -25,6 +25,7 @@ import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomat
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigKeyEnums;
+import com.terrier.utilities.automation.bundles.messaging.runnable.SendEmailTaskRunnable;
 
 /**
  * Classe de service de messaging
