@@ -11,5 +11,6 @@ package com.terrier.utilities.automation.bundles.communs.enums.messaging;
 public enum TypeMessagingEnum {
 
 	
-	EMAIL;
+	EMAIL,
+	SMS;
 }

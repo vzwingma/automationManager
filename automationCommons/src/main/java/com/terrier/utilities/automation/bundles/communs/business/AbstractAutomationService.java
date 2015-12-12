@@ -81,7 +81,7 @@ public abstract class AbstractAutomationService implements ManagedService {
 	 * Envoi d'un message pour publication
 	 * @param message message à envoyer
 	 */
-	public void sendNotificationMessage(TypeMessagingEnum typeMessage, EventsTopicNameEnum topicName, String titreMessage, String message)
+	public void sendNotificationMessage(TypeMessagingEnum typeMessage, String titreMessage, String message)
     {
 		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
         ServiceReference<EventAdmin> ref = context.getServiceReference(EventAdmin.class);

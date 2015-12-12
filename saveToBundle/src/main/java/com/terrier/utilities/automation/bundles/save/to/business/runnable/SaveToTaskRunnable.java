@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;
@@ -175,7 +174,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 			for (String part : message) {
 				msg.append(part);
 			}
-			sendNotificationMessage(TypeMessagingEnum.EMAIL, EventsTopicNameEnum.NOTIFIFY_MESSAGE, "Copie vers BoxCryptor", msg.toString());
+			sendNotificationMessage(TypeMessagingEnum.EMAIL, "Copie vers BoxCryptor", msg.toString());
 		}
 	}
 

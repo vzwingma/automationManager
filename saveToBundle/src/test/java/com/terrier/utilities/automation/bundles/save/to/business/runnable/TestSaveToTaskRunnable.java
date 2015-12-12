@@ -23,7 +23,6 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.CommandeEnum;
 
@@ -65,7 +64,7 @@ public class TestSaveToTaskRunnable {
 				"src/test/resources/bc", 
 				null));
 
-		Mockito.doNothing().when(spyTask).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
+		Mockito.doNothing().when(spyTask).sendNotificationMessage(any(TypeMessagingEnum.class), anyString(), anyString());
 		when(spyTask.copyFichierTo(any(Path.class), eq("_HUBICEU257005.pdf"), anyString())).thenReturn(Boolean.TRUE);
 		// Premier traitement, la copie est réalisée
 		spyTask.run();
@@ -104,19 +103,19 @@ public class TestSaveToTaskRunnable {
 				"src/test/resources/bc", 
 				null));
 
-		Mockito.doNothing().when(spyTask).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
+		Mockito.doNothing().when(spyTask).sendNotificationMessage(any(TypeMessagingEnum.class), anyString(), anyString());
 		when(spyTask.copyDirTo(any(Path.class), anyString())).thenCallRealMethod();
 		LOGGER.info("*** 1er traitement ***");
 		// Premier traitement, la copie est réalisée
 		spyTask.run();
 
 		assertNotNull(spyTask.getDateDernierScan());
-		verify(spyTask, times(1)).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
+		verify(spyTask, times(1)).sendNotificationMessage(any(TypeMessagingEnum.class), anyString(), anyString());
 
 		// 2nd traitement, la copie n'est pas réalisée (toujours un seul appel)
 		LOGGER.info("*** 2ème traitement ***");
 		spyTask.run();
-		verify(spyTask, times(1)).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
+		verify(spyTask, times(1)).sendNotificationMessage(any(TypeMessagingEnum.class), anyString(), anyString());
 		
 		// 3nd traitement, la copie est réalisée car changement
 		LOGGER.info("*** 3ème traitement ***");
@@ -125,7 +124,7 @@ public class TestSaveToTaskRunnable {
 		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
 
 		spyTask.run();
-		verify(spyTask, times(2)).sendNotificationMessage(any(TypeMessagingEnum.class), any(EventsTopicNameEnum.class), anyString(), anyString());
+		verify(spyTask, times(2)).sendNotificationMessage(any(TypeMessagingEnum.class), anyString(), anyString());
 		
 		
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/d1.txt"));

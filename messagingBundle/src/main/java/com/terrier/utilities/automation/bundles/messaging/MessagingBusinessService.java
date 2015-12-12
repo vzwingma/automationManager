@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.messaging.runnable.SendEmailTaskRunnable;
@@ -59,6 +60,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	// Période d'envoi
 	private Long periodeEnvoiMail;
 	
+	private static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.messaging";
+	
 	/**
 	 * Liste 
 	 */
@@ -69,7 +72,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 */
 	@PostConstruct
 	public void initService(){
-		registerToConfig("com.terrier.utilities.automation.bundles.messaging");
+		registerToConfig(CONFIG_PID);
 		
 		LOGGER.info("Enregistrement de l'eventHandler {} sur le topic : {}", eventMessages, EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
 		Dictionary<String, String[]> props = new Hashtable<String, String[]>();
@@ -146,6 +149,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		}
 		if(!configValid){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
+			sendNotificationMessage(TypeMessagingEnum.SMS, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
+			sendNotificationMessage(TypeMessagingEnum.EMAIL, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
 		}
 		else{
 			LOGGER.info("La configuration est correcte.");
