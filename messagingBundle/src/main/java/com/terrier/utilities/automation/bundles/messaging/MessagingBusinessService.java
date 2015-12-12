@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -28,6 +29,7 @@ import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMess
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.messaging.runnable.SendEmailTaskRunnable;
+import com.terrier.utilities.automation.bundles.messaging.runnable.SendSMSTaskRunnable;
 
 /**
  * Classe de service de messaging
@@ -40,32 +42,38 @@ public class MessagingBusinessService extends AbstractAutomationService {
 
 
 	private static final Logger LOGGER = LoggerFactory.getLogger( MessagingBusinessService.class );
-	
+
 	private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
-	
+
 	/**
 	 * Liste des tâches schedulées
 	 */
 	private ScheduledFuture<?> sendEmailScheduled;
-	
-	
+
+	private ScheduledFuture<?> sendSMSScheduled;
+
 	// Message Handler
 	@Inject private MessageEventHandler eventMessages;
-	
+
 	/**
 	 * Flag de validation
 	 */
 	private boolean configValid;
-	
+
 	// Période d'envoi
-	private Long periodeEnvoiMail;
-	
+	private Long periodeEnvoiMessages;
+
 	private static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.messaging";
-	
+
 	/**
 	 * Liste 
 	 */
-	private Map<String, List<String>> messagesSendingQueue = new ConcurrentHashMap<String, List<String>>();
+	private Map<String, List<String>> emailSendingQueue = new ConcurrentHashMap<String, List<String>>();
+
+	/**
+	 * Liste 
+	 */
+	private ConcurrentLinkedQueue<String> smsSendingQueue = new ConcurrentLinkedQueue<String>();
 	
 	/**
 	 * Initialisation
@@ -73,15 +81,15 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	@PostConstruct
 	public void initService(){
 		registerToConfig(CONFIG_PID);
-		
+
 		LOGGER.info("Enregistrement de l'eventHandler {} sur le topic : {}", eventMessages, EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
 		Dictionary<String, String[]> props = new Hashtable<String, String[]>();
-        props.put(EventConstants.EVENT_TOPIC, new String[]{EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName()});
+		props.put(EventConstants.EVENT_TOPIC, new String[]{EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName()});
 		FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(EventHandler.class.getName(), eventMessages , props);
 	}
-	
-	
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#notifyUpdateDictionnary()
 	 */
@@ -91,25 +99,55 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		configValid = validateConfig();
 		// Si correct, reprogrammation de la tâche d'envoi
 		if(configValid){
-			// arrêt des tâches schedulées
-			if(sendEmailScheduled != null){
-				sendEmailScheduled.cancel(true);
-			}
-			String apiURL = getConfig(MessagingConfigKeyEnums.EMAIL_URL) + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN) + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE);
-			sendEmailScheduled = scheduledThreadPool.scheduleAtFixedRate(
-					new SendEmailTaskRunnable(
-							getConfig(MessagingConfigKeyEnums.EMAIL_KEY),
-							apiURL,
-							getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN),
-							getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES),
-							this.messagesSendingQueue
-					), 3L, periodeEnvoiMail, TimeUnit.MINUTES);
-			LOGGER.info("La tâche d'envoi des mails est programmée");
+			scheduleSendingEmail();
+			scheduleSendingSMS();
 		}
 		else{
 			LOGGER.error("Impossible d'envoyer les emails à cause d'une erreur de configuration");
 		}
 	}
+
+	/**
+	 * Envoi des emails
+	 */
+	private void scheduleSendingEmail(){
+		// arrêt des tâches schedulées
+		if(sendEmailScheduled != null){
+			LOGGER.warn("Arrêt de la tâche d'envoi des emails");
+			sendEmailScheduled.cancel(true);
+		}
+		String apiURL = getConfig(MessagingConfigKeyEnums.EMAIL_URL) + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN) + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE);
+		sendEmailScheduled = scheduledThreadPool.scheduleAtFixedRate(
+				new SendEmailTaskRunnable(
+						getConfig(MessagingConfigKeyEnums.EMAIL_KEY),
+						apiURL,
+						getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN),
+						getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES),
+						this.emailSendingQueue
+						), 3L, periodeEnvoiMessages, TimeUnit.MINUTES);
+		LOGGER.info("La tâche d'envoi des mails est programmée");
+	}
+
+	
+	/**
+	 * Envoi des emails
+	 */
+	private void scheduleSendingSMS(){
+		// arrêt des tâches schedulées
+		if(sendSMSScheduled != null){
+			LOGGER.warn("Arrêt de la tâche d'envoi des SMS");
+			sendSMSScheduled.cancel(true);
+		}
+		sendSMSScheduled = scheduledThreadPool.scheduleAtFixedRate(
+				new SendSMSTaskRunnable(
+						getConfig(MessagingConfigKeyEnums.SMS_URL),
+						getConfig(MessagingConfigKeyEnums.SMS_USER),
+						getConfig(MessagingConfigKeyEnums.SMS_PASS),
+						this.smsSendingQueue
+						), 3L, periodeEnvoiMessages, TimeUnit.MINUTES);
+		LOGGER.info("La tâche d'envoi des SMS est programmée");
+	}
+
 	
 
 	/**
@@ -118,32 +156,35 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	protected boolean validateConfig(){
 
 		LOGGER.info("**  **");
-		LOGGER.info(" > URL du service	: {}", getConfig(MessagingConfigKeyEnums.EMAIL_URL));
-		LOGGER.info(" > Domaine du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
-		LOGGER.info(" > Nom du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
-		LOGGER.info(" > Clé du service : {}", (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? "**********" : null));
-		LOGGER.info(" > Destinataires : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
+		LOGGER.info("[EMAIL] > URL du service	: {}", getConfig(MessagingConfigKeyEnums.EMAIL_URL));
+		LOGGER.info("[EMAIL] > Domaine du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
+		LOGGER.info("[EMAIL] > Nom du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
+		LOGGER.info("[EMAIL] > Clé du service : {}", (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? "**********" : null));
+		LOGGER.info("[EMAIL] > Destinataires : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
+		LOGGER.info("[SMS] > URL du service : {}", getConfig(MessagingConfigKeyEnums.SMS_URL));
+		LOGGER.info("[SMS] > User du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_USER) != null ? "**********" : null));
+		LOGGER.info("[SMS] > Mot de passe du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_PASS) != null ? "**********" : null));
 
 		boolean configValid = true;
 		try{
-			Long periodeEnvoiMail = Long.parseLong(getConfig(MessagingConfigKeyEnums.EMAIL_PERIODE_ENVOI));
+			Long periodeEnvoiMail = Long.parseLong(getConfig(MessagingConfigKeyEnums.SEND_PERIODE_ENVOI));
 			LOGGER.info(" > Période d'envoi	: {} minutes", periodeEnvoiMail);
 			if(periodeEnvoiMail > 0){
-				this.periodeEnvoiMail = periodeEnvoiMail;
+				this.periodeEnvoiMessages = periodeEnvoiMail;
 			}
 			else{
 				configValid = false;
 				LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", periodeEnvoiMail);
 			}
-			
+
 		}
 		catch(NumberFormatException e){
-			LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", getConfig(MessagingConfigKeyEnums.EMAIL_PERIODE_ENVOI));
+			LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", getConfig(MessagingConfigKeyEnums.SEND_PERIODE_ENVOI));
 			configValid = false;
 		}
-		
-		
-		
+
+
+
 		for (MessagingConfigKeyEnums configKey : MessagingConfigKeyEnums.values()) {
 			configValid &= getConfig(configKey) != null;	
 		}
@@ -158,9 +199,9 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		return configValid;
 	}
 
-	
-	
-	
+
+
+
 	/**
 	 * 
 	 * @param titre titre du mail
@@ -168,26 +209,45 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 * @return le résulat de l'envoi
 	 */
 	public void sendNotificationEmail(String titre, String message){
-		LOGGER.info("Ajout du message [{}] dans la liste des envois [{}]", message, titre);
-		List<String> messagesToSend = messagesSendingQueue.getOrDefault(titre, new ArrayList<String>());
+		LOGGER.info("Ajout du message [{}] dans la liste [{}] des envois d'emails", message, titre);
+		List<String> messagesToSend = emailSendingQueue.getOrDefault(titre, new ArrayList<String>());
 		messagesToSend.add(message);
-		messagesSendingQueue.put(titre, messagesToSend);
+		emailSendingQueue.put(titre, messagesToSend);
 	}
-	
 
-	
+
+	/**
+	 * 
+	 * @param message message du SMS
+	 * @return le résulat de l'envoi
+	 */
+	public void sendNotificationSMS(String message){
+		LOGGER.info("Ajout du message [{}] dans la liste des envois de SMS", message);
+		smsSendingQueue.add(message);
+	}
+
 	@PreDestroy
 	public void arretTask(){
-		LOGGER.warn("Arrêt de la tâche d'envoi de mails");
+		LOGGER.warn("Arrêt des tâches d'envoi de mails et de SMS");
 		this.scheduledThreadPool.shutdown();
 	}
-	
+
 
 	/**
 	 * @return the messagesSendingQueue
 	 */
-	protected Map<String, List<String>> getMessagesSendingQueue() {
-		return messagesSendingQueue;
+	protected Map<String, List<String>> getEmailsSendingQueue() {
+		return emailSendingQueue;
+	}
+
+	
+
+
+	/**
+	 * @return the smsSendingQueue
+	 */
+	protected ConcurrentLinkedQueue<String> getSmsSendingQueue() {
+		return smsSendingQueue;
 	}
 
 

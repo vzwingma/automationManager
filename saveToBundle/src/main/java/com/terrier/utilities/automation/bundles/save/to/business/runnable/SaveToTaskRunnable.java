@@ -72,7 +72,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 		if(Files.isDirectory(FileSystems.getDefault().getPath(scanDir))){
 
 			String regExMatch = patternEntree;
-			LOGGER.trace("[{}] > Matcher : {}", index, regExMatch);
+			LOGGER.debug("[{}] > Matcher : {}", index, regExMatch);
 			if(regExMatch != null && !regExMatch.isEmpty()){
 
 				traitementFichiersSaveTo(scanDir, regExMatch, dateDernierScan);
@@ -102,7 +102,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 		try{
 			DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
 			for (Path fichier : downloadDirectoryPath) {
-				LOGGER.trace("[{}] Traitement du fichier : {}", index, fichier.getFileName().toString());
+				LOGGER.debug("[{}] Traitement du fichier : {}", index, fichier.getFileName().toString());
 				if(fichier.getFileName().toString().matches(regExMatch)){
 					LOGGER.trace("{} > match avec {}", fichier.getFileName().toString(), regExMatch);
 					// Vérification vis à vis de la date de modification
@@ -134,7 +134,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 						}
 					}
 					else{
-						LOGGER.debug("Le fichier n'a pas été modifié");
+						LOGGER.debug("[{}] Le fichier n'a pas été modifié", index);
 					}
 				}
 			}
@@ -161,6 +161,9 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 			// Et notification de l'erreur
 			sendNotificationMessage("Erreur lors de la copie du répertoire ", scanDir, " vers ", repertoireDestinataire);
 		}
+		else{
+			LOGGER.info("[{}] Aucun fichier copié", index);
+		}
 	}
 
 
@@ -174,6 +177,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 			for (String part : message) {
 				msg.append(part);
 			}
+			LOGGER.debug("Envoi du message Copie vers BoxCryptor");
 			sendNotificationMessage(TypeMessagingEnum.EMAIL, "Copie vers BoxCryptor", msg.toString());
 		}
 	}

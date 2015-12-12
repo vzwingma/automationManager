@@ -98,7 +98,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				getKey(ConfigKeyEnums.FILES_PATTERN_IN, p),
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
 				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p));
-		LOGGER.info("Démarrage du scheduler : {} minutes", periode);
+		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);
 		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, 0L, periode, TimeUnit.MINUTES));	
 	}
 	
@@ -110,11 +110,11 @@ public class SaveToBusinessService extends AbstractAutomationService {
 
 		boolean configValid = false;
 
-		LOGGER.info("** "+p+" **");
-		LOGGER.info(p+" > Commande : {}", getKey(ConfigKeyEnums.COMMANDE, p));
-		LOGGER.info(p+" > Période de scan : {} minutes", getKey(ConfigKeyEnums.PERIOD_SCAN, p));
-		LOGGER.info(p+" > Répertoire d'entrée : {}", getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p));
-		LOGGER.info(p+" > Répertoire de sortie : {}", getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p));
+		LOGGER.info("** [{}] **", p);
+		LOGGER.info("[{}] > Commande : {}", p, getKey(ConfigKeyEnums.COMMANDE, p));
+		LOGGER.info("[{}] > Période de scan : {} minutes", p, getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+		LOGGER.info("[{}] > Répertoire d'entrée : {}", p, getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p));
+		LOGGER.info("[{}] > Répertoire de sortie : {}", p, getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p));
 		Long period = null;
 		try{
 			period = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -66,6 +67,9 @@ public class TestBusinessService {
 
 
 
+	/**
+	 * Test d'ajout d'emails
+	 */
 	@Test
 	public void testAjoutEmailsToQueue(){
 		// Send email
@@ -73,10 +77,27 @@ public class TestBusinessService {
 		service.sendNotificationEmail("test", "message de test2");
 		service.sendNotificationEmail("test2", "message de test3");
 
-		Map<String, List<String>> queue = service.getMessagesSendingQueue();
+		Map<String, List<String>> queue = service.getEmailsSendingQueue();
 		assertEquals(2, queue.keySet().size());
 		assertEquals(2, queue.get("test").size());
 		assertEquals(1, queue.get("test2").size());
 
+	}
+
+
+
+
+	/**
+	 * Test d'ajout d'emails
+	 */
+	@Test
+	public void testAjoutSMSToQueue(){
+		// Send email
+		service.sendNotificationSMS("message de test1");
+		service.sendNotificationSMS("message de test2");
+		service.sendNotificationSMS("message de test3");
+
+		ConcurrentLinkedQueue<String> queue = service.getSmsSendingQueue();
+		assertEquals(3, queue.size());
 	}
 }
