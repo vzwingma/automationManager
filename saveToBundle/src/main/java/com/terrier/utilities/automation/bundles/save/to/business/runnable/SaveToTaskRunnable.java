@@ -134,7 +134,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 						}
 					}
 					else{
-						LOGGER.debug("[{}] Le fichier n'a pas été modifié", index);
+						LOGGER.debug("[{}] Le fichier {} n'a pas été modifié", index, fichier.getFileName().toString());
 					}
 				}
 			}
@@ -149,7 +149,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 	 * @param dateDernierScan date du dernier scan
 	 */
 	private void traitementRepertoireSaveTo(String scanDir, Calendar dateDernierScan){
-		LOGGER.warn("[{}] Copie du répertoire complet", index);
+		LOGGER.debug("[{}] Copie du répertoire complet", index);
 		int nbFichiersCopies = copyDirTo(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire).get();
 		
 		if(nbFichiersCopies > 0){
@@ -162,7 +162,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 			sendNotificationMessage("Erreur lors de la copie du répertoire ", scanDir, " vers ", repertoireDestinataire);
 		}
 		else{
-			LOGGER.info("[{}] Aucun fichier copié", index);
+			LOGGER.debug("[{}] Aucun fichier copié", index);
 		}
 	}
 

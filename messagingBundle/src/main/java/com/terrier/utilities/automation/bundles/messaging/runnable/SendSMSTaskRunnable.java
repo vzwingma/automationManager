@@ -3,6 +3,10 @@
  */
 package com.terrier.utilities.automation.bundles.messaging.runnable;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.ws.rs.core.MediaType;
@@ -69,16 +73,23 @@ public class SendSMSTaskRunnable implements Runnable {
 		// Envoi de tous les mails, groupé par titre :
 
 		if(this.messagesSendingQueue.size() > 0){
-			String messageSMS = getFormData(this.messagesSendingQueue);
-			WebResource.Builder webResource = client.resource(prepareAPIURL + messageSMS).type(MediaType.APPLICATION_FORM_URLENCODED);
+
+			List<String> messages = new ArrayList<>();
+			while(messagesSendingQueue.size() > 0){
+				messages.add(messagesSendingQueue.poll());
+			}
+			WebResource.Builder webResource = client.resource(prepareAPIURL + getFormData(messages)).type(MediaType.APPLICATION_FORM_URLENCODED);
 			ClientResponse response = webResource.get(ClientResponse.class);
 			LOGGER.info("> Resultat : " + response);
 			boolean resultat = response != null && response.getStatus() == 200;
 			if(resultat){
-				LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi");
+				LOGGER.debug("Suppression des messages SMS de la liste d'envoi");
 			}
 			else{
-				LOGGER.error("Erreur lors de l'envoi, les messages de [{}] sont reprogrammés pour la prochaine échéance");
+				for (String msg : messages) {
+					messagesSendingQueue.add(msg);
+				}
+				LOGGER.error("Erreur lors de l'envoi, les messages sont reprogrammés pour la prochaine échéance");
 			}
 			allResponses &= resultat;
 		}
@@ -95,18 +106,25 @@ public class SendSMSTaskRunnable implements Runnable {
 		return Client.create();
 	}
 
+
+
 	/**
 	 * Prépare les données
 	 * @param titre
 	 * @param messages liste des messages
 	 * @return données
 	 */
-	private String getFormData(ConcurrentLinkedQueue<String> messagesSendingQueue) {
-		StringBuilder messageAEnvoyer = new StringBuilder();
-		while(messagesSendingQueue.size() > 0){
-			messageAEnvoyer.append("- ").append(messagesSendingQueue.poll()).append("\n");
+	private String getFormData(List<String> messages) {
+		try {
+			StringBuilder messageAEnvoyer = new StringBuilder();
+			for (String msg : messages) {
+				messageAEnvoyer.append("- ").append(msg).append("\n");
+			}
+			return URLEncoder.encode(messageAEnvoyer.toString(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			LOGGER.error("Erreur lors de l'encodage du message", e);
+			return "Erreur%20encoding%20messages";
 		}
-		return messageAEnvoyer.toString();
 	}
 
 }

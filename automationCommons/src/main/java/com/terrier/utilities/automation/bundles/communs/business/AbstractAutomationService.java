@@ -30,7 +30,7 @@ import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundEx
 public abstract class AbstractAutomationService implements ManagedService {
 
 
-	private static final Logger LOGGER = LoggerFactory.getLogger( AbstractAutomationService.class );
+	private final Logger LOGGER = LoggerFactory.getLogger( this.getClass() );
 
 	// Dictionnaire
 	private Dictionary<String, String> dictionnaire;
@@ -98,7 +98,7 @@ public abstract class AbstractAutomationService implements ManagedService {
             eventAdmin.sendEvent(reportGeneratedEvent);
         }
         else{
-        	LOGGER.error("Erreur lors de la recherche de l'EventAdmin");
+        	LOGGER.error("Erreur lors de la recherche de l'EventAdmin dans le bundleContext");
         }
     }
 	
