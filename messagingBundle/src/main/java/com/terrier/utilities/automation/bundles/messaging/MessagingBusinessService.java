@@ -94,7 +94,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#notifyUpdateDictionnary()
 	 */
 	@Override
-	public void notifyUpdateDictionnary() {
+	public void notifyUpdateDictionary() {
 		// Validation de la config
 		configValid = validateConfig();
 		// Si correct, reprogrammation de la tâche d'envoi

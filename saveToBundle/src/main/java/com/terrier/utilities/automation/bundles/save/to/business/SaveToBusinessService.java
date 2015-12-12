@@ -58,7 +58,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#notifyUpdateDictionnary()
 	 */
 	@Override
-	public void notifyUpdateDictionnary() {
+	public void notifyUpdateDictionary() {
 
 		LOGGER.info("** Configuration **");
 		int nbPatterns = 0;

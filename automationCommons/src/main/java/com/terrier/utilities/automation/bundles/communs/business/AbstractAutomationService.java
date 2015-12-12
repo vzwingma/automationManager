@@ -61,7 +61,8 @@ public abstract class AbstractAutomationService implements ManagedService {
 		if(properties != null){
 			LOGGER.info("Mise à jour du fichier de configuration");
 			this.dictionnaire = (Dictionary<String, String>)properties;
-			notifyUpdateDictionnary();
+			notifyUpdateDictionary();
+			sendNotificationMessage(TypeMessagingEnum.SMS, "Configuration", "Mise à jour d'un fichier de configuration");
 		}
 		else{
 			LOGGER.error("Impossible de trouver le fichier de configuration");
@@ -73,7 +74,7 @@ public abstract class AbstractAutomationService implements ManagedService {
 	 * Notification de Mise à jour du dictionnaire
 	 * Pour être notifié, il est nécessaire d'appeler la méthode registerToConfig(String configPID)
 	 */
-	public abstract void notifyUpdateDictionnary(); 
+	public abstract void notifyUpdateDictionary(); 
 	
 
 	
@@ -87,7 +88,7 @@ public abstract class AbstractAutomationService implements ManagedService {
         ServiceReference<EventAdmin> ref = context.getServiceReference(EventAdmin.class);
         if (ref != null)  {
             EventAdmin eventAdmin = context.getService(ref);
-
+            LOGGER.debug("BundleContext {} / ServiceReference {} / EventAdmin {}", context, ref, eventAdmin);
             Dictionary<String, Object> properties = new Hashtable<String, Object>();
             properties.put(EventPropertyNameEnum.TITRE_MESSAGE.name(), titreMessage);
             properties.put(EventPropertyNameEnum.MESSAGE.name(), message);
@@ -96,6 +97,7 @@ public abstract class AbstractAutomationService implements ManagedService {
             Event reportGeneratedEvent = new Event(EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName(), properties);
             LOGGER.debug("Envoi du message [{}] sur le topic [{}]", message, EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
             eventAdmin.sendEvent(reportGeneratedEvent);
+            LOGGER.debug("Message envoyé");
         }
         else{
         	LOGGER.error("Erreur lors de la recherche de l'EventAdmin dans le bundleContext");

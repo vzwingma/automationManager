@@ -249,7 +249,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 	}
 
 	@Override
-	public void notifyUpdateDictionnary() {
+	public void notifyUpdateDictionary() {
 		// Rien
 	}
 

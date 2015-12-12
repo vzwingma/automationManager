@@ -34,12 +34,12 @@ public class MessageEventHandler implements EventHandler {
 	@Override
 	public void handleEvent(Event event) {
 
-		StringBuilder sb = new StringBuilder("\n{");
+		StringBuilder sb = new StringBuilder("{");
 		for (String propertyName : event.getPropertyNames()) {
 			sb.append(propertyName)
 			.append("=")
 			.append(event.getProperty(propertyName))
-			.append("; \n ");
+			.append(";");
 		}
 		sb.append("}");
 		LOGGER.debug("Topic [{}] Réception du message [{}]", event.getTopic(), sb.toString());
