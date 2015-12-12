@@ -58,7 +58,7 @@ public class SendEmailTaskRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		LOGGER.info("Envoi des emails");
+		LOGGER.info("Envoi des emails : {} messages en attente", this.messagesSendingQueue.size());
 		boolean resultat = sendAllMessages();
 		LOGGER.info("> Résulat des envois : {}", resultat);
 	}
