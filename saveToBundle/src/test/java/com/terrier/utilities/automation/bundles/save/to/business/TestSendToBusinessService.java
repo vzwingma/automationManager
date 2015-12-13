@@ -37,12 +37,12 @@ import com.terrier.utilities.automation.bundles.save.to.business.enums.ConfigKey
  * @author vzwingma
  *
  */
-public class TestBusinessService {
+public class TestSendToBusinessService {
 
 	
 	private SaveToBusinessService service;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger( TestBusinessService.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( TestSendToBusinessService.class );
 	/**
 	 * Mock dictionnary
 	 * @throws KeyNotFoundException

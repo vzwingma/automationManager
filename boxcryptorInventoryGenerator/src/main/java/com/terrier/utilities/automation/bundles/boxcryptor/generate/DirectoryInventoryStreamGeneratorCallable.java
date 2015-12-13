@@ -18,8 +18,8 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.utilities.automation.bundles.boxcryptor.filters.DirectoryFilter;
-import com.terrier.utilities.automation.bundles.boxcryptor.filters.FileFilter;
+import com.terrier.utilities.automation.bundles.boxcryptor.communs.filters.DirectoryFilter;
+import com.terrier.utilities.automation.bundles.boxcryptor.communs.filters.FileFilter;
 import com.terrier.utilities.automation.bundles.boxcryptor.generate.objects.BCInventaireFichier;
 import com.terrier.utilities.automation.bundles.boxcryptor.generate.objects.BCInventaireRepertoire;
 

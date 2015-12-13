@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.boxcryptor.utils;
+package com.terrier.utilities.automation.bundles.boxcryptor.communs.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,6 +15,7 @@ import java.nio.charset.Charset;
 
 import org.junit.Test;
 
+import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.generate.objects.BCInventaireFichier;
 import com.terrier.utilities.automation.bundles.boxcryptor.generate.objects.BCInventaireRepertoire;
 

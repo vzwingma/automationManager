@@ -9,8 +9,8 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.generate.objects.BCInventaireRepertoire;
-import com.terrier.utilities.automation.bundles.boxcryptor.utils.BCUtils;
 
 /**
  * Main class of BoxCryptor Inventory Generator

@@ -1,4 +1,4 @@
-package com.terrier.utilities.automation.bundles.boxcryptor.utils;
+package com.terrier.utilities.automation.bundles.boxcryptor.communs.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
