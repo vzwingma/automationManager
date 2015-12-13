@@ -16,6 +16,7 @@ import java.util.Calendar;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
 
 /**
@@ -45,17 +46,32 @@ public class TestBCInventoryGeneratorRunnable {
 		new File("src/test/resources/data/bc/倐忽剶傦婽哾希奃䂴/倐徹尜傴岡崪幐値䂫.bc").setLastModified(c3.getTimeInMillis());
 	}
 
+	/**
+	 * Création inventaire
+	 * @throws IOException
+	 */
 	@Test
-	public void testRunTreatmentInventaireNull() throws IOException {
+	public void testRunTreatmentsInventaire() throws IOException {
 		BCInventoryGeneratorRunnable runnable = new BCInventoryGeneratorRunnable(0, "src/test/resources/data/clear/", "src/test/resources/data/bc/");
 		runnable.run();
 
-		assertTrue(Files.exists(FileSystems.getDefault().getPath("src/test/resources/data/clear/liste_Fichiers_BoxCryptor.yml")));
+		File inventoryFile = new File("src/test/resources/data/clear");
+		assertTrue(Files.exists(FileSystems.getDefault().getPath(inventoryFile.getAbsolutePath() + "/liste_Fichiers_BoxCryptor.yml")));
 		
-		BCInventaireRepertoire inventaire = runnable.loadFileInventory();
+		BCInventaireRepertoire inventaire = BCUtils.loadYMLInventory(inventoryFile.getAbsolutePath());
 		assertNotNull(inventaire);
 		assertEquals("bc", inventaire.get_NomFichierChiffre());
 		assertEquals("clear", inventaire.get_NomFichierClair());
+		assertEquals(1, inventaire.getMapInventaireFichiers().size());
+		assertEquals("d1.txt", inventaire.getMapInventaireFichiers().get("95a0bca6b6a307c7c59d23a1e997b652").get_NomFichierClair());
+		assertEquals(1, inventaire.getMapInventaireSousRepertoires().size());
+		assertEquals("subdir", inventaire.getMapInventaireSousRepertoires().get("86ae37b338459868804e9697025ba4c2").get_NomFichierClair());
+		
+		
+		Calendar dateMiseAJour = inventaire.getDateModificationDernierInventaire();
+		assertNotNull(dateMiseAJour);
+		// Relance de l'inventaire. Pas de mise à jour
+		runnable.run();
 	}
 
 

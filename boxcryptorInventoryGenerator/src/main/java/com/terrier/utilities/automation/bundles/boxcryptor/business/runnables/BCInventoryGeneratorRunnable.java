@@ -11,13 +11,15 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
+import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
 
 /**
  * Main class of BoxCryptor Inventory Generator
  * @author vzwingma
  *
  */
-public class BCInventoryGeneratorRunnable implements Runnable {
+public class BCInventoryGeneratorRunnable extends AbstractAutomationService implements Runnable {
 
 
 
@@ -75,9 +77,11 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 			// Ecriture de l'inventaire
 			BCUtils.dumpYMLInventory(this.repertoireNonChiffre, inventaireNew);
 			BCUtils.printDelayFromBeginning(this.index, "Dump Inventory", this.startTraitement);
+			sendMessage("Génération de l'inventaire" + this.repertoireNonChiffre.getName());
 		}
 		catch(Exception e){
 			LOGGER.error("[{}] Erreur lors de la génération de l'inventaire",this.index, e);
+			sendMessage("Erreur lors de la génération de l'inventaire" + this.repertoireNonChiffre.getName());
 			
 		}
 	}
@@ -102,5 +106,20 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 			repertoire  = new BCInventaireRepertoire(repertoireChiffre.getName(), repertoireNonChiffre.getName());
 		}
 		return repertoire;
+	}
+
+
+	@Override
+	public void notifyUpdateDictionary() {
+		// Rien
+	}
+	
+	
+	/**
+	 * Envoi d'un message de notification par mail
+	 * @param message message à envoyer
+	 */
+	private void sendMessage(String message){
+		sendNotificationMessage(TypeMessagingEnum.EMAIL, "Génération inventaire BoxCryptor", message);
 	}
 }
