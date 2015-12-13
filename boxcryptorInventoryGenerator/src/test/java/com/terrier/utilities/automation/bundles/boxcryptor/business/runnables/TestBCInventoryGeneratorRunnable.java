@@ -13,6 +13,8 @@ import static org.mockito.Mockito.spy;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.Calendar;
@@ -31,17 +33,23 @@ public class TestBCInventoryGeneratorRunnable {
 
 
 	private BCInventoryGeneratorRunnable runnable;
-	
+
 	@Before
-	public void init() throws IOException, InterruptedException{
+	public void init() throws IOException, InterruptedException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
 		if(Files.exists(FileSystems.getDefault().getPath("src/test/resources/data/clear/liste_Fichiers_BoxCryptor.yml"))){
 			Files.delete(FileSystems.getDefault().getPath("src/test/resources/data/clear/liste_Fichiers_BoxCryptor.yml"));
 		}
-		
+
 		runnable = spy(new BCInventoryGeneratorRunnable(0, "src/test/resources/data/clear/", "src/test/resources/data/bc/"));
 		doNothing().when(runnable).sendNotificationMessage(any(), anyString(), anyString());
-				
-				
+
+		// Encoding en UTF-8
+		// Forcage en UTF-8 pour les caractères chinois utilisés par BC
+		System.setProperty("file.encoding","UTF-8");
+		Field charset = Charset.class.getDeclaredField("defaultCharset");
+		charset.setAccessible(true);
+		charset.set(null,null);
+
 		// Rapprochement des fichiers
 		Calendar c = Calendar.getInstance();
 		new File("src/test/resources/data/clear/d1.txt").setLastModified(c.getTimeInMillis());
@@ -67,7 +75,7 @@ public class TestBCInventoryGeneratorRunnable {
 		//Vérification
 		File inventoryFile = new File("src/test/resources/data/clear");
 		assertTrue(Files.exists(FileSystems.getDefault().getPath(inventoryFile.getAbsolutePath() + "/liste_Fichiers_BoxCryptor.yml")));
-		
+
 		BCInventaireRepertoire inventaire = BCUtils.loadYMLInventory(inventoryFile.getAbsolutePath());
 		assertNotNull(inventaire);
 		assertEquals("bc", inventaire.get_NomFichierChiffre());
@@ -76,8 +84,8 @@ public class TestBCInventoryGeneratorRunnable {
 		assertEquals("d1.txt", inventaire.getMapInventaireFichiers().get("95a0bca6b6a307c7c59d23a1e997b652").get_NomFichierClair());
 		assertEquals(1, inventaire.getMapInventaireSousRepertoires().size());
 		assertEquals("subdir", inventaire.getMapInventaireSousRepertoires().get("86ae37b338459868804e9697025ba4c2").get_NomFichierClair());
-		
-		
+
+
 		Calendar dateMiseAJour = inventaire.getDateModificationDernierInventaire();
 		assertNotNull(dateMiseAJour);
 		// Relance de l'inventaire. Pas de mise à jour
@@ -85,5 +93,7 @@ public class TestBCInventoryGeneratorRunnable {
 		BCInventaireRepertoire inventaire2 = BCUtils.loadYMLInventory(inventoryFile.getAbsolutePath());
 		assertNotNull(inventaire2);
 		assertEquals(dateMiseAJour, inventaire2.getDateModificationDernierInventaire());
+		
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/data/clear/liste_Fichiers_BoxCryptor.yml"));
 	}
 }
