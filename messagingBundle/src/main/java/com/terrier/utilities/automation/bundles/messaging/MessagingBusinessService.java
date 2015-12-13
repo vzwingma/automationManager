@@ -103,7 +103,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 			scheduleSendingSMS();
 		}
 		else{
-			LOGGER.error("Impossible d'envoyer les emails à cause d'une erreur de configuration");
+			LOGGER.error("Impossible d'envoyer les messages à cause d'une erreur de configuration");
 		}
 	}
 

@@ -23,7 +23,7 @@ import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMess
 public class MessageEventHandler implements EventHandler {
 
 
-	private static final Logger LOGGER = LoggerFactory.getLogger( MessagingBusinessService.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( MessageEventHandler.class );
 
 
 	@Inject private MessagingBusinessService messagingService;
@@ -54,6 +54,13 @@ public class MessageEventHandler implements EventHandler {
            
            messagingService.sendNotificationEmail(titre, message);
 		}
+		else if(event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()) != null 
+				&& 
+				TypeMessagingEnum.SMS.equals(event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()))){
+           String message = (String)event.getProperty(EventPropertyNameEnum.MESSAGE.name());
+           
+           messagingService.sendNotificationSMS(message);
+		}		
 		else{
 			LOGGER.warn("Aucune configuration pour ce message de type {}", event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()));
 		}
