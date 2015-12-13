@@ -36,7 +36,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 
 	private Calendar startTraitement = Calendar.getInstance();
 
-
+	private Calendar dateDernierTraitement;
 	/**
 	 * Start inventory
 	 * @param args directories parameters
@@ -58,7 +58,8 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 			LOGGER.info("[{}] Début de la génération de l'inventaire [{}]", index, this.repertoireNonChiffre);
 			// Lecture de l'inventaire
 			BCInventaireRepertoire inventaire = loadFileInventory();
-			LOGGER.info("[{}] Date du dernier inventaire [{}]", index, inventaire.getDateModificationDernierInventaire() != null ? inventaire.getDateModificationDernierInventaire().getTime() : "jamais");
+			this.dateDernierTraitement = inventaire.getDateModificationDernierInventaire();
+			LOGGER.info("[{}] Date du dernier inventaire [{}]", index, this.dateDernierTraitement != null ? this.dateDernierTraitement.getTime() : "jamais");
 			BCUtils.printDelayFromBeginning(this.index, "Read file Inventory", this.startTraitement);
 
 			// Création de l'inventaire
@@ -74,10 +75,15 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 			BCUtils.printDelayFromBeginning(this.index, "Generate Inventory", this.startTraitement);
 
 
-			// Ecriture de l'inventaire
+			// Ecriture de l'inventaire ssi il a changé
+			if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire().after(this.dateDernierTraitement)){
 			BCUtils.dumpYMLInventory(this.repertoireNonChiffre, inventaireNew);
 			BCUtils.printDelayFromBeginning(this.index, "Dump Inventory", this.startTraitement);
 			sendMessage("Génération de l'inventaire" + this.repertoireNonChiffre.getName());
+			}
+			else{
+				LOGGER.info("[{}] L'inventaire n'a pas changé depuis. Pas de mise à jour du fichier", this.index);
+			}
 		}
 		catch(Exception e){
 			LOGGER.error("[{}] Erreur lors de la génération de l'inventaire",this.index, e);

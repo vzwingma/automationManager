@@ -114,7 +114,12 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 				dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new FileFilter());
 				for (Path fichierChiffre : dsfChiffre) {
 					if(Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
-						inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));					
+						inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
+						// Mise à jour de la date
+						if(inventaireR.getDateModificationDernierInventaire() == null
+								|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire().getTimeInMillis()){
+							inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
+						}
 					}
 				}
 			}
@@ -125,6 +130,12 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 		// Récupération des résultats des sous répertoires
 		for (Future<BCInventaireRepertoire> resultatSousRepertoire : listeExecSousRepertoires) {
 			BCInventaireRepertoire ssRepertoire = resultatSousRepertoire.get();
+			// Mise à jour de la date
+			if(inventaireR.getDateModificationDernierInventaire() == null
+					|| (ssRepertoire.getDateModificationDernierInventaire() != null 
+						&& ssRepertoire.getDateModificationDernierInventaire().getTimeInMillis() > inventaireR.getDateModificationDernierInventaire().getTimeInMillis())){
+				inventaireR.setDateModificationDernierInventaire(ssRepertoire.getDateModificationDernierInventaire().getTimeInMillis());
+			}
 			inventaireR.addSSRepertoire(ssRepertoire);
 		}
 		printDelayTraitementFromBeginning();

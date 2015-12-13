@@ -6,6 +6,10 @@ package com.terrier.utilities.automation.bundles.boxcryptor.business.runnables;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,13 +30,19 @@ import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireR
 public class TestBCInventoryGeneratorRunnable {
 
 
+	private BCInventoryGeneratorRunnable runnable;
+	
 	@Before
 	public void init() throws IOException, InterruptedException{
 		if(Files.exists(FileSystems.getDefault().getPath("src/test/resources/data/clear/liste_Fichiers_BoxCryptor.yml"))){
 			Files.delete(FileSystems.getDefault().getPath("src/test/resources/data/clear/liste_Fichiers_BoxCryptor.yml"));
 		}
 		
-		
+		runnable = spy(new BCInventoryGeneratorRunnable(0, "src/test/resources/data/clear/", "src/test/resources/data/bc/"));
+		doNothing().when(runnable).sendNotificationMessage(any(), anyString(), anyString());
+				
+				
+		// Rapprochement des fichiers
 		Calendar c = Calendar.getInstance();
 		new File("src/test/resources/data/clear/d1.txt").setLastModified(c.getTimeInMillis());
 		new File("src/test/resources/data/bc/倐弭呠做嘢叧呂咀䃛.bc").setLastModified(c.getTimeInMillis());
@@ -52,9 +62,9 @@ public class TestBCInventoryGeneratorRunnable {
 	 */
 	@Test
 	public void testRunTreatmentsInventaire() throws IOException {
-		BCInventoryGeneratorRunnable runnable = new BCInventoryGeneratorRunnable(0, "src/test/resources/data/clear/", "src/test/resources/data/bc/");
+		// Test
 		runnable.run();
-
+		//Vérification
 		File inventoryFile = new File("src/test/resources/data/clear");
 		assertTrue(Files.exists(FileSystems.getDefault().getPath(inventoryFile.getAbsolutePath() + "/liste_Fichiers_BoxCryptor.yml")));
 		
@@ -72,21 +82,8 @@ public class TestBCInventoryGeneratorRunnable {
 		assertNotNull(dateMiseAJour);
 		// Relance de l'inventaire. Pas de mise à jour
 		runnable.run();
-	}
-
-
-	/**
-	 * Tests fichiers existants
-	 * @throws IOException
-	 */
-	@Test 
-	public void testFichierInventairesExistants() throws IOException{
-		BCInventoryGeneratorRunnable runnable = new BCInventoryGeneratorRunnable(1, "X:/eBooks", "D:/Perso/eBooks");
-		BCInventaireRepertoire inventaire = runnable.loadFileInventory();
-		assertNotNull(inventaire);
-
-		BCInventoryGeneratorRunnable runnable2 = new BCInventoryGeneratorRunnable(1, "X:/Films/Kino", "D:/Perso/Films/Kino");
-		BCInventaireRepertoire inventaire2 = runnable2.loadFileInventory();
+		BCInventaireRepertoire inventaire2 = BCUtils.loadYMLInventory(inventoryFile.getAbsolutePath());
 		assertNotNull(inventaire2);
+		assertEquals(dateMiseAJour, inventaire2.getDateModificationDernierInventaire());
 	}
 }
