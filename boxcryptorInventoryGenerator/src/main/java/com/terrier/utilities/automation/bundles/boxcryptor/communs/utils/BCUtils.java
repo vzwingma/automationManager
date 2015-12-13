@@ -38,7 +38,7 @@ public class BCUtils {
 	 * @param startTraitementCal start time of Treatment
 	 */
 	public static void printDelayFromBeginning(int index, String treatementName, Calendar startTraitementCal){
-		LOGGER.info("[{}][{}] > {} ms", index, treatementName, (Calendar.getInstance().getTimeInMillis() - startTraitementCal.getTimeInMillis()));
+		LOGGER.debug("[{}][{}] > {} ms", index, treatementName, (Calendar.getInstance().getTimeInMillis() - startTraitementCal.getTimeInMillis()));
 	}
 	
 	

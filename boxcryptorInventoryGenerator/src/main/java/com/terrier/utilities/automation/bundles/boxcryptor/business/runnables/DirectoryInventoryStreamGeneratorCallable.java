@@ -148,7 +148,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 	 * Print du temps de traitement
 	 */
 	private void printDelayTraitementFromBeginning(){
-		LOGGER.info("[{}] - THREAD [{}] > {} ms", this.index, this.nomTraitementParent, Calendar.getInstance().getTimeInMillis() - startTraitement.getTimeInMillis());
+		LOGGER.debug("[{}] - THREAD [{}] > {} ms", this.index, this.nomTraitementParent, Calendar.getInstance().getTimeInMillis() - startTraitement.getTimeInMillis());
 	}
 
 }
