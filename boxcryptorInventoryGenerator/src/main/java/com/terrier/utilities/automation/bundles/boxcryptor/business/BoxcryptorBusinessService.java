@@ -3,6 +3,8 @@
  */
 package com.terrier.utilities.automation.bundles.boxcryptor.business;
 
+import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,8 +52,15 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#startService()
 	 */
 	@PostConstruct
-	public void startService() {
+	public void startService() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		super.registerToConfig(CONFIG_PID);
+		// Encoding en UTF-8
+		// Forcage en UTF-8 pour les caractères chinois utilisés par BC
+		System.setProperty("file.encoding","UTF-8");
+		Field charset = Charset.class.getDeclaredField("defaultCharset");
+		charset.setAccessible(true);
+		charset.set(null,null);
+		
 	}
 	
 	/* (non-Javadoc)

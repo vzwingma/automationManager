@@ -1,6 +1,7 @@
 package com.terrier.utilities.automation.bundles.boxcryptor.objects;
 
 import java.nio.file.Path;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,9 +16,7 @@ public class BCInventaireRepertoire extends AbstractBCInventaireStructure {
 	/**
 	 * Constructeur pour YML
 	 */
-	public BCInventaireRepertoire(){
-
-	}
+	public BCInventaireRepertoire(){ }
 	
 	/**
 	 * Repertoire
@@ -31,13 +30,14 @@ public class BCInventaireRepertoire extends AbstractBCInventaireStructure {
 	/**
 	 * Fichier dans le répertoire
 	 */
-	Map<String, BCInventaireFichier> mapInventaireFichiers = new HashMap<String, BCInventaireFichier>();
+	private Map<String, BCInventaireFichier> mapInventaireFichiers = new HashMap<String, BCInventaireFichier>();
 	
 	/**
 	 * Sous répertoires dans le répertoire
 	 */
-	Map<String, BCInventaireRepertoire> mapInventaireSousRepertoires = new HashMap<String, BCInventaireRepertoire>();
+	private Map<String, BCInventaireRepertoire> mapInventaireSousRepertoires = new HashMap<String, BCInventaireRepertoire>();
 	
+	private Calendar dateModificationDernierInventaire;
 
 	/**
 	 * Ajoute un sous répertoire au répertoire
@@ -96,4 +96,20 @@ public class BCInventaireRepertoire extends AbstractBCInventaireStructure {
 	public void setMapInventaireSousRepertoires(Map<String, BCInventaireRepertoire> mapInventaireSousRepertoires) {
 		this.mapInventaireSousRepertoires = mapInventaireSousRepertoires;
 	}
+
+	/**
+	 * @return the dateModificationDernierInventaire
+	 */
+	public Calendar getDateModificationDernierInventaire() {
+		return dateModificationDernierInventaire;
+	}
+
+	/**
+	 * @param dateModificationDernierInventaire the dateModificationDernierInventaire to set
+	 */
+	public void setDateModificationDernierInventaire(Calendar dateModificationDernierInventaire) {
+		this.dateModificationDernierInventaire = dateModificationDernierInventaire;
+	}
+	
+	
 }

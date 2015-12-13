@@ -72,7 +72,10 @@ public class BCUtils {
 			if(inventoryFile.exists()){
 				LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.getCanonicalPath());
 				Yaml yml = new Yaml();
-				return yml.loadAs(new FileInputStream(inventoryFile), BCInventaireRepertoire.class);
+				FileInputStream fis = new FileInputStream(inventoryFile);
+				Object inventaire = yml.load(fis);
+				fis.close();
+				return (BCInventaireRepertoire)inventaire;
 			}
 		}
 		return null;

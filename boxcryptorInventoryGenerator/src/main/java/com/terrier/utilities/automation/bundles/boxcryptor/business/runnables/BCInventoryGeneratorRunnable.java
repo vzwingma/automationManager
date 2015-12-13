@@ -35,8 +35,6 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 	private Calendar startTraitement = Calendar.getInstance();
 
 
-
-
 	/**
 	 * Start inventory
 	 * @param args directories parameters
@@ -58,7 +56,7 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 			LOGGER.info("[{}] Début de la génération de l'inventaire [{}]", index, this.repertoireNonChiffre);
 			// Lecture de l'inventaire
 			BCInventaireRepertoire inventaire = loadFileInventory();
-
+			LOGGER.info("[{}] Date du dernier inventaire [{}]", index, inventaire.getDateModificationDernierInventaire() != null ? inventaire.getDateModificationDernierInventaire().getTime() : "jamais");
 			BCUtils.printDelayFromBeginning(this.index, "Read file Inventory", this.startTraitement);
 
 			// Création de l'inventaire

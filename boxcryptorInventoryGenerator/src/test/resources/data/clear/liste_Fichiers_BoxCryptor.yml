@@ -1,5 +1,0 @@
-!!com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire
-_NomFichierChiffre: bc
-_NomFichierClair: clear
-mapInventaireFichiers: {}
-mapInventaireSousRepertoires: {}
