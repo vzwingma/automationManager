@@ -23,6 +23,7 @@
 		<module>automationCommons</module>
 		<module>messagingBundle</module>
 		<module>saveToBundle</module>
+		<module>boxcryptorInventoryGenerator</module>
 	</modules>
 
 	<dependencies>
