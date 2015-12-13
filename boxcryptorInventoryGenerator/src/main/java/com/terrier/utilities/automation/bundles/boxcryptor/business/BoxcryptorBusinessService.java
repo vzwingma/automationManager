@@ -6,6 +6,8 @@ package com.terrier.utilities.automation.bundles.boxcryptor.business;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +17,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.terrier.utilities.automation.bundles.boxcryptor.business.runnables.BCInventoryGeneratorRunnable;
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
@@ -34,7 +37,8 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 
 	// Nombre de répertoires configurés
 	protected int nbInventaires = 0;
-	
+	// Threads pool
+	private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(50);
 
 	/**
 	 * Liste des tâches schedulées
@@ -88,15 +92,12 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	 */
 	protected void startTreatment(int p){
 		Long periode = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
-//		SaveToTaskRunnable copyRunnable = new SaveToTaskRunnable(
-//				p,
-//				CommandeEnum.valueOf(getKey(ConfigKeyEnums.COMMANDE, p)),
-//				getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p),
-//				getKey(ConfigKeyEnums.FILES_PATTERN_IN, p),
-//				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
-//				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p));
-//		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);
-//		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, 0L, periode, TimeUnit.MINUTES));	
+		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
+				p,
+				getKey(ConfigKeyEnums.SOURCE_DIRECTORY, p),
+				getKey(ConfigKeyEnums.CRYPTED_DIRECTORY, p));
+		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);
+		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(generateInventoryRunnable, 0L, periode, TimeUnit.MINUTES));	
 	}
 	
 	
@@ -133,9 +134,9 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 
 
 	/**
-	 * @return the nbPatterns
+	 * @return the nbPatterns 
 	 */
-	public int getNbPatterns() {
+	protected int getNbInventaires() {
 		return nbInventaires;
 	}
 

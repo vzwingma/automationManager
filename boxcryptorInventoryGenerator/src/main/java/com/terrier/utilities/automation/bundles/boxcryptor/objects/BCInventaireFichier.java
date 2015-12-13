@@ -1,4 +1,4 @@
-package com.terrier.utilities.automation.bundles.boxcryptor.generate.objects;
+package com.terrier.utilities.automation.bundles.boxcryptor.objects;
 
 /**
  * Représente un couple fichier clair/chiffré

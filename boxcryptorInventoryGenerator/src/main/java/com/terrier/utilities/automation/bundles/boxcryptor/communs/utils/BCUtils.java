@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
-import com.terrier.utilities.automation.bundles.boxcryptor.generate.objects.AbstractBCInventaireStructure;
-import com.terrier.utilities.automation.bundles.boxcryptor.generate.objects.BCInventaireRepertoire;
+import com.terrier.utilities.automation.bundles.boxcryptor.objects.AbstractBCInventaireStructure;
+import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
 
 /**
  * Utils class
@@ -37,8 +37,8 @@ public class BCUtils {
 	 * @param treatementName  name of treatment
 	 * @param startTraitementCal start time of Treatment
 	 */
-	public static void printDelayFromBeginning(String treatementName, Calendar startTraitementCal){
-		LOGGER.info("[{}] > {} ms", treatementName, (Calendar.getInstance().getTimeInMillis() - startTraitementCal.getTimeInMillis()));
+	public static void printDelayFromBeginning(int index, String treatementName, Calendar startTraitementCal){
+		LOGGER.info("[{}][{}] > {} ms", index, treatementName, (Calendar.getInstance().getTimeInMillis() - startTraitementCal.getTimeInMillis()));
 	}
 	
 	

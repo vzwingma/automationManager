@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.boxcryptor.generate;
+package com.terrier.utilities.automation.bundles.boxcryptor.business.runnables;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.filters.DirectoryFilter;
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.filters.FileFilter;
-import com.terrier.utilities.automation.bundles.boxcryptor.generate.objects.BCInventaireFichier;
-import com.terrier.utilities.automation.bundles.boxcryptor.generate.objects.BCInventaireRepertoire;
+import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireFichier;
+import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
 
 /**
  * Callable d'un inventaire d'un répertoire

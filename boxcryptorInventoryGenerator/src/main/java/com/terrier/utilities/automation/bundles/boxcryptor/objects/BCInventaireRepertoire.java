@@ -1,4 +1,4 @@
-package com.terrier.utilities.automation.bundles.boxcryptor.generate.objects;
+package com.terrier.utilities.automation.bundles.boxcryptor.objects;
 
 import java.nio.file.Path;
 import java.util.HashMap;
