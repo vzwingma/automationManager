@@ -62,6 +62,7 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 			// Création de l'inventaire
 			ExecutorService threadsPool = Executors.newFixedThreadPool(100);
 			DirectoryInventoryStreamGeneratorCallable inventory = new DirectoryInventoryStreamGeneratorCallable(
+					this.index,
 					threadsPool,
 					this.repertoireNonChiffre.getName(),
 					inventaire,
@@ -90,8 +91,11 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 		File inventoryFile = new File(repertoireNonChiffre, BCUtils.INVENTORY_FILENAME);
 		BCInventaireRepertoire repertoire;
 		if(inventoryFile.exists()){
-			LOGGER.info("[{}] Enregistrement de la liste dans {}", this.index, inventoryFile.getCanonicalPath());
-			repertoire = BCUtils.loadYMLInventory(repertoireNonChiffre.getAbsolutePath());
+			LOGGER.info("[{}] Mise à jour de l'inventaire dans {}", this.index, inventoryFile.getCanonicalPath());
+			// repertoire = BCUtils.loadYMLInventory(repertoireNonChiffre.getAbsolutePath());
+			repertoire  = new BCInventaireRepertoire(repertoireChiffre.getName(), repertoireNonChiffre.getName());
+			repertoire.setDateModificationDernierInventaire(inventoryFile.lastModified());
+			LOGGER.warn("Recréation de l'inventaire à partir de " + repertoire.getDateModificationDernierInventaire().getTime());
 		}
 		else{
 			LOGGER.warn("[{}] Le fichier {} n'existe pas. Création du fichier", this.index, inventoryFile.getAbsolutePath());

@@ -110,6 +110,13 @@ public class BCInventaireRepertoire extends AbstractBCInventaireStructure {
 	public void setDateModificationDernierInventaire(Calendar dateModificationDernierInventaire) {
 		this.dateModificationDernierInventaire = dateModificationDernierInventaire;
 	}
-	
+	/**
+	 * @param dateModificationDernierInventaire the dateModificationDernierInventaire to set
+	 */
+	public void setDateModificationDernierInventaire(long dateModificationDernierInventaire) {
+		Calendar d = Calendar.getInstance();
+		d.setTimeInMillis(dateModificationDernierInventaire);
+		this.dateModificationDernierInventaire = d;
+	}
 	
 }

@@ -36,6 +36,8 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(DirectoryInventoryStreamGeneratorCallable.class);
 
+	// Index
+	private int index;
 	// Inventaire du répertoire
 	private BCInventaireRepertoire inventaireR;
 	// Répertoire chiffré
@@ -56,7 +58,8 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 	 * @param repertoireChiffre 
 	 * @param repertoireNonChiffre
 	 */
-	public DirectoryInventoryStreamGeneratorCallable(final ExecutorService executorPool, final String nomTraitementParent, final BCInventaireRepertoire inventaireExistant, final String absRepertoireChiffre, final String absRepertoireNonChiffre){
+	public DirectoryInventoryStreamGeneratorCallable(final int index, final ExecutorService executorPool, final String nomTraitementParent, final BCInventaireRepertoire inventaireExistant, final String absRepertoireChiffre, final String absRepertoireNonChiffre){
+		this.index = index;
 		this.absRepertoireChiffre = absRepertoireChiffre;
 		this.absRepertoireNonChiffre = absRepertoireNonChiffre;
 		if(inventaireExistant != null){
@@ -94,6 +97,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 						listeExecSousRepertoires.add(
 								this.executorPool.submit(
 										new DirectoryInventoryStreamGeneratorCallable(
+												this.index,
 												this.executorPool,
 												this.nomTraitementParent + "|" + sousRepertoireNonChiffre.getFileName().toString(), 
 												this.inventaireR.getBCInventaireSousRepertoire(sousRepertoireChiffre, sousRepertoireNonChiffre),
@@ -133,7 +137,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 	 * Print du temps de traitement
 	 */
 	private void printDelayTraitementFromBeginning(){
-		LOGGER.info("THREAD [{}] > {} ms", this.nomTraitementParent, Calendar.getInstance().getTimeInMillis() - startTraitement.getTimeInMillis());
+		LOGGER.info("[{}] - THREAD [{}] > {} ms", this.index, this.nomTraitementParent, Calendar.getInstance().getTimeInMillis() - startTraitement.getTimeInMillis());
 	}
 
 }
