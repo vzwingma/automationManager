@@ -73,7 +73,7 @@
 					<instructions>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
-						<Export-Package>com.terrier.utilities.automation.bundles.save.to*;version=${project.version}</Export-Package>
+						<Export-Package/>
 						<Import-Package>*</Import-Package>
 					</instructions>
 				</configuration>
