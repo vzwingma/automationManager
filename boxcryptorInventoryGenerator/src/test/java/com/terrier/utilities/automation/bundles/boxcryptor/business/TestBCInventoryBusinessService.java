@@ -22,8 +22,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
@@ -36,7 +34,6 @@ public class TestBCInventoryBusinessService {
 
 	private BoxcryptorBusinessService service;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger( TestBCInventoryBusinessService.class );
 	/**
 	 * Mock dictionnary
 	 * @throws KeyNotFoundException

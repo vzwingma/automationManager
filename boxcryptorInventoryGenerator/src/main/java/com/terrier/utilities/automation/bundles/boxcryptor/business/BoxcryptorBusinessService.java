@@ -90,7 +90,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	 * Démarrage du traitement
 	 * @param p
 	 */
-	protected void startTreatment(int p){
+	private void startTreatment(int p){
 		Long periode = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
 		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
 				p,

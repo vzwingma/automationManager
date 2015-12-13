@@ -42,7 +42,7 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 	 * @param args directories parameters
 	 * @throws Exception error during generation
 	 */
-	public BCInventoryGeneratorRunnable(final int index, final String cheminRepertoireChiffre, final String cheminRepertoireNonChiffre){
+	public BCInventoryGeneratorRunnable(final int index, final String cheminRepertoireNonChiffre, final String cheminRepertoireChiffre){
 		this.index = index;
 		this.repertoireChiffre = new File(cheminRepertoireChiffre);
 		this.repertoireNonChiffre = new File(cheminRepertoireNonChiffre);
