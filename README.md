@@ -8,7 +8,11 @@ Gestionnaire de tâches automatisées
 
 ### Modules OSGi
 
-automationCommons : Librairie commune v1.0.0
-[messagingBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Messaging) v1.0.0 : Librairie d'envoi de mail et de SMS
-[boxcryptorInventoryBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v0.5.0-SNAPSHOT : Générateur d'inventaire pour BoxCryptor
-[saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.0.2 : Libraire de copie de fichier ou de répertoire
+* automationCommons v1.0.0
+    *  Librairie commune
+* [messagingBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Messaging) v1.0.0 
+    *  Librairie d'envoi de mail et de SMS
+* [boxcryptorInventoryBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v0.5.0-SNAPSHOT
+    *  Générateur d'inventaire pour BoxCryptor
+* [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.0.2
+    *  Libraire de copie de fichier ou de répertoire
