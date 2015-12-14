@@ -36,7 +36,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 
 	private Calendar startTraitement = Calendar.getInstance();
 
-	private Calendar dateDernierTraitement;
+	private Long dateDernierTraitement;
 	/**
 	 * Start inventory
 	 * @param args directories parameters
@@ -59,7 +59,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 			// Lecture de l'inventaire
 			BCInventaireRepertoire inventaire = loadFileInventory();
 			this.dateDernierTraitement = inventaire.getDateModificationDernierInventaire();
-			LOGGER.info("[{}] Date du dernier inventaire [{}]", index, this.dateDernierTraitement != null ? this.dateDernierTraitement.getTime() : "jamais");
+			LOGGER.info("[{}] Date du dernier inventaire [{}]", index, this.dateDernierTraitement != null ? this.dateDernierTraitement : "jamais");
 			BCUtils.printDelayFromBeginning(this.index, "Read file Inventory", this.startTraitement);
 
 			// Création de l'inventaire
@@ -76,7 +76,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 
 
 			// Ecriture de l'inventaire ssi il a changé
-			if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire().after(this.dateDernierTraitement)){
+			if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire() > this.dateDernierTraitement){
 			BCUtils.dumpYMLInventory(this.repertoireNonChiffre, inventaireNew);
 			BCUtils.printDelayFromBeginning(this.index, "Dump Inventory", this.startTraitement);
 			sendMessage("Génération de l'inventaire" + this.repertoireNonChiffre.getName());
@@ -105,7 +105,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 			// repertoire = BCUtils.loadYMLInventory(repertoireNonChiffre.getAbsolutePath());
 			repertoire  = new BCInventaireRepertoire(repertoireChiffre.getName(), repertoireNonChiffre.getName());
 			repertoire.setDateModificationDernierInventaire(inventoryFile.lastModified());
-			LOGGER.warn("Recréation de l'inventaire à partir de " + repertoire.getDateModificationDernierInventaire().getTime());
+			LOGGER.warn("Recréation de l'inventaire à partir de {} ", repertoire.getDateModificationDernierInventaire());
 		}
 		else{
 			LOGGER.warn("[{}] Le fichier {} n'existe pas. Création du fichier", this.index, inventoryFile.getAbsolutePath());

@@ -37,7 +37,7 @@ public class BCInventaireRepertoire extends AbstractBCInventaireStructure {
 	 */
 	private Map<String, BCInventaireRepertoire> mapInventaireSousRepertoires = new HashMap<String, BCInventaireRepertoire>();
 	
-	private Calendar dateModificationDernierInventaire;
+	private long dateModificationDernierInventaire;
 
 	/**
 	 * Ajoute un sous répertoire au répertoire
@@ -100,23 +100,15 @@ public class BCInventaireRepertoire extends AbstractBCInventaireStructure {
 	/**
 	 * @return the dateModificationDernierInventaire
 	 */
-	public Calendar getDateModificationDernierInventaire() {
+	public Long getDateModificationDernierInventaire() {
 		return dateModificationDernierInventaire;
 	}
 
 	/**
 	 * @param dateModificationDernierInventaire the dateModificationDernierInventaire to set
 	 */
-	public void setDateModificationDernierInventaire(Calendar dateModificationDernierInventaire) {
+	public void setDateModificationDernierInventaire(Long dateModificationDernierInventaire) {
 		this.dateModificationDernierInventaire = dateModificationDernierInventaire;
-	}
-	/**
-	 * @param dateModificationDernierInventaire the dateModificationDernierInventaire to set
-	 */
-	public void setDateModificationDernierInventaire(long dateModificationDernierInventaire) {
-		Calendar d = Calendar.getInstance();
-		d.setTimeInMillis(dateModificationDernierInventaire);
-		this.dateModificationDernierInventaire = d;
 	}
 	
 }

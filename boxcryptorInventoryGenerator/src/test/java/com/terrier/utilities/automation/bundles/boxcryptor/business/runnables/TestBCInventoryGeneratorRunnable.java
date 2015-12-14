@@ -86,7 +86,7 @@ public class TestBCInventoryGeneratorRunnable {
 		assertEquals("subdir", inventaire.getMapInventaireSousRepertoires().get("86ae37b338459868804e9697025ba4c2").get_NomFichierClair());
 
 
-		Calendar dateMiseAJour = inventaire.getDateModificationDernierInventaire();
+		Long dateMiseAJour = inventaire.getDateModificationDernierInventaire();
 		assertNotNull(dateMiseAJour);
 		// Relance de l'inventaire. Pas de mise à jour
 		runnable.run();

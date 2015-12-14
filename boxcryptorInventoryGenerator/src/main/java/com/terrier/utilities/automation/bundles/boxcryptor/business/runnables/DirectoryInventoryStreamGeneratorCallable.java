@@ -117,7 +117,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 						inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
 						// Mise à jour de la date
 						if(inventaireR.getDateModificationDernierInventaire() == null
-								|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire().getTimeInMillis()){
+								|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire()){
 							inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
 						}
 					}
@@ -133,8 +133,8 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 			// Mise à jour de la date
 			if(inventaireR.getDateModificationDernierInventaire() == null
 					|| (ssRepertoire.getDateModificationDernierInventaire() != null 
-						&& ssRepertoire.getDateModificationDernierInventaire().getTimeInMillis() > inventaireR.getDateModificationDernierInventaire().getTimeInMillis())){
-				inventaireR.setDateModificationDernierInventaire(ssRepertoire.getDateModificationDernierInventaire().getTimeInMillis());
+						&& ssRepertoire.getDateModificationDernierInventaire() > inventaireR.getDateModificationDernierInventaire())){
+				inventaireR.setDateModificationDernierInventaire(ssRepertoire.getDateModificationDernierInventaire());
 			}
 			inventaireR.addSSRepertoire(ssRepertoire);
 		}
