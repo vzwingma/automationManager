@@ -10,7 +10,7 @@
 	<properties>
 		<automation.commons.version>1.0.0</automation.commons.version>
 		<automation.save.to.version>1.0.2</automation.save.to.version>
-		<automation.boxcryptor.inventory.version>0.5.0-SNAPSHOT</automation.boxcryptor.inventory.version>
+		<automation.boxcryptor.inventory.version>0.6.0-SNAPSHOT</automation.boxcryptor.inventory.version>
 		<automation.messaging.version>1.0.0</automation.messaging.version>
 	</properties>
 
