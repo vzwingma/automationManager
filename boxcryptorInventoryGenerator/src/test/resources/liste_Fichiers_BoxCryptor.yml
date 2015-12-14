@@ -1,7 +1,0 @@
-!!com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire
-_NomFichierChiffre: 倐徎婢冈呹忪僣庝左勓嗊宽坻墒受䀊
-_NomFichierClair: nom en clair
-dateModificationDernierInventaire: null
-mapInventaireFichiers:
-  95e4642702bf8806816e6332db0f6fc3: {_NomFichierChiffre: 倐徎婢冈呹忪僣庝左勓嗊宽坻墒受䀊, _NomFichierClair: nom en clair}
-mapInventaireSousRepertoires: {}
