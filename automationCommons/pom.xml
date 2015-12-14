@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>automationCommons</artifactId>
 	<name>[Automation] Commons</name>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>bundle</packaging>
 	<description>Commons OSGi bundle project.</description>
 
