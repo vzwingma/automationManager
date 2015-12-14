@@ -3,21 +3,13 @@
 language: java
 jdk:
   - oraclejdk8
-env:
-  global:
-  - "ARTIFACTS_AWS_REGION=eu-west-1"
-  - "ARTIFACTS_S3_BUCKET=automationmanager"
-# travis encrypt ARTIFACTS_AWS_ACCESS_KEY_ID=
-  - secure: "nuSRn1/BgjkfF7M3XYW+DxKUzhmgJx0vyvi8QPONYgiDN1FvGJmEu0Je32YUFq+/Pi5eBpDATZ2+Te0zEcPFWA9yzpvCq50icPVvtBA9KCC7u7cusB+v+NKuwX0NTM7pV7AiFK4nm7BiwtdjyA9UNt5V6umJQPbsoxlkuvPKSt6dxl9hRdoeBeypszBti58fs1x7w+glNwDQ9yx7bOkczjZwrUPDWQzet6Z1aYEsK/KjxAe4+6WsCIzxQa5CTovqBtXL9y8rkXaoc0V6pZ9dcyjgovYDtZMhQiT7BP7i5R4Ex2iD+FJQUpcthQ7kJCAwfMajqGoo/5m9RT75PQ3O06rwPQ+0lUI9ciu8Op7bFhcymA1Xt3MSWUJM8DrnKU5hcz/m/4fgO1Mh/IWVLTeqsXz4mB9G4S+s4rSfGCOzGCPVskkDQZPVcrFX6KSNFbC8qEV7eN2L5f2xWQRxETazPpvLCLNSzz1zbidQwBDqDZaECkQg4ZcvHsp4yIv4vokksrAre8/9sRw86DgAi5XKGjUccQClJZgMD4Unojtdjs/4E0og9VzBuT7KUiJOkzL/ecb2wR2zPvMMNYsZ8Z7s5ALWb/oCAX4dqjRQoNCAJzeRKolj09qlFh9q4d5O7a9Tjd+28AhC8xQ/oL1QI+aXX/6no2VnhBWpQAgZ2jrm7bA="
-# travis encrypt ARTIFACTS_AWS_SECRET_ACCESS_KEY=
-  - secure: "aLpPHbU5kH/JKTUanPnP296Q8ckgt3xsxKurw86wtlSjR2noHY7rn9gjgdiHB/MOhzwSSBDcgr2o+HhXSkEo/YNpwXUmsCaVqS/6/SL1LR78A3UsYd63VKw3tjkeoOqGgfkDiHGAwNF1ezWRi/dORHcSw2HQ4IUZBgC+a9a3DhSBX5eVZEx4mY6jLSjYaDObtQal575kMhPBA8reslYgyx0hYwAJcU3+mRgGCv8XfvF9D8g3iNsll9cL0Ii76MUoORvA8zoMS536QSeMCLMq+npzBkHHoguXul1SmDt7QCF3+Dcp/GCMK0FsY/LXy5jdKhX+bZ9uyuMa3pwOxb/YXwvsseUR1V0rvspaBC0LN1sLaNpaRxidWFsNr8gpEyY9JzAFtRQbcpbBvQnUgkmAzlZcN00WsR3LJIIMQv6bbU3iqMB77Yqtd8jqls+FS0ragDIkEvjEpdw7LdNN4e6limqz7NtxegDut4Klxt1MlUEMMf1LeRBUAg8bAANJYAIpFinUNMhef8FI4Om67i2lE1Zj3hxyeUbRJsL96z7xBLlHMdNEIg0cTh+2vopuB4Y1SArr9cnDUU0I+DFxMP+xmi3tgNPfg/as/EAOam2KCeczn0zsZzgHS7hCCXYAeZDoAApK/KcBweO5d0A9BG7VMWA0yIpvAYlgrH++QuMSuXU="
-before_install:
-  - rvm reinstall ruby-head --binary
 install: 
   - mvn clean install
-before_script:
-#  - "gem install travis-artifacts"
-after_script:
-#  - cd saveToBoxCryptorBundle/target
-#  - "travis-artifacts upload --path saveToBoxCryptorBundle-*.jar --target-path artifacts/$TRAVIS_BUILD_NUMBER"
-#  - "travis-artifacts upload --path saveToBoxCryptorBundle-*.jar --target-path artifacts/latest/saveToBoxCryptorBundle-latest.jar"
+deploy:
+  provider: releases
+  api_key:
+    secure: RWU7uEO6iHDEsVRTNg+aUns/8GNeUnzd7m2s1jDohakAyx/HYytstum2rODn1vTpTh4xjjTbeoAkC+hJmsfgTSwgV3r0AbSdzOwk8+WPitBO9ZxIL640MTcCT0bZWMcXAphkXOQMK1RntU42ib/0jMQ7+eBSdWPp4jRb5VzvXGrot9/K7oNwKpojGLXJxFokaAhX1H/22qjSH9jXzi/ahWRtolb6PEKY1YCnl0belmlYn//b6GXlkYkt+zn3YoTSvPnzt+1DFg/O9wWCyKdZ050YGbJUs9LUIsH+VL8tU2tDLVPyd+nsgEHTjof1BVyvR6kaaPLWn6rdUUdyPnAfNBP8JW+jfB1TuJEs64C7wOm1Et72VrWh+AnNEHrq7oPYBtHDXTtLrqVrsqtivNH2KQGUGTVLM8nggIC98VO+A/vsdvEHrXSN4FMfciqG6a43x8r1gXQMZVoAb6jlGV1RfN5XC4z7ucmsE65GV+pzdR/mZrK7/SeGHhP1DtpRo4ODLQLEV8vl+sfuC1VtyU9CWkH6kuUWBLAbk4mQGrgQQJ52tfS5kJlRUCyO3DmEu+/Xt6FocHPoc6dnUptILEl+FN4doy5Z8Vv+2ltKTwn5P5hzJq2uquECPV0EtUiqVtk6EXS9ZHricbB22lGtCLFMp0W65vvO0BLizI6Tz3HSxxA=
+  file: saveToBoxCryptorBundle/target/*.jar
+  on:
+    repo: vzwingma/automationManager
+#    tags: true
