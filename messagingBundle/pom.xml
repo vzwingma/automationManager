@@ -7,7 +7,7 @@
 		<version>1.0.1</version>
 	</parent>
 	<artifactId>messagingBundle</artifactId>
-	<version>1.0.0</version>
+	<version>${automation.messaging.version}</version>
 	<packaging>bundle</packaging>
 
 

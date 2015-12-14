@@ -12,7 +12,7 @@
 		-DarchetypeArtifactId=karaf-bundle-archetype -DarchetypeVersion=2.2.11 -DgroupId=com.terrier.utilities.automation.bundles 
 		-DartifactId=saveToBoxCryptorBundle -Dversion=0.0.1-SNAPSHOT -Dpackage=com.terrier.utilities.automation.bundles.save.to -->
 	<artifactId>saveToBundle</artifactId>
-	<version>1.0.2</version>
+	<version>${automation.save.to.version}</version>
 	<packaging>bundle</packaging>
 
 	<name>[Automation] SaveTo</name>

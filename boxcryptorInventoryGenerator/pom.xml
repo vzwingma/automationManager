@@ -79,5 +79,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<version>0.0.5-SNAPSHOT</version>
+	<version>${automation.boxcryptor.inventory.version}</version>
 </project>
