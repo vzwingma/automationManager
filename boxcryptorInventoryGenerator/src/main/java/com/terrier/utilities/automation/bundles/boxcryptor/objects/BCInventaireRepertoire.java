@@ -1,7 +1,6 @@
 package com.terrier.utilities.automation.bundles.boxcryptor.objects;
 
 import java.nio.file.Path;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
