@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>com.terrier.utilities.automation.bundles</groupId>
 			<artifactId>automationCommons</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${automation.commons.version}</version>
 		</dependency>
 		<!-- Inject -->
 		<dependency>
