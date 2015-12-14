@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>AutomationManager</artifactId>
 		<groupId>com.terrier.utilities.automation.bundles</groupId>
-		<version>0.0.1</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<!-- mvn archetype:generate -DarchetypeGroupId=org.apache.karaf.archetypes 

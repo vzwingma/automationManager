@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.terrier.utilities.automation.bundles</groupId>
 		<artifactId>AutomationManager</artifactId>
-		<version>0.0.1</version>
+		<version>1.0.0</version>
 	</parent>
 	<artifactId>boxcryptorInventoryGenerator</artifactId>
 	<name>[Automation] Boxcryptor Inventory Generator</name>
