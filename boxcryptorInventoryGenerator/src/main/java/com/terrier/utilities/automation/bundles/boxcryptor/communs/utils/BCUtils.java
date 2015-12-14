@@ -73,9 +73,9 @@ public class BCUtils {
 				LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.getCanonicalPath());
 				Yaml yml = new Yaml();
 				FileInputStream fis = new FileInputStream(inventoryFile);
-				Object inventaire = yml.load(fis);
+				BCInventaireRepertoire inventaire = yml.loadAs(fis, BCInventaireRepertoire.class);
 				fis.close();
-				return (BCInventaireRepertoire)inventaire;
+				return inventaire;
 			}
 		}
 		return null;
