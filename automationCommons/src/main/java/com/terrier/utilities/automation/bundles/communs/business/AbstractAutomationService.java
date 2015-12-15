@@ -34,6 +34,8 @@ public abstract class AbstractAutomationService implements ManagedService {
 
 	// Dictionnaire
 	private Dictionary<String, String> dictionnaire;
+	
+	private String configPID;
 	/**
 	 * Démarrage du service
 	 */
@@ -43,11 +45,12 @@ public abstract class AbstractAutomationService implements ManagedService {
 	 * @param configPID nom du fichier de configuration
 	 */
 	public void registerToConfig(String configPID){
-		LOGGER.info("Enregistrement au fichier de configuration : {}", configPID);
+		LOGGER.info("Enregistrement de la surveillance du fichier de configuration : {}", configPID);
 		Hashtable<String, Object> properties = new Hashtable<String, Object>();
-		properties.put(Constants.SERVICE_PID, configPID);
+		this.configPID = configPID;
+		properties.put(Constants.SERVICE_PID, this.configPID);
 		FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(ManagedService.class.getName(), this , properties);
-		LOGGER.info("Chargement du fichier de configuration /etc/{}.cfg", configPID);
+		LOGGER.info("Chargement du fichier de configuration /etc/{}.cfg", this.configPID);
 	}
 
 
@@ -59,10 +62,10 @@ public abstract class AbstractAutomationService implements ManagedService {
 	@Override
 	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 		if(properties != null){
-			LOGGER.info("Mise à jour du fichier de configuration");
+			LOGGER.info("Mise à jour du fichier de configuration {}", this.configPID);
 			this.dictionnaire = (Dictionary<String, String>)properties;
 			notifyUpdateDictionary();
-			sendNotificationMessage(TypeMessagingEnum.SMS, "Configuration", "Mise à jour d'un fichier de configuration");
+			sendNotificationMessage(TypeMessagingEnum.SMS, "Configuration", "Mise à jour du fichier de configuration /etc/"+ this.configPID +".cfg");
 		}
 		else{
 			LOGGER.error("Impossible de trouver le fichier de configuration");

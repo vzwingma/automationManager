@@ -42,28 +42,30 @@ public class MessageEventHandler implements EventHandler {
 			.append(";");
 		}
 		sb.append("}");
-		LOGGER.debug("Topic [{}] Réception du message [{}]", event.getTopic(), sb.toString());
 
+		Object typeMessageObject = event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name());
 
-		//Envoi d'un email
-		if(event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()) != null 
-				&& 
-				TypeMessagingEnum.EMAIL.equals(event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()))){
-           String titre = (String)event.getProperty(EventPropertyNameEnum.TITRE_MESSAGE.name());
-           String message = (String)event.getProperty(EventPropertyNameEnum.MESSAGE.name());
-           
-           messagingService.sendNotificationEmail(titre, message);
+		LOGGER.debug("Topic [{}][type={}] Réception du message [{}]", event.getTopic(), typeMessageObject, sb.toString());
+		if(typeMessageObject != null && typeMessageObject instanceof TypeMessagingEnum){
+			TypeMessagingEnum typeMessage = (TypeMessagingEnum)typeMessageObject;
+			
+			switch (typeMessage) {
+			case EMAIL:
+				String titre = (String)event.getProperty(EventPropertyNameEnum.TITRE_MESSAGE.name());
+				String message = (String)event.getProperty(EventPropertyNameEnum.MESSAGE.name());
+				messagingService.sendNotificationEmail(titre, message);
+				break;
+			case SMS:
+				String sms = (String)event.getProperty(EventPropertyNameEnum.MESSAGE.name());
+				messagingService.sendNotificationSMS(sms);
+				break;
+			default:
+				LOGGER.warn("Aucune configuration pour ce message de type {}", event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()));
+				break;
+			}
 		}
-		else if(event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()) != null 
-				&& 
-				TypeMessagingEnum.SMS.equals(event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()))){
-           String message = (String)event.getProperty(EventPropertyNameEnum.MESSAGE.name());
-           
-           messagingService.sendNotificationSMS(message);
-		}		
 		else{
-			LOGGER.warn("Aucune configuration pour ce message de type {}", event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()));
+			LOGGER.error("Aucune configuration pour ce message de type {}",typeMessageObject != null ? typeMessageObject.getClass() : "null");
 		}
 	}
-
 }

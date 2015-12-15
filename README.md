@@ -8,7 +8,7 @@ Gestionnaire de tâches automatisées
 
 ## Modules OSGi
 
-#### automationCommons v1.0.0
+#### automationCommons v1.1.0
   *  Librairie commune
   * [![Dependency Status](https://www.versioneye.com/user/projects/566f2f0c107997003e000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f0c107997003e000001)
     
