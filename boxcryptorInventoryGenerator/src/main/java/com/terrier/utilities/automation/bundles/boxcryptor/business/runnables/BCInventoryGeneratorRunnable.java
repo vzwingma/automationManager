@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,9 +108,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 		BCInventaireRepertoire repertoire;
 		if(inventoryFile.exists()){
 			LOGGER.info("[{}] Mise à jour de l'inventaire dans {}", this.index, inventoryFile.getCanonicalPath());
-			// repertoire = BCUtils.loadYMLInventory(repertoireNonChiffre.getAbsolutePath());
-			repertoire  = new BCInventaireRepertoire(repertoireChiffre.getName(), repertoireNonChiffre.getName());
-			repertoire.setDateModificationDernierInventaire(inventoryFile.lastModified());
+			repertoire = BCUtils.loadYMLInventory(FrameworkUtil.getBundle(this.getClass()).getBundleContext(), repertoireNonChiffre.getAbsolutePath());
 			LOGGER.warn("Recréation de l'inventaire à partir de {} ", repertoire.getDateModificationDernierInventaire());
 		}
 		else{

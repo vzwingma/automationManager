@@ -6,9 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.AbstractBCInventaireStructure;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
@@ -19,7 +22,7 @@ import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireR
  *
  */
 public class BCUtils {
-	
+
 
 	/**
 	 * Logger
@@ -28,10 +31,10 @@ public class BCUtils {
 
 	// Inventory filename
 	public static final String INVENTORY_FILENAME = "liste_Fichiers_BoxCryptor.yml";
-	
+
 	// Regex to split search values
 	protected static final String SPLIT_REGEX = "[ _-]";
-	
+
 	/**
 	 * Print delay from startTraitementCal
 	 * @param treatementName  name of treatment
@@ -40,9 +43,9 @@ public class BCUtils {
 	public static void printDelayFromBeginning(int index, String treatementName, Calendar startTraitementCal){
 		LOGGER.debug("[{}][{}] > {} ms", index, treatementName, (Calendar.getInstance().getTimeInMillis() - startTraitementCal.getTimeInMillis()));
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Ecriture de l'inventaire (dump)
 	 * @param inventaireR inventaire
@@ -55,23 +58,45 @@ public class BCUtils {
 		if(!inventoryFile.exists()){
 			inventoryFile.createNewFile();
 		}
-		
+
 		FileWriter inventoryWriter = new FileWriter(inventoryFile);
 		yml.dump(inventaireR, inventoryWriter);
 		inventoryWriter.flush();
 		inventoryWriter.close();
 	}
+	
+	
 	/**
-	 * Load of inventory file
-	 * @throws IOException error during loading
+	 *  Load of inventory file
+	 * @param repertoire
+	 * @return inventaire
+	 * @throws IOException erreur
 	 */
 	public static BCInventaireRepertoire loadYMLInventory(String repertoire) throws IOException{
+		return loadYMLInventory(null, repertoire);
+	}
+
+	/**
+	 * @param bundleContext 
+	 * @param repertoire répertoire
+	 * @return inventaire
+	 * @throws IOException error during loading
+	 */
+	public static BCInventaireRepertoire loadYMLInventory(BundleContext bundleContext, String repertoire) throws IOException{
 		if(repertoire != null){
 			// This will output the full path where the file will be written to...
 			File inventoryFile = new File(repertoire, BCUtils.INVENTORY_FILENAME);
 			if(inventoryFile.exists()){
 				LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.getCanonicalPath());
-				Yaml yml = new Yaml();
+				Yaml yml = null;
+
+				if(bundleContext != null){
+					LOGGER.warn("Chargement de YAML à partir du classloader du bundle", bundleContext);
+					yml = new Yaml(new CustomClassLoaderConstructor(bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader()));
+				}
+				else{
+					yml = new Yaml();
+				}
 				FileInputStream fis = new FileInputStream(inventoryFile);
 				BCInventaireRepertoire inventaire = yml.loadAs(fis, BCInventaireRepertoire.class);
 				fis.close();
@@ -80,9 +105,9 @@ public class BCUtils {
 		}
 		return null;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Search method of termes in inventory
 	 * @param inventoryItem inventory item (directory or file)
@@ -97,7 +122,7 @@ public class BCUtils {
 		}
 		else{ 
 			String[] allSearchValues = searchValue.split(SPLIT_REGEX);
-			
+
 			boolean found = true;
 			for (String search : allSearchValues) {
 				found &= inventoryItem.get_NomFichierChiffre().toUpperCase().contains(search.toUpperCase())
