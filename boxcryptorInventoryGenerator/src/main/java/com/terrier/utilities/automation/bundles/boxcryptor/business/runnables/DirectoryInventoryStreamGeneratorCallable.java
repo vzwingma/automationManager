@@ -121,7 +121,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 				for (Path fichierChiffre : dsfChiffre) {
 					if(Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
 						inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
-						LOGGER.debug("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
+						LOGGER.trace("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
 								index, 
 								this.nomTraitementParent,
 								BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
@@ -129,7 +129,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 						// Mise à jour de la date
 						if(inventaireR.getDateModificationDernierInventaire() == null
 								|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire()){
-							LOGGER.warn("[{}] - THREAD [{}] date mise à jour =[{}]", index, this.nomTraitementParent, BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
+							LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", index, this.nomTraitementParent, BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
 							inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
 						}
 					}
@@ -142,7 +142,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 		// Récupération des résultats des sous répertoires
 		for (Future<BCInventaireRepertoire> resultatSousRepertoire : listeExecSousRepertoires) {
 			BCInventaireRepertoire ssRepertoire = resultatSousRepertoire.get();
-			LOGGER.debug("[{}] - THREAD [{}] date=[{}] > sous répertoire [{}]", 
+			LOGGER.trace("[{}] - THREAD [{}] date=[{}] > sous répertoire [{}]", 
 					index, 
 					this.nomTraitementParent,
 					BCUtils.getLibelleDateFromMillis(ssRepertoire.getDateModificationDernierInventaire()),
@@ -151,7 +151,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 			if(inventaireR.getDateModificationDernierInventaire() == null
 					|| (ssRepertoire.getDateModificationDernierInventaire() != null 
 						&& ssRepertoire.getDateModificationDernierInventaire() > inventaireR.getDateModificationDernierInventaire())){
-				LOGGER.warn("[{}] - THREAD [{}] date mise à jour =[{}]", index, this.nomTraitementParent, BCUtils.getLibelleDateFromMillis(ssRepertoire.getDateModificationDernierInventaire()));
+				LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", index, this.nomTraitementParent, BCUtils.getLibelleDateFromMillis(ssRepertoire.getDateModificationDernierInventaire()));
 				inventaireR.setDateModificationDernierInventaire(ssRepertoire.getDateModificationDernierInventaire());
 			}
 			inventaireR.addSSRepertoire(ssRepertoire);
@@ -167,6 +167,4 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 		
 		return inventaireR;
 	}
-	
-	
 }

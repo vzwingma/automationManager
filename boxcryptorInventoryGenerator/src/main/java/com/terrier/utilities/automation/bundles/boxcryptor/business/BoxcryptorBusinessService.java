@@ -55,6 +55,13 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	 */
 	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<ScheduledFuture<?>>();
 
+	
+	/**
+	 * Construction du service
+	 */
+	public BoxcryptorBusinessService(){
+		initYAML();
+	}
 
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#startService()
@@ -68,16 +75,13 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		Field charset = Charset.class.getDeclaredField("defaultCharset");
 		charset.setAccessible(true);
 		charset.set(null,null);
-		
-		// Init YAML
-		initYAML();
 	}
 	
 	
 	/**
 	 * Init YAML
 	 */
-	public void initYAML(){
+	private void initYAML(){
 		if(FrameworkUtil.getBundle(this.getClass()) != null){
 			BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
 			LOGGER.warn("Chargement de YAML à partir du classloader du bundle", bundleContext);
