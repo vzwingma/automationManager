@@ -54,8 +54,10 @@ public class SendSMSTaskRunnable implements Runnable {
 	@Override
 	public void run() {
 		LOGGER.info("Envoi des SMS : {} messages en attente", this.messagesSendingQueue.size());
-		boolean resultat = sendAllMessages();
-		LOGGER.info("> Résulat des envois : {}", resultat);
+		if(this.messagesSendingQueue.size() > 0){
+			boolean resultat = sendAllMessages();
+			LOGGER.info("> Résulat des envois : {}", resultat);
+		}
 	}
 
 
