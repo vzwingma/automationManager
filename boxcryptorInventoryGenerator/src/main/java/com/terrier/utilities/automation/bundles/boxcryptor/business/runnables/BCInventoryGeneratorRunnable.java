@@ -83,6 +83,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 			if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire() > this.dateDernierTraitement){
 			BCUtils.dumpYMLInventory(this.repertoireNonChiffre, inventaireNew);
 			BCUtils.printDelayFromBeginning(this.index, "Dump Inventory", this.startTraitement);
+			LOGGER.info("Inventaire de {} généré", this.repertoireNonChiffre.getName());
 			sendMessage("Génération de l'inventaire de " + this.repertoireNonChiffre.getName());
 			}
 			else{
