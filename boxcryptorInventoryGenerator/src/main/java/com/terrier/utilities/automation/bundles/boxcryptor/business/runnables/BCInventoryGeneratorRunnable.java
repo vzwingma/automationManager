@@ -6,9 +6,9 @@ import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
@@ -36,13 +36,16 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 	private File repertoireNonChiffre;
 
 	private Long dateDernierTraitement;
+	
+	private Yaml yml;
 	/**
 	 * Start inventory
 	 * @param args directories parameters
 	 * @throws Exception error during generation
 	 */
-	public BCInventoryGeneratorRunnable(final int index, final String cheminRepertoireNonChiffre, final String cheminRepertoireChiffre){
+	public BCInventoryGeneratorRunnable(final int index, final Yaml yml, final String cheminRepertoireNonChiffre, final String cheminRepertoireChiffre){
 		this.index = index;
+		this.yml = yml;
 		this.repertoireChiffre = new File(cheminRepertoireChiffre);
 		this.repertoireNonChiffre = new File(cheminRepertoireNonChiffre);
 	}
@@ -85,7 +88,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 
 			// Ecriture de l'inventaire ssi il a changé
 			if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire() > this.dateDernierTraitement){
-				BCUtils.dumpYMLInventory(this.repertoireNonChiffre, inventaireNew);
+				BCUtils.dumpYMLInventory(this.yml, this.repertoireNonChiffre, inventaireNew);
 				BCUtils.printDelayFrom(this.index, "Dump Inventory", startTraitement);
 				LOGGER.info("Inventaire de {} généré", this.repertoireNonChiffre.getName());
 				sendMessage("Génération de l'inventaire de " + this.repertoireNonChiffre.getName());
@@ -101,6 +104,8 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 		}
 	}
 
+	
+	
 	/**
 	 * Lecture de l'inventaire existant pour mise à jour
 	 * @throws IOException
@@ -111,7 +116,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 		BCInventaireRepertoire repertoire;
 		if(inventoryFile.exists()){
 			LOGGER.info("[{}] Mise à jour de l'inventaire de {}", this.index, inventoryFile.getCanonicalPath());
-			repertoire = BCUtils.loadYMLInventory(FrameworkUtil.getBundle(this.getClass()).getBundleContext(), repertoireNonChiffre.getAbsolutePath());
+			repertoire = BCUtils.loadYMLInventory(this.yml, repertoireNonChiffre.getAbsolutePath());
 			LOGGER.debug("[{}] Recréation de l'inventaire à partir de {} ", this.index, BCUtils.getLibelleDateFromMillis(repertoire.getDateModificationDernierInventaire()));
 		}
 		else{

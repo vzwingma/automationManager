@@ -6,12 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.AbstractBCInventaireStructure;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
@@ -48,15 +45,13 @@ public class BCUtils {
 	}
 
 
-
 	/**
 	 * Ecriture de l'inventaire (dump)
 	 * @param inventaireR inventaire
 	 * @throws IOException
 	 */
-	public static void dumpYMLInventory(final File repertoire, final BCInventaireRepertoire inventaireR) throws IOException{
+	public static void dumpYMLInventory(final Yaml yml, final File repertoire, final BCInventaireRepertoire inventaireR) throws IOException{
 
-		Yaml yml = new Yaml();
 		File inventoryFile = new File(repertoire.getAbsolutePath(), BCUtils.INVENTORY_FILENAME);
 		if(!inventoryFile.exists()){
 			inventoryFile.createNewFile();
@@ -68,38 +63,20 @@ public class BCUtils {
 		inventoryWriter.close();
 	}
 	
-	
-	/**
-	 *  Load of inventory file
-	 * @param repertoire
-	 * @return inventaire
-	 * @throws IOException erreur
-	 */
-	public static BCInventaireRepertoire loadYMLInventory(String repertoire) throws IOException{
-		return loadYMLInventory(null, repertoire);
-	}
+
 
 	/**
-	 * @param bundleContext 
+	 * @param yml : Yaml 
 	 * @param repertoire répertoire
 	 * @return inventaire
 	 * @throws IOException error during loading
 	 */
-	public static BCInventaireRepertoire loadYMLInventory(BundleContext bundleContext, String repertoire) throws IOException{
+	public static BCInventaireRepertoire loadYMLInventory(Yaml yml, String repertoire) throws IOException{
 		if(repertoire != null){
 			// This will output the full path where the file will be written to...
 			File inventoryFile = new File(repertoire, BCUtils.INVENTORY_FILENAME);
 			if(inventoryFile.exists()){
 				LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.getCanonicalPath());
-				Yaml yml = null;
-
-				if(bundleContext != null){
-					LOGGER.warn("Chargement de YAML à partir du classloader du bundle", bundleContext);
-					yml = new Yaml(new CustomClassLoaderConstructor(bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader()));
-				}
-				else{
-					yml = new Yaml();
-				}
 				FileInputStream fis = new FileInputStream(inventoryFile);
 				BCInventaireRepertoire inventaire = yml.loadAs(fis, BCInventaireRepertoire.class);
 				fis.close();

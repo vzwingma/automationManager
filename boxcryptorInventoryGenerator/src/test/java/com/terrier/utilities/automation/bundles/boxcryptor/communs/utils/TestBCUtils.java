@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 
 import org.junit.Test;
+import org.yaml.snakeyaml.Yaml;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireFichier;
@@ -63,12 +64,12 @@ public class TestBCUtils {
 		// Dump
 		BCInventaireRepertoire testInventory = new BCInventaireRepertoire("倐徎婢冈呹忪僣庝左勓嗊宽坻墒受䀊", "nom en clair");
 		testInventory.addFichier(new BCInventaireFichier("倐徎婢冈呹忪僣庝左勓嗊宽坻墒受䀊", "nom en clair"));
-		BCUtils.dumpYMLInventory(new File("src/test/resources"), testInventory);
+		BCUtils.dumpYMLInventory(new Yaml(), new File("src/test/resources"), testInventory);
 		
 		assertTrue(inventoryFile.exists());
 		
 		// Load
-		BCInventaireRepertoire loadedInventory = BCUtils.loadYMLInventory(testDir.getPath());
+		BCInventaireRepertoire loadedInventory = BCUtils.loadYMLInventory(new Yaml(), testDir.getPath());
 		assertNotNull(loadedInventory);
 		assertEquals(testInventory.get_NomFichierChiffre(), loadedInventory.get_NomFichierChiffre());
 		assertEquals(testInventory.get_NomFichierClair(), loadedInventory.get_NomFichierClair());

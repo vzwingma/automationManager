@@ -16,8 +16,13 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.business.runnables.BCInventoryGeneratorRunnable;
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.enums.ConfigKeyEnums;
@@ -42,6 +47,9 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	// Threads pool
 	private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(50);
 
+	// YAML
+	private Yaml yaml;
+	
 	/**
 	 * Liste des tâches schedulées
 	 */
@@ -61,6 +69,23 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		charset.setAccessible(true);
 		charset.set(null,null);
 		
+		// Init YAML
+		initYAML();
+	}
+	
+	
+	/**
+	 * Init YAML
+	 */
+	public void initYAML(){
+		if(FrameworkUtil.getBundle(this.getClass()) != null){
+			BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+			LOGGER.warn("Chargement de YAML à partir du classloader du bundle", bundleContext);
+			this.yaml = new Yaml(new CustomClassLoaderConstructor(bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader()));
+		}
+		else{
+			this.yaml = new Yaml();
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -103,6 +128,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		Long periode = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
 		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
 				p,
+				this.yaml, 
 				getKey(ConfigKeyEnums.SOURCE_DIRECTORY, p),
 				getKey(ConfigKeyEnums.CRYPTED_DIRECTORY, p));
 		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);

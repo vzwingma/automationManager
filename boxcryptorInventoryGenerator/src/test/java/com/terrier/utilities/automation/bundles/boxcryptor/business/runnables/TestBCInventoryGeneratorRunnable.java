@@ -21,6 +21,7 @@ import java.util.Calendar;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.yaml.snakeyaml.Yaml;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
@@ -40,7 +41,7 @@ public class TestBCInventoryGeneratorRunnable {
 			Files.delete(FileSystems.getDefault().getPath("src/test/resources/data/clear/liste_Fichiers_BoxCryptor.yml"));
 		}
 
-		runnable = spy(new BCInventoryGeneratorRunnable(0, "src/test/resources/data/clear/", "src/test/resources/data/bc/"));
+		runnable = spy(new BCInventoryGeneratorRunnable(0, new Yaml(), "src/test/resources/data/clear/", "src/test/resources/data/bc/"));
 		doNothing().when(runnable).sendNotificationMessage(any(), anyString(), anyString());
 
 		// Encoding en UTF-8
@@ -76,7 +77,7 @@ public class TestBCInventoryGeneratorRunnable {
 		File inventoryFile = new File("src/test/resources/data/clear");
 		assertTrue(Files.exists(FileSystems.getDefault().getPath(inventoryFile.getAbsolutePath() + "/liste_Fichiers_BoxCryptor.yml")));
 
-		BCInventaireRepertoire inventaire = BCUtils.loadYMLInventory(inventoryFile.getAbsolutePath());
+		BCInventaireRepertoire inventaire = BCUtils.loadYMLInventory(new Yaml(), inventoryFile.getAbsolutePath());
 		assertNotNull(inventaire);
 		assertEquals("bc", inventaire.get_NomFichierChiffre());
 		assertEquals("clear", inventaire.get_NomFichierClair());
@@ -90,7 +91,7 @@ public class TestBCInventoryGeneratorRunnable {
 		assertNotNull(dateMiseAJour);
 		// Relance de l'inventaire. Pas de mise à jour
 		runnable.run();
-		BCInventaireRepertoire inventaire2 = BCUtils.loadYMLInventory(inventoryFile.getAbsolutePath());
+		BCInventaireRepertoire inventaire2 = BCUtils.loadYMLInventory(new Yaml(), inventoryFile.getAbsolutePath());
 		assertNotNull(inventaire2);
 		assertEquals(dateMiseAJour, inventaire2.getDateModificationDernierInventaire());
 		
