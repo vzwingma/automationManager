@@ -35,7 +35,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 	// Répertoire non chiffré
 	private File repertoireNonChiffre;
 
-	private Calendar startTraitement = Calendar.getInstance();
+	private Calendar startTraitement;
 
 	private Long dateDernierTraitement;
 	/**
@@ -57,6 +57,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 	public void run() {
 		try{
 			Calendar dernierTraitement = Calendar.getInstance();
+			startTraitement = Calendar.getInstance();
 			if(this.dateDernierTraitement != null){
 				dernierTraitement.setTimeInMillis(this.dateDernierTraitement);
 			}
@@ -93,7 +94,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 		}
 		catch(Exception e){
 			LOGGER.error("[{}] Erreur lors de la génération de l'inventaire",this.index, e);
-			sendMessage("Erreur lors de la génération de l'inventaire" + this.repertoireNonChiffre.getName());
+			sendMessage("Erreur lors de la génération de l'inventaire de [" + this.repertoireNonChiffre.getName() +"]");
 			
 		}
 	}
