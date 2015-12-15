@@ -124,7 +124,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 						getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN),
 						getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES),
 						this.emailSendingQueue
-						), 3L, periodeEnvoiMessages, TimeUnit.MINUTES);
+						), 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
 		LOGGER.info("La tâche d'envoi des mails est programmée");
 	}
 
@@ -144,7 +144,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 						getConfig(MessagingConfigKeyEnums.SMS_USER),
 						getConfig(MessagingConfigKeyEnums.SMS_PASS),
 						this.smsSendingQueue
-						), 3L, periodeEnvoiMessages, TimeUnit.MINUTES);
+						), 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
 		LOGGER.info("La tâche d'envoi des SMS est programmée");
 	}
 

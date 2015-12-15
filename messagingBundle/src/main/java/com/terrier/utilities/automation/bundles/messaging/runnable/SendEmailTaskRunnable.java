@@ -78,13 +78,21 @@ public class SendEmailTaskRunnable implements Runnable {
 
 		// Envoi de tous les mails, groupé par titre :
 		for (Iterator<Entry<String, List<String>>> gmIterator = messagesSendingQueue.entrySet().iterator(); gmIterator.hasNext();) {
-			
+
 			Entry<String, List<String>> groupeMessages = gmIterator.next();
 			if(groupeMessages.getValue() != null && !groupeMessages.getValue().isEmpty()){
 				MultivaluedMapImpl formData = getFormData(groupeMessages.getKey(), groupeMessages.getValue());
-				ClientResponse response = webResource.post(ClientResponse.class, formData);
-				LOGGER.info("> Resultat : " + response);
-				boolean resultat = response != null && response.getStatus() == 200;
+				LOGGER.debug("Envoi du mail : {}", formData.get("subject"));
+				boolean resultat = false;
+				try{
+					ClientResponse response = webResource.post(ClientResponse.class, formData);
+					LOGGER.debug("> Resultat : {}", response);
+					resultat = response != null && response.getStatus() == 200;
+				}
+				catch(Exception e){
+					LOGGER.error("> Resultat : Erreur lors de l'envoi du mail", e);
+					resultat = false;
+				}
 				if(resultat){
 					LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi", groupeMessages.getKey());
 					gmIterator.remove();
@@ -94,7 +102,7 @@ public class SendEmailTaskRunnable implements Runnable {
 				}
 				allResponses &= resultat;
 			}
-			
+
 		}
 		return allResponses;
 	}

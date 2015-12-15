@@ -78,10 +78,17 @@ public class SendSMSTaskRunnable implements Runnable {
 			while(messagesSendingQueue.size() > 0){
 				messages.add(messagesSendingQueue.poll());
 			}
-			WebResource.Builder webResource = client.resource(prepareAPIURL + getFormData(messages)).type(MediaType.APPLICATION_FORM_URLENCODED);
-			ClientResponse response = webResource.get(ClientResponse.class);
-			LOGGER.info("> Resultat : " + response);
-			boolean resultat = response != null && response.getStatus() == 200;
+			LOGGER.debug("Envoi des {} messages par SMS", messages.size());
+			boolean resultat = false;
+			try{
+				WebResource.Builder webResource = client.resource(prepareAPIURL + getFormData(messages)).type(MediaType.APPLICATION_FORM_URLENCODED);
+				ClientResponse response = webResource.get(ClientResponse.class);
+				LOGGER.debug("> Resultat : {}", response);
+				resultat = response != null && response.getStatus() == 200;
+			}
+			catch(Exception e){
+				LOGGER.error("> Resultat : Erreur lors de l'envoi du SMS", e);
+			}
 			if(resultat){
 				LOGGER.debug("Suppression des messages SMS de la liste d'envoi");
 			}
