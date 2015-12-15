@@ -60,12 +60,12 @@ public class MessageEventHandler implements EventHandler {
 				messagingService.sendNotificationSMS(sms);
 				break;
 			default:
-				LOGGER.warn("Aucune configuration pour ce message de type {}", event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name()));
+				LOGGER.warn("Aucune configuration pour ce message de type {}", typeMessage.name());
 				break;
 			}
 		}
 		else{
-			LOGGER.error("Aucune configuration pour ce message de type {}",typeMessageObject != null ? typeMessageObject.getClass() : "null");
+			LOGGER.error("Aucune configuration pour ce message de classe {}",typeMessageObject != null ? typeMessageObject.getClass() : "null");
 		}
 	}
 }
