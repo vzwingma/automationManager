@@ -41,7 +41,7 @@ public class SendSMSTaskRunnable implements Runnable {
 	 * Constructeur de la tâche d'envoi
 	 * @param messagesSendingQueue
 	 */
-	public SendSMSTaskRunnable(final String user, final String password, final String apiURL, final ConcurrentLinkedQueue<String> messagesSendingQueue) {
+	public SendSMSTaskRunnable(final String apiURL, final String user, final String password, final ConcurrentLinkedQueue<String> messagesSendingQueue) {
 		this.user = user;
 		this.password = password;
 		this.apiURL = apiURL;

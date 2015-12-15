@@ -38,7 +38,7 @@ public class TestSMSAPI {
 	 * Test d'envoi
 	 */
 	@Test
-	public void testEnvoiMail(){
+	public void testEnvoiSMS(){
 		// Préparation
 		ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<String>();
 		queue.add("message de test1");
@@ -48,9 +48,9 @@ public class TestSMSAPI {
 
 		SendSMSTaskRunnable runnable = spy(
 				new SendSMSTaskRunnable(
+						"https://smsapi.free-mobile.fr/sendmsg?", 
 						"1", 
 						"2",
-						"https://smsapi.free-mobile.fr/sendmsg?",
 						queue));
 
 		when(runnable.getClient()).thenReturn(mockClient);

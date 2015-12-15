@@ -97,7 +97,7 @@ public abstract class AbstractAutomationService implements ManagedService {
             Event reportGeneratedEvent = new Event(EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName(), properties);
             LOGGER.debug("Envoi du message [{}] sur le topic [{}]", message, EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
             eventAdmin.sendEvent(reportGeneratedEvent);
-            LOGGER.debug("Message envoyé");
+            LOGGER.trace("Message envoyé sur le topic");
         }
         else{
         	LOGGER.error("Erreur lors de la recherche de l'EventAdmin dans le bundleContext");
