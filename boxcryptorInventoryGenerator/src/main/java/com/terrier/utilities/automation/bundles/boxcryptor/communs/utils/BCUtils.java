@@ -40,8 +40,11 @@ public class BCUtils {
 	 * @param treatementName  name of treatment
 	 * @param startTraitementCal start time of Treatment
 	 */
-	public static void printDelayFromBeginning(int index, String treatementName, Calendar startTraitementCal){
-		LOGGER.debug("[{}][{}] > {} ms", index, treatementName, (Calendar.getInstance().getTimeInMillis() - startTraitementCal.getTimeInMillis()));
+	public static void printDelayFrom(int index, String treatementName, Calendar startTraitementCal){
+		LOGGER.debug("[{}][{}] > {} ms", 
+				index, 
+				treatementName, 
+				(Calendar.getInstance().getTimeInMillis() - startTraitementCal.getTimeInMillis()));
 	}
 
 
@@ -130,5 +133,17 @@ public class BCUtils {
 			}
 			return found;
 		}
+	}
+	
+
+	/**
+	 * Libellé date
+	 * @param date
+	 * @return libellé
+	 */
+	public static String getLibelleDateFromMillis(Long date){
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(date);
+		return c.getTime().toString();
 	}
 }

@@ -35,8 +35,6 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 	// Répertoire non chiffré
 	private File repertoireNonChiffre;
 
-	private Calendar startTraitement;
-
 	private Long dateDernierTraitement;
 	/**
 	 * Start inventory
@@ -56,17 +54,21 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 	@Override
 	public void run() {
 		try{
-			Calendar dernierTraitement = Calendar.getInstance();
-			startTraitement = Calendar.getInstance();
-			if(this.dateDernierTraitement != null){
-				dernierTraitement.setTimeInMillis(this.dateDernierTraitement);
-			}
+			Calendar startTraitement = Calendar.getInstance();
 			LOGGER.info("[{}] Début de la génération de l'inventaire [{}]", index, this.repertoireNonChiffre);
 			// Lecture de l'inventaire
 			BCInventaireRepertoire inventaire = loadFileInventory();
+
 			this.dateDernierTraitement = inventaire.getDateModificationDernierInventaire();
-			LOGGER.info("[{}] Date du dernier inventaire [{}]", index, this.dateDernierTraitement != null ? dernierTraitement.getTime() : "jamais");
-			BCUtils.printDelayFromBeginning(this.index, "Read file Inventory", this.startTraitement);
+
+			if(this.dateDernierTraitement != null && this.dateDernierTraitement > 0){
+				LOGGER.info("[{}] Date du dernier inventaire [{}]", index, BCUtils.getLibelleDateFromMillis(this.dateDernierTraitement));
+			}
+			else{
+				LOGGER.warn("[{}] Date du dernier inventaire [Jamais]", index);
+			}
+
+			BCUtils.printDelayFrom(this.index, "Read file Inventory", startTraitement);
 
 			// Création de l'inventaire
 			ExecutorService threadsPool = Executors.newFixedThreadPool(100);
@@ -78,15 +80,15 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 					this.repertoireChiffre.getAbsolutePath(), this.repertoireNonChiffre.getAbsolutePath());
 			BCInventaireRepertoire inventaireNew = inventory.call();
 			threadsPool.shutdown();
-			BCUtils.printDelayFromBeginning(this.index, "Generate Inventory", this.startTraitement);
+			BCUtils.printDelayFrom(this.index, "Generate Inventory", startTraitement);
 
 
 			// Ecriture de l'inventaire ssi il a changé
 			if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire() > this.dateDernierTraitement){
-			BCUtils.dumpYMLInventory(this.repertoireNonChiffre, inventaireNew);
-			BCUtils.printDelayFromBeginning(this.index, "Dump Inventory", this.startTraitement);
-			LOGGER.info("Inventaire de {} généré", this.repertoireNonChiffre.getName());
-			sendMessage("Génération de l'inventaire de " + this.repertoireNonChiffre.getName());
+				BCUtils.dumpYMLInventory(this.repertoireNonChiffre, inventaireNew);
+				BCUtils.printDelayFrom(this.index, "Dump Inventory", startTraitement);
+				LOGGER.info("Inventaire de {} généré", this.repertoireNonChiffre.getName());
+				sendMessage("Génération de l'inventaire de " + this.repertoireNonChiffre.getName());
 			}
 			else{
 				LOGGER.info("[{}] L'inventaire n'a pas changé depuis. Pas de mise à jour du fichier", this.index);
@@ -95,7 +97,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 		catch(Exception e){
 			LOGGER.error("[{}] Erreur lors de la génération de l'inventaire",this.index, e);
 			sendMessage("Erreur lors de la génération de l'inventaire de [" + this.repertoireNonChiffre.getName() +"]");
-			
+
 		}
 	}
 
@@ -108,9 +110,9 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 		File inventoryFile = new File(repertoireNonChiffre, BCUtils.INVENTORY_FILENAME);
 		BCInventaireRepertoire repertoire;
 		if(inventoryFile.exists()){
-			LOGGER.info("[{}] Mise à jour de l'inventaire dans {}", this.index, inventoryFile.getCanonicalPath());
+			LOGGER.info("[{}] Mise à jour de l'inventaire de {}", this.index, inventoryFile.getCanonicalPath());
 			repertoire = BCUtils.loadYMLInventory(FrameworkUtil.getBundle(this.getClass()).getBundleContext(), repertoireNonChiffre.getAbsolutePath());
-			LOGGER.warn("Recréation de l'inventaire à partir de {} ", repertoire.getDateModificationDernierInventaire());
+			LOGGER.debug("[{}] Recréation de l'inventaire à partir de {} ", this.index, BCUtils.getLibelleDateFromMillis(repertoire.getDateModificationDernierInventaire()));
 		}
 		else{
 			LOGGER.warn("[{}] Le fichier {} n'existe pas. Création du fichier", this.index, inventoryFile.getAbsolutePath());
@@ -124,8 +126,8 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 	public void notifyUpdateDictionary() {
 		// Rien
 	}
-	
-	
+
+
 	/**
 	 * Envoi d'un message de notification par mail
 	 * @param message message à envoyer

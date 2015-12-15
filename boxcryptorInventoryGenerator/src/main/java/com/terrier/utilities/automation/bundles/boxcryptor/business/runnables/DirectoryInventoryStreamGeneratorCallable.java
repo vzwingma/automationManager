@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.filters.DirectoryFilter;
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.filters.FileFilter;
+import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireFichier;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
 
@@ -44,8 +45,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 	private String absRepertoireChiffre;
 	// Répertoire non chiffré
 	private String absRepertoireNonChiffre;
-	// Démarrage du traitement
-	private Calendar startTraitement;
+
 
 	// Pool de threads
 	private ExecutorService executorPool;
@@ -69,6 +69,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 			this.inventaireR = new BCInventaireRepertoire(
 					FileSystems.getDefault().getPath(this.absRepertoireChiffre).getFileName().toString(), 
 					FileSystems.getDefault().getPath(this.absRepertoireNonChiffre).getFileName().toString());
+			this.inventaireR.setDateModificationDernierInventaire(0L);
 		}
 		this.executorPool = executorPool;
 		this.nomTraitementParent = nomTraitementParent;
@@ -81,8 +82,13 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 	@Override
 	public BCInventaireRepertoire call() throws Exception {
 
-		this.startTraitement = Calendar.getInstance();
-
+		Calendar startTraitement = Calendar.getInstance();
+		LOGGER.debug("[{}] - INIT THREAD [{}] date=[{}] > {} ms", 
+				this.index, 
+				BCUtils.getLibelleDateFromMillis(inventaireR.getDateModificationDernierInventaire()),
+				this.nomTraitementParent, Calendar.getInstance().getTimeInMillis() - startTraitement.getTimeInMillis());
+		
+		
 		// Premier parcours pour trouver les sous répertoires et lancer les tâches correspondantes
 		List<Future<BCInventaireRepertoire>> listeExecSousRepertoires = new ArrayList<Future<BCInventaireRepertoire>>();
 
@@ -115,40 +121,52 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 				for (Path fichierChiffre : dsfChiffre) {
 					if(Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
 						inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
+						LOGGER.debug("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
+								index, 
+								this.nomTraitementParent,
+								BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
+								fichierNonChiffre.getFileName().toString()); 
 						// Mise à jour de la date
 						if(inventaireR.getDateModificationDernierInventaire() == null
 								|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire()){
+							LOGGER.warn("[{}] - THREAD [{}] date mise à jour =[{}]", index, this.nomTraitementParent, BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
 							inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
 						}
 					}
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info("Erreur lors du traitement", e);
 		}
 
 		// Récupération des résultats des sous répertoires
 		for (Future<BCInventaireRepertoire> resultatSousRepertoire : listeExecSousRepertoires) {
 			BCInventaireRepertoire ssRepertoire = resultatSousRepertoire.get();
+			LOGGER.debug("[{}] - THREAD [{}] date=[{}] > sous répertoire [{}]", 
+					index, 
+					this.nomTraitementParent,
+					BCUtils.getLibelleDateFromMillis(ssRepertoire.getDateModificationDernierInventaire()),
+					ssRepertoire.get_NomFichierClair()); 
 			// Mise à jour de la date
 			if(inventaireR.getDateModificationDernierInventaire() == null
 					|| (ssRepertoire.getDateModificationDernierInventaire() != null 
 						&& ssRepertoire.getDateModificationDernierInventaire() > inventaireR.getDateModificationDernierInventaire())){
+				LOGGER.warn("[{}] - THREAD [{}] date mise à jour =[{}]", index, this.nomTraitementParent, BCUtils.getLibelleDateFromMillis(ssRepertoire.getDateModificationDernierInventaire()));
 				inventaireR.setDateModificationDernierInventaire(ssRepertoire.getDateModificationDernierInventaire());
 			}
 			inventaireR.addSSRepertoire(ssRepertoire);
 		}
-		printDelayTraitementFromBeginning();
+		/*
+		 * Log du traitement
+		 */
+		LOGGER.debug("[{}] - THREAD [{}] date=[{}] > {} ms", 
+				this.index, 
+				this.nomTraitementParent, 
+				BCUtils.getLibelleDateFromMillis(inventaireR.getDateModificationDernierInventaire()),
+				Calendar.getInstance().getTimeInMillis() - startTraitement.getTimeInMillis());
+		
 		return inventaireR;
 	}
-
-
-
-	/**
-	 * Print du temps de traitement
-	 */
-	private void printDelayTraitementFromBeginning(){
-		LOGGER.debug("[{}] - THREAD [{}] > {} ms", this.index, this.nomTraitementParent, Calendar.getInstance().getTimeInMillis() - startTraitement.getTimeInMillis());
-	}
-
+	
+	
 }
