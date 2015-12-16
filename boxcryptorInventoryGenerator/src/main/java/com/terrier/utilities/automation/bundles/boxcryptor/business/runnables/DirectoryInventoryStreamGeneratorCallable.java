@@ -127,7 +127,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 								BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
 								fichierNonChiffre.getFileName().toString()); 
 						// Mise à jour de la date, ssi différent du fichier d'inventaire
-						if(!fichierNonChiffre.getFileName().equals(BCUtils.INVENTORY_FILENAME) 
+						if(!fichierNonChiffre.getFileName().toString().equals(BCUtils.INVENTORY_FILENAME) 
 								&& 
 								(inventaireR.getDateModificationDernierInventaire() == null
 								|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire())){
