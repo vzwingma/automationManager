@@ -126,10 +126,15 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 								this.nomTraitementParent,
 								BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
 								fichierNonChiffre.getFileName().toString()); 
-						// Mise à jour de la date
-						if(inventaireR.getDateModificationDernierInventaire() == null
-								|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire()){
-							LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", index, this.nomTraitementParent, BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
+						// Mise à jour de la date, ssi différent du fichier d'inventaire
+						if(!fichierNonChiffre.getFileName().equals(BCUtils.INVENTORY_FILENAME) 
+								&& 
+								(inventaireR.getDateModificationDernierInventaire() == null
+								|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire())){
+							LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", 
+									index, 
+									this.nomTraitementParent, 
+									BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
 							inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
 						}
 					}
