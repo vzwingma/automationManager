@@ -66,7 +66,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 			this.dateDernierTraitement = inventaire.getDateModificationDernierInventaire();
 
 			if(this.dateDernierTraitement != null && this.dateDernierTraitement > 0){
-				LOGGER.info("[{}] Date du dernier inventaire [{}]", index, BCUtils.getLibelleDateFromMillis(this.dateDernierTraitement));
+				LOGGER.info("[{}] Date du dernier inventaire [{}]", index, BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement));
 			}
 			else{
 				LOGGER.warn("[{}] Date du dernier inventaire [Jamais]", index);
@@ -89,9 +89,13 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 
 			// Ecriture de l'inventaire ssi il a changé
 			if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire() > this.dateDernierTraitement){
+				LOGGER.debug("[{}] Date DernierTraitement {} / Date modification dernier inventaire : {}", 
+						BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement), 
+						BCUtils.getLibelleDateUTCFromMillis(inventaireNew.getDateModificationDernierInventaire()));
+				
 				BCUtils.dumpYMLInventory(this.yml, this.repertoireNonChiffre, inventaireNew);
 				BCUtils.printDelayFrom(this.index, "Dump Inventory", startTraitement);
-				LOGGER.info("Inventaire de {} généré", this.repertoireNonChiffre.getName());
+				LOGGER.info("[{}] Inventaire de {} généré", this.index, this.repertoireNonChiffre.getName());
 				sendMessage("Génération de l'inventaire de " + this.repertoireNonChiffre.getName());
 			}
 			else{
@@ -119,7 +123,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 			LOGGER.info("[{}] Mise à jour de l'inventaire de {}", this.index, inventoryFile.getCanonicalPath());
 			repertoire = BCUtils.loadYMLInventory(this.yml, repertoireNonChiffre.getAbsolutePath());
 			if(repertoire != null){			
-				LOGGER.debug("[{}] Mise à jour de l'inventaire à partir de {} ", this.index, BCUtils.getLibelleDateFromMillis(repertoire.getDateModificationDernierInventaire()));
+				LOGGER.debug("[{}] Mise à jour de l'inventaire à partir de {} ", this.index, BCUtils.getLibelleDateUTCFromMillis(repertoire.getDateModificationDernierInventaire()));
 			}
 		}
 		else{

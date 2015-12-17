@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.util.TimeZone;
 
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -41,7 +42,7 @@ public class TestBCUtils {
 	
 	@Test
 	public void testLibelleCalendar(){
-		String date = BCUtils.getLibelleDateFromMillis(1450271887815L);
+		String date = BCUtils.getLibelleDateUTCFromMillis(1450271887815L);
 		assertEquals("Wed Dec 16 14:18:07 CET 2015", date);
 	}
 	/**

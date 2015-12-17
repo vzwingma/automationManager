@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,7 @@ public class BCUtils {
 		inventoryWriter.flush();
 		inventoryWriter.close();
 	}
-	
+
 
 
 	/**
@@ -74,20 +75,20 @@ public class BCUtils {
 	 */
 	public static BCInventaireRepertoire loadYMLInventory(Yaml yml, String repertoire) throws InventoryNotFoundException{
 		try{
-		if(repertoire != null){
-			// This will output the full path where the file will be written to...
-			File inventoryFile = new File(repertoire, BCUtils.INVENTORY_FILENAME);
-			if(inventoryFile.exists()){
-				LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.getCanonicalPath());
-				FileInputStream fis = new FileInputStream(inventoryFile);
-				BCInventaireRepertoire inventaire = yml.loadAs(fis, BCInventaireRepertoire.class);
-				fis.close();
-				return inventaire;
+			if(repertoire != null){
+				// This will output the full path where the file will be written to...
+				File inventoryFile = new File(repertoire, BCUtils.INVENTORY_FILENAME);
+				if(inventoryFile.exists()){
+					LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.getCanonicalPath());
+					FileInputStream fis = new FileInputStream(inventoryFile);
+					BCInventaireRepertoire inventaire = yml.loadAs(fis, BCInventaireRepertoire.class);
+					fis.close();
+					return inventaire;
+				}
 			}
 		}
-		}
 		catch(Exception e){
-			LOGGER.info("Erreur lors du chargement de l'inventaire", e);
+			LOGGER.error("Erreur lors du chargement de l'inventaire", e);
 		}
 		LOGGER.warn("Impossible de charger l'inventaire depuis {}.", repertoire);
 		throw new InventoryNotFoundException();
@@ -118,16 +119,21 @@ public class BCUtils {
 			return found;
 		}
 	}
-	
+
 
 	/**
 	 * Libellé date
 	 * @param date
 	 * @return libellé
 	 */
-	public static String getLibelleDateFromMillis(Long date){
-		Calendar c = Calendar.getInstance();
-		c.setTimeInMillis(date);
-		return c.getTime().toString();
+	public static String getLibelleDateUTCFromMillis(Long date){
+		if(date == null){
+			return "null";
+		}
+		else{
+			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			c.setTimeInMillis(date);
+			return c.getTime().toString();
+		}
 	}
 }

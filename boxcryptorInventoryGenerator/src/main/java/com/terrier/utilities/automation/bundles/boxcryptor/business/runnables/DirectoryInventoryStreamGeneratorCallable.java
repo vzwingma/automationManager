@@ -85,7 +85,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 		Calendar startTraitement = Calendar.getInstance();
 		LOGGER.debug("[{}] - INIT THREAD [{}] date=[{}] > {} ms", 
 				this.index, 
-				BCUtils.getLibelleDateFromMillis(inventaireR.getDateModificationDernierInventaire()),
+				BCUtils.getLibelleDateUTCFromMillis(inventaireR.getDateModificationDernierInventaire()),
 				this.nomTraitementParent, Calendar.getInstance().getTimeInMillis() - startTraitement.getTimeInMillis());
 		
 		
@@ -124,7 +124,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 						LOGGER.trace("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
 								index, 
 								this.nomTraitementParent,
-								BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
+								BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
 								fichierNonChiffre.getFileName().toString()); 
 						// Mise à jour de la date, ssi différent du fichier d'inventaire
 						if(!fichierNonChiffre.getFileName().toString().equals(BCUtils.INVENTORY_FILENAME) 
@@ -134,7 +134,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 							LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", 
 									index, 
 									this.nomTraitementParent, 
-									BCUtils.getLibelleDateFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
+									BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
 							inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
 						}
 					}
@@ -150,13 +150,13 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 			LOGGER.trace("[{}] - THREAD [{}] date=[{}] > sous répertoire [{}]", 
 					index, 
 					this.nomTraitementParent,
-					BCUtils.getLibelleDateFromMillis(ssRepertoire.getDateModificationDernierInventaire()),
+					BCUtils.getLibelleDateUTCFromMillis(ssRepertoire.getDateModificationDernierInventaire()),
 					ssRepertoire.get_NomFichierClair()); 
 			// Mise à jour de la date
 			if(inventaireR.getDateModificationDernierInventaire() == null
 					|| (ssRepertoire.getDateModificationDernierInventaire() != null 
 						&& ssRepertoire.getDateModificationDernierInventaire() > inventaireR.getDateModificationDernierInventaire())){
-				LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", index, this.nomTraitementParent, BCUtils.getLibelleDateFromMillis(ssRepertoire.getDateModificationDernierInventaire()));
+				LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", index, this.nomTraitementParent, BCUtils.getLibelleDateUTCFromMillis(ssRepertoire.getDateModificationDernierInventaire()));
 				inventaireR.setDateModificationDernierInventaire(ssRepertoire.getDateModificationDernierInventaire());
 			}
 			inventaireR.addSSRepertoire(ssRepertoire);
@@ -167,7 +167,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 		LOGGER.debug("[{}] - THREAD [{}] date=[{}] > {} ms", 
 				this.index, 
 				this.nomTraitementParent, 
-				BCUtils.getLibelleDateFromMillis(inventaireR.getDateModificationDernierInventaire()),
+				BCUtils.getLibelleDateUTCFromMillis(inventaireR.getDateModificationDernierInventaire()),
 				Calendar.getInstance().getTimeInMillis() - startTraitement.getTimeInMillis());
 		
 		return inventaireR;
