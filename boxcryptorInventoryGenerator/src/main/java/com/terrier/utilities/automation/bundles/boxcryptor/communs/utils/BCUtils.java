@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -120,6 +121,7 @@ public class BCUtils {
 		}
 	}
 
+	private static final SimpleDateFormat FORMAT_DATE_JJMMAAAA_HHSS = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 	/**
 	 * Libellé date
@@ -133,7 +135,7 @@ public class BCUtils {
 		else{
 			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 			c.setTimeInMillis(date);
-			return c.getTime().toString();
+			return FORMAT_DATE_JJMMAAAA_HHSS.format(c.getTime());
 		}
 	}
 }
