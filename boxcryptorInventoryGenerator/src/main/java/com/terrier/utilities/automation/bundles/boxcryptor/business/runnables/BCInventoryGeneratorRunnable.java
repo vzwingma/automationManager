@@ -145,6 +145,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 	 * @param message message à envoyer
 	 */
 	private void sendMessage(String message){
-		sendNotificationMessage(TypeMessagingEnum.EMAIL, "Génération inventaire BoxCryptor", message);
+		String date = BCUtils.getLibelleDateUTCFromMillis(Calendar.getInstance().getTimeInMillis());
+		sendNotificationMessage(TypeMessagingEnum.EMAIL, "Génération inventaire BoxCryptor", date + " :: " + message);
 	}
 }

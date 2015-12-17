@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -121,7 +122,7 @@ public class BCUtils {
 		}
 	}
 
-	private static final SimpleDateFormat FORMAT_DATE_JJMMAAAA_HHSS = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private static final SimpleDateFormat FORMAT_DATE_JJMMAAAA_HHSS = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRENCH);
 
 	/**
 	 * Libellé date
