@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
+import com.terrier.utilities.automation.bundles.boxcryptor.communs.exceptions.InventoryNotFoundException;
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
@@ -110,14 +111,16 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 	 * Lecture de l'inventaire existant pour mise à jour
 	 * @throws IOException
 	 */
-	protected BCInventaireRepertoire loadFileInventory() throws IOException{
+	protected BCInventaireRepertoire loadFileInventory() throws InventoryNotFoundException, IOException{
 		// This will output the full path where the file will be written to...
 		File inventoryFile = new File(repertoireNonChiffre, BCUtils.INVENTORY_FILENAME);
 		BCInventaireRepertoire repertoire;
 		if(inventoryFile.exists()){
 			LOGGER.info("[{}] Mise à jour de l'inventaire de {}", this.index, inventoryFile.getCanonicalPath());
 			repertoire = BCUtils.loadYMLInventory(this.yml, repertoireNonChiffre.getAbsolutePath());
-			LOGGER.debug("[{}] Recréation de l'inventaire à partir de {} ", this.index, BCUtils.getLibelleDateFromMillis(repertoire.getDateModificationDernierInventaire()));
+			if(repertoire != null){			
+				LOGGER.debug("[{}] Mise à jour de l'inventaire à partir de {} ", this.index, BCUtils.getLibelleDateFromMillis(repertoire.getDateModificationDernierInventaire()));
+			}
 		}
 		else{
 			LOGGER.warn("[{}] Le fichier {} n'existe pas. Création du fichier", this.index, inventoryFile.getAbsolutePath());

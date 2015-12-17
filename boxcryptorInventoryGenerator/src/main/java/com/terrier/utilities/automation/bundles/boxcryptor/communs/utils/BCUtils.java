@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
+import com.terrier.utilities.automation.bundles.boxcryptor.communs.exceptions.InventoryNotFoundException;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.AbstractBCInventaireStructure;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
 
@@ -71,7 +72,8 @@ public class BCUtils {
 	 * @return inventaire
 	 * @throws IOException error during loading
 	 */
-	public static BCInventaireRepertoire loadYMLInventory(Yaml yml, String repertoire) throws IOException{
+	public static BCInventaireRepertoire loadYMLInventory(Yaml yml, String repertoire) throws InventoryNotFoundException{
+		try{
 		if(repertoire != null){
 			// This will output the full path where the file will be written to...
 			File inventoryFile = new File(repertoire, BCUtils.INVENTORY_FILENAME);
@@ -83,7 +85,12 @@ public class BCUtils {
 				return inventaire;
 			}
 		}
-		return null;
+		}
+		catch(Exception e){
+			LOGGER.info("Erreur lors du chargement de l'inventaire", e);
+		}
+		LOGGER.warn("Impossible de charger l'inventaire depuis {}.", repertoire);
+		throw new InventoryNotFoundException();
 	}
 
 

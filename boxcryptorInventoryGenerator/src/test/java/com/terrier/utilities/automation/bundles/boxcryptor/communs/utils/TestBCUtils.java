@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
+import com.terrier.utilities.automation.bundles.boxcryptor.communs.exceptions.InventoryNotFoundException;
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireFichier;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
@@ -50,9 +51,10 @@ public class TestBCUtils {
 	 * @throws NoSuchFieldException  error
 	 * @throws IllegalAccessException  error
 	 * @throws IllegalArgumentException  error
+	 * @throws InventoryNotFoundException error
 	 */
 	@Test
-	public void testDumpYaml() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+	public void testDumpYaml() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InventoryNotFoundException{
 		System.setProperty("file.encoding","UTF-8");
 		Field charset = Charset.class.getDeclaredField("defaultCharset");
 		charset.setAccessible(true);

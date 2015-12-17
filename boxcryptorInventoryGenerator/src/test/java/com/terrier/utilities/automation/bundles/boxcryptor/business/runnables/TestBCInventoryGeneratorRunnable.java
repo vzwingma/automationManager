@@ -70,7 +70,7 @@ public class TestBCInventoryGeneratorRunnable {
 	 * @throws IOException
 	 */
 	@Test
-	public void testRunTreatmentsInventaire() throws IOException {
+	public void testRunTreatmentsInventaire() throws Exception {
 		// Test
 		runnable.run();
 		//Vérification
