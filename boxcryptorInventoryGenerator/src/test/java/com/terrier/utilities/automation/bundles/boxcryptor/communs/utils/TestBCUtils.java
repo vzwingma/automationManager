@@ -42,8 +42,9 @@ public class TestBCUtils {
 	
 	@Test
 	public void testLibelleCalendar(){
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 		String date = BCUtils.getLibelleDateUTCFromMillis(1450271887815L);
-		assertEquals("16/12/2015 14:18:07", date);
+		assertEquals("16/12/2015 13:18:07", date);
 	}
 	/**
 	 * Test dump and load YML file of inventory
