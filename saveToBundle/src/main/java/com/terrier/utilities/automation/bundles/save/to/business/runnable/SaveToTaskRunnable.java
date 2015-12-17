@@ -68,6 +68,12 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 	@Override
 	public void run() {
 		String scanDir = repertoireSource;
+
+		// Si la date du dernier scan est null
+		if(this.dateDernierScan == null){
+			this.dateDernierScan = getDateInitScan();
+		}
+
 		LOGGER.info("[{}] Scan du répertoire  : {}. Date de dernier scan : {}", index, scanDir, this.dateDernierScan != null ? sdf.format(this.dateDernierScan.getTime()) : "jamais");
 		if(Files.isDirectory(FileSystems.getDefault().getPath(scanDir))){
 
@@ -90,6 +96,27 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 		this.dateDernierScan = Calendar.getInstance();
 	}
 
+
+	/**
+	 * Si le bundle démarre, la date de dernier scan est la date de modif du répertoire
+	 */
+	protected Calendar getDateInitScan(){
+		// Vérification du répertoire de destination :
+		Path pathRepertoireDest = FileSystems.getDefault().getPath(this.repertoireDestinataire);
+		if(Files.exists(pathRepertoireDest) && Files.isDirectory(pathRepertoireDest)){
+			try {
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(Files.getLastModifiedTime(pathRepertoireDest).toMillis());
+				return cal;
+			} catch (IOException e) {
+				LOGGER.error("[{}] Erreur lors de la recherche de la date du dernier scan initial", index);
+			}
+		}
+		else{
+			LOGGER.info("[{}] Le répertoire de destination n'existe pas", index, this.repertoireSource);	
+		}
+		return null;
+	}
 
 	/**
 	 * Traitement d'un répertoire. Copie ou move de fichiers
@@ -151,7 +178,7 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 	private void traitementRepertoireSaveTo(String scanDir, Calendar dateDernierScan){
 		LOGGER.debug("[{}] Copie du répertoire complet", index);
 		int nbFichiersCopies = copyDirTo(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire).get();
-		
+
 		if(nbFichiersCopies > 0){
 			LOGGER.info("[{}] Copie réalisée vers BoxCrytor : {} fichiers copiés", index, nbFichiersCopies);
 			sendNotificationMessage("Copie du répertoire ", scanDir, " vers BoxCryptor : ", ""+nbFichiersCopies, " fichiers copiés");
@@ -191,13 +218,13 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 	 * @param directoryCible répertoire cible
 	 */
 	protected AtomicInteger copyDirTo(Path fichierSource, String directoryCible){
-		
+
 		AtomicInteger nbFichiersCopies = new AtomicInteger(0);
 		try {
 			Path fichierCible = FileSystems.getDefault().getPath(directoryCible);
 			if(fichierCible != null && fichierSource != null){
 				LOGGER.debug("[{}]  > Copie du répertoire {} vers : {}", index, fichierSource, fichierCible);
-				
+
 				Files.walkFileTree(fichierSource, new CopyDirVisitor(fichierSource, fichierCible, nbFichiersCopies, this.dateDernierScan));
 			}
 		} catch (IOException e) {

@@ -32,12 +32,20 @@ public class SaveToBusinessService extends AbstractAutomationService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger( SaveToBusinessService.class );
 
+	/**
+	 * Liste des tâches schedulées
+	 */
+	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<ScheduledFuture<?>>();
+	/**
+	 * Threads pool
+	 */
 	private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(50);
 
 	// Nombre de patterns écrits
 	protected int nbPatterns = 0;
 
-	private static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.save.to";
+	public static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.save.to";
+
 	
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#startService()
@@ -48,11 +56,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 		super.registerToConfig(CONFIG_PID);
 	}
 
-	
-	/**
-	 * Liste des tâches schedulées
-	 */
-	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<ScheduledFuture<?>>();
+
 
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#notifyUpdateDictionnary()
@@ -67,19 +71,24 @@ public class SaveToBusinessService extends AbstractAutomationService {
 		}
 		LOGGER.info(" > Nombre de pattern : {}", nbPatterns);
 		this.nbPatterns = nbPatterns;
-		
-		// arrêt des tâches schedulées
-		for (Iterator<ScheduledFuture<?>> iterator = listeScheduled.iterator(); iterator.hasNext();) {
-			ScheduledFuture<?> scheduledFuture = (ScheduledFuture<?>) iterator.next();
-			scheduledFuture.cancel(true);
-			iterator.remove();
-		}
 
-		// Démarrage des treatments reprogrammées
-		for (int p = 0; p < nbPatterns; p++) {
-			if(validateConfig(p)){
-				startTreatment(p);				
+		if(this.nbPatterns > 0){
+			// arrêt des tâches schedulées
+			for (Iterator<ScheduledFuture<?>> iterator = listeScheduled.iterator(); iterator.hasNext();) {
+				ScheduledFuture<?> scheduledFuture = (ScheduledFuture<?>) iterator.next();
+				scheduledFuture.cancel(true);
+				iterator.remove();
 			}
+
+			// Démarrage des treatments reprogrammées
+			for (int p = 0; p < nbPatterns; p++) {
+				if(validateConfig(p)){
+					startTreatment(p);				
+				}
+			}
+		}
+		else{
+			LOGGER.warn("Aucune configuration détectée. Pas de modification de la configuration");
 		}
 		LOGGER.info("** **");
 	}
@@ -101,8 +110,8 @@ public class SaveToBusinessService extends AbstractAutomationService {
 		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);
 		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, 0L, periode, TimeUnit.MINUTES));	
 	}
-	
-	
+
+
 	/**
 	 * @return validation de la configuration
 	 */
@@ -120,7 +129,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 			period = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
 		}
 		catch(NumberFormatException e){
-			
+			LOGGER.error("[{}] > Erreur dans le format de la période {}", p, getKey(ConfigKeyEnums.PERIOD_SCAN, p));
 		}
 		configValid = period != null
 				&& getKey(ConfigKeyEnums.COMMANDE, p) != null
@@ -131,6 +140,9 @@ public class SaveToBusinessService extends AbstractAutomationService {
 		if(!configValid){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
 			sendNotificationMessage(TypeMessagingEnum.SMS, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
+		}
+		else{
+
 		}
 		return configValid;
 	}

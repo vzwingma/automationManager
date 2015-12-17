@@ -66,6 +66,7 @@ public class TestSaveToTaskRunnable {
 
 		Mockito.doNothing().when(spyTask).sendNotificationMessage(any(TypeMessagingEnum.class), anyString(), anyString());
 		when(spyTask.copyFichierTo(any(Path.class), eq("_HUBICEU257005.pdf"), anyString())).thenReturn(Boolean.TRUE);
+		when(spyTask.getDateInitScan()).thenReturn(null);
 		// Premier traitement, la copie est réalisée
 		spyTask.run();
 
@@ -105,6 +106,7 @@ public class TestSaveToTaskRunnable {
 
 		Mockito.doNothing().when(spyTask).sendNotificationMessage(any(TypeMessagingEnum.class), anyString(), anyString());
 		when(spyTask.copyDirTo(any(Path.class), anyString())).thenCallRealMethod();
+		when(spyTask.getDateInitScan()).thenReturn(null);
 		LOGGER.info("*** 1er traitement ***");
 		// Premier traitement, la copie est réalisée
 		spyTask.run();

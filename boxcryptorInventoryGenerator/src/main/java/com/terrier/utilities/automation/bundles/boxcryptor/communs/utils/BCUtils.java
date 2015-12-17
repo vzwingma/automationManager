@@ -36,6 +36,7 @@ public class BCUtils {
 	// Regex to split search values
 	protected static final String SPLIT_REGEX = "[ _-]";
 
+	private static final SimpleDateFormat FORMAT_DATE_JJMMAAAA_HHSS = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRENCH);
 	/**
 	 * Print delay from startTraitementCal
 	 * @param treatementName  name of treatment
@@ -122,7 +123,6 @@ public class BCUtils {
 		}
 	}
 
-	private static final SimpleDateFormat FORMAT_DATE_JJMMAAAA_HHSS = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRENCH);
 
 	/**
 	 * Libellé date
