@@ -8,6 +8,7 @@
 	</parent>
 	<artifactId>boxcryptorInventoryGenerator</artifactId>
 	<name>[Automation] Boxcryptor Inventory Generator</name>
+	<version>${automation.boxcryptor.inventory.version}</version>	
 	<description>Inventory Generator OSGi bundle project.</description>
 	<packaging>bundle</packaging>
 	<dependencies>
@@ -78,5 +79,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<version>${automation.boxcryptor.inventory.version}</version>
+
 </project>

@@ -18,7 +18,7 @@ Gestionnaire de tâches automatisées
   * [![Dependency Status](https://www.versioneye.com/user/projects/566f2f1b1079970030000014/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f1b1079970030000014)
     
 
-#### [boxcryptorInventoryBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v0.6.0-SNAPSHOT
+#### [boxcryptorInventoryBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v1.0.0
   *  Générateur d'inventaire pour BoxCryptor
   * [![Dependency Status](https://www.versioneye.com/user/projects/566f2f15107997002d000006/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f15107997002d000006)
     

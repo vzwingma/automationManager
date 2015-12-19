@@ -10,7 +10,9 @@ package com.terrier.utilities.automation.bundles.communs.enums.messaging;
 public enum EventsTopicNameEnum {
 
 	
-	NOTIFIFY_MESSAGE("com/terrier/utilities/automation/message/notify");
+	NOTIFIFY_MESSAGE("com/terrier/utilities/automation/message/notify"),
+	BUNDLE_EVENTS("org/osgi/framework/BundleEvent"),
+	SERVICE_EVENTS("org/osgi/framework/ServiceEvent");
 
 	// Topic name
 	private String topicName;

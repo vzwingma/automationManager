@@ -10,8 +10,9 @@
 	<properties>
 		<automation.commons.version>1.1.0</automation.commons.version>
 		<automation.save.to.version>1.0.3</automation.save.to.version>
-		<automation.boxcryptor.inventory.version>0.6.0-SNAPSHOT</automation.boxcryptor.inventory.version>
+		<automation.boxcryptor.inventory.version>1.0.0</automation.boxcryptor.inventory.version>
 		<automation.messaging.version>1.0.1</automation.messaging.version>
+		<automation.supervision.version>0.1.0-SNAPSHOT</automation.supervision.version>
 	</properties>
 
 
@@ -52,6 +53,7 @@
 	</build>
 	<modules>
 		<module>automationCommons</module>
+		<module>automationSupervision</module>		
 		<module>messagingBundle</module>
 		<module>saveToBundle</module>
 		<module>boxcryptorInventoryGenerator</module>

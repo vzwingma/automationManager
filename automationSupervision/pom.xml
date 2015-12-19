@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.terrier.utilities.automation.bundles</groupId>
+		<artifactId>AutomationManager</artifactId>
+		<version>1.0.1</version>
+	</parent>
+	<artifactId>automationSupervision</artifactId>
+	<version>${automation.supervision.version}</version>
+
+	<packaging>bundle</packaging>
+	<description>Automation Supervision bundle project.</description>
+	<dependencies>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>automationCommons</artifactId>
+			<version>${automation.commons.version}</version>
+		</dependency>
+		<!-- Inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>3.0.1</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Export-Package>com.terrier.utilities.automation.bundles.supervision*;version=${project.version}</Export-Package>
+						<Import-Package>*</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<name>[Automation] Supervision</name>
+</project>
