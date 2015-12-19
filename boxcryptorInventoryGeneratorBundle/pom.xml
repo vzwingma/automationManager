@@ -6,7 +6,7 @@
 		<artifactId>AutomationManager</artifactId>
 		<version>1.0.1</version>
 	</parent>
-	<artifactId>boxcryptorInventoryGenerator</artifactId>
+	<artifactId>boxcryptorInventoryGeneratorBundle</artifactId>
 	<name>[Automation] Boxcryptor Inventory Generator</name>
 	<version>${automation.boxcryptor.inventory.version}</version>	
 	<description>Inventory Generator OSGi bundle project.</description>

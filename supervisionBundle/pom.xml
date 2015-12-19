@@ -6,7 +6,7 @@
 		<artifactId>AutomationManager</artifactId>
 		<version>1.0.1</version>
 	</parent>
-	<artifactId>automationSupervision</artifactId>
+	<artifactId>supervisionBundle</artifactId>
 	<version>${automation.supervision.version}</version>
 
 	<packaging>bundle</packaging>

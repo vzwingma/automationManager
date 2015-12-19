@@ -53,10 +53,10 @@
 	</build>
 	<modules>
 		<module>automationCommons</module>
-		<module>automationSupervision</module>		
+		<module>supervisionBundle</module>		
 		<module>messagingBundle</module>
 		<module>saveToBundle</module>
-		<module>boxcryptorInventoryGenerator</module>
+		<module>boxcryptorInventoryGeneratorBundle</module>
 	</modules>
 
 	<dependencies>
