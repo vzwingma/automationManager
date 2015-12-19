@@ -10,10 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
+import com.terrier.utilities.automation.bundles.boxcryptor.business.BoxcryptorBusinessService;
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.exceptions.InventoryNotFoundException;
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
-import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
 
 /**
@@ -21,7 +21,7 @@ import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMess
  * @author vzwingma
  *
  */
-public class BCInventoryGeneratorRunnable extends AbstractAutomationService implements Runnable {
+public class BCInventoryGeneratorRunnable implements Runnable {
 
 
 
@@ -37,16 +37,18 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 	private File repertoireNonChiffre;
 
 	private Long dateDernierTraitement;
-	
+	// Services
+	private BoxcryptorBusinessService service;
 	private Yaml yml;
 	/**
 	 * Start inventory
 	 * @param args directories parameters
 	 * @throws Exception error during generation
 	 */
-	public BCInventoryGeneratorRunnable(final int index, final Yaml yml, final String cheminRepertoireNonChiffre, final String cheminRepertoireChiffre){
+	public BCInventoryGeneratorRunnable(final int index, final Yaml yml, final String cheminRepertoireNonChiffre, final String cheminRepertoireChiffre, final BoxcryptorBusinessService service){
 		this.index = index;
 		this.yml = yml;
+		this.service = service;
 		this.repertoireChiffre = new File(cheminRepertoireChiffre);
 		this.repertoireNonChiffre = new File(cheminRepertoireNonChiffre);
 	}
@@ -92,7 +94,7 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 				LOGGER.debug("[{}] Date DernierTraitement {} / Date modification dernier inventaire : {}", 
 						BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement), 
 						BCUtils.getLibelleDateUTCFromMillis(inventaireNew.getDateModificationDernierInventaire()));
-				
+
 				BCUtils.dumpYMLInventory(this.yml, this.repertoireNonChiffre, inventaireNew);
 				BCUtils.printDelayFrom(this.index, "Dump Inventory", startTraitement);
 				LOGGER.info("[{}] Inventaire de {} généré", this.index, this.repertoireNonChiffre.getName());
@@ -109,8 +111,8 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 		}
 	}
 
-	
-	
+
+
 	/**
 	 * Lecture de l'inventaire existant pour mise à jour
 	 * @throws IOException
@@ -134,18 +136,14 @@ public class BCInventoryGeneratorRunnable extends AbstractAutomationService impl
 	}
 
 
-	@Override
-	public void notifyUpdateDictionary() {
-		// Rien
-	}
-
-
 	/**
 	 * Envoi d'un message de notification par mail
 	 * @param message message à envoyer
 	 */
-	private void sendMessage(String message){
-		String date = BCUtils.getLibelleDateUTCFromMillis(Calendar.getInstance().getTimeInMillis());
-		sendNotificationMessage(TypeMessagingEnum.EMAIL, "Génération inventaire BoxCryptor", date + " :: " + message);
+	protected void sendMessage(String message){
+		if(service != null){
+			String date = BCUtils.getLibelleDateUTCFromMillis(Calendar.getInstance().getTimeInMillis());
+			service.sendNotificationMessage(TypeMessagingEnum.EMAIL, "Génération inventaire BoxCryptor", date + " :: " + message);
+		}
 	}
 }

@@ -5,6 +5,7 @@ package com.terrier.utilities.automation.bundles.supervision.business;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -30,12 +31,7 @@ public class SupervisionBusinessService extends AbstractAutomationService {
 	private static final Logger LOGGER = LoggerFactory.getLogger( SupervisionBusinessService.class );
 	// Message Handler
 	@Inject private AutomationBundlesListener automationBundlesListener;
-	
-	public SupervisionBusinessService(){
-		LOGGER.info("SupervisionBusinessService");
-	}
-	
-	
+
 	/**
 	 * Initialisation
 	 */
@@ -57,6 +53,13 @@ public class SupervisionBusinessService extends AbstractAutomationService {
 	@Override
 	public void notifyUpdateDictionary() {
 		// Rien car il n'y a pas de fichier de configuration associé		
+	}
+
+
+	@Override
+	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

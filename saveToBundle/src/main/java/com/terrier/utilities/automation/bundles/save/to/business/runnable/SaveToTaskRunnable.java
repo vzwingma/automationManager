@@ -17,10 +17,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;
+import com.terrier.utilities.automation.bundles.save.to.business.SaveToBusinessService;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.CommandeEnum;
 
 /**
@@ -28,7 +28,7 @@ import com.terrier.utilities.automation.bundles.save.to.business.enums.CommandeE
  * @author vzwingma
  *
  */
-public class SaveToTaskRunnable extends AbstractAutomationService implements Runnable {
+public class SaveToTaskRunnable implements Runnable {
 
 
 
@@ -45,20 +45,23 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 	private Calendar dateDernierScan = null;
 
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-
+	// Service
+	private SaveToBusinessService service;
+	
 	/**
 	 * @param repertoireSource répertoire source
 	 * @param patternEntree pattern d'entrée (si null : copie du répertoire)
 	 * @param repertoireDestinataire répertoire destinataire (X: de boxcryptor)
 	 * @param patternSortie pattern de sortie (si modification)
 	 */
-	public SaveToTaskRunnable(int index, CommandeEnum commande, String repertoireSource, String patternEntree, String repertoireDestinataire, String patternSortie){
+	public SaveToTaskRunnable(final int index, final CommandeEnum commande, final String repertoireSource, final String patternEntree, final String repertoireDestinataire, final String patternSortie, final SaveToBusinessService service){
 		this.index = index;
 		this.commande = commande;
 		this.repertoireSource = repertoireSource;
 		this.patternEntree = patternEntree;
 		this.repertoireDestinataire = repertoireDestinataire;
 		this.patternSortie = patternSortie;
+		this.service = service;
 	}
 
 	/**
@@ -199,14 +202,14 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 	 * Envoi d'un email de notification
 	 * @param message
 	 */
-	private void sendNotificationMessage(String... message){
-		if(message != null){
+	protected void sendNotificationMessage(String... message){
+		if(message != null && service != null){
 			StringBuilder msg = new StringBuilder();
 			for (String part : message) {
 				msg.append(part);
 			}
 			LOGGER.debug("Envoi du message Copie vers BoxCryptor");
-			sendNotificationMessage(TypeMessagingEnum.EMAIL, "Copie vers BoxCryptor", msg.toString());
+			service.sendNotificationMessage(TypeMessagingEnum.EMAIL, "Copie vers BoxCryptor", msg.toString());
 		}
 	}
 
@@ -276,12 +279,10 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 		}
 	}
 
-	@Override
-	public void notifyUpdateDictionary() {
-		// Rien
-	}
 
-
+	/**
+	 * @return date du dernier scann
+	 */
 	protected Calendar getDateDernierScan(){
 		return this.dateDernierScan;
 	}

@@ -11,8 +11,7 @@ public enum EventsTopicNameEnum {
 
 	
 	NOTIFIFY_MESSAGE("com/terrier/utilities/automation/message/notify"),
-	BUNDLE_EVENTS("org/osgi/framework/BundleEvent"),
-	SERVICE_EVENTS("org/osgi/framework/ServiceEvent");
+	SUPERVISION_EVENTS("com/terrier/utilities/automation/supervision/notify");
 
 	// Topic name
 	private String topicName;

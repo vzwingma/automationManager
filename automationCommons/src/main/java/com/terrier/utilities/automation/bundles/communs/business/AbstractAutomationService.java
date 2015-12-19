@@ -4,8 +4,11 @@
 package com.terrier.utilities.automation.bundles.communs.business;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
@@ -27,7 +30,7 @@ import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundEx
  * @author vzwingma
  *
  */
-public abstract class AbstractAutomationService implements ManagedService {
+public abstract class AbstractAutomationService implements ManagedService, Runnable {
 
 
 	private final Logger LOGGER = LoggerFactory.getLogger( this.getClass() );
@@ -80,6 +83,41 @@ public abstract class AbstractAutomationService implements ManagedService {
 	public abstract void notifyUpdateDictionary(); 
 	
 
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
+	@Override
+	public void run() {
+		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+        ServiceReference<EventAdmin> ref = context.getServiceReference(EventAdmin.class);
+        if (ref != null)  {
+            EventAdmin eventAdmin = context.getService(ref);
+            LOGGER.debug("BundleContext {} / ServiceReference {} / EventAdmin {}", context, ref, eventAdmin);
+            Dictionary<String, Object> properties = new Hashtable<String, Object>();
+            
+            Map<String, Object> statusBundle = new HashMap<>();
+            updateSupervisionEvents(statusBundle);
+            properties.put("STATUS", statusBundle);
+            properties.put(EventPropertyNameEnum.TIME.name(), System.currentTimeMillis());
+            Event reportGeneratedEvent = new Event(EventsTopicNameEnum.SUPERVISION_EVENTS.getTopicName(), properties);
+            LOGGER.debug("Envoi des status sur le topic [{}]", EventsTopicNameEnum.SUPERVISION_EVENTS.getTopicName());
+            eventAdmin.sendEvent(reportGeneratedEvent);
+            LOGGER.trace("Message envoyé sur le topic");
+        }
+        else{
+        	LOGGER.error("Erreur lors de la recherche de l'EventAdmin dans le bundleContext");
+        }
+	}
+
+
+
+	/**
+	 * Envoi d'un message pour publication
+	 * @param message message à envoyer
+	 */
+	public abstract void updateSupervisionEvents(Map<String, Object> supervisionEvents);
+	
 	
 	/**
 	 * Envoi d'un message pour publication

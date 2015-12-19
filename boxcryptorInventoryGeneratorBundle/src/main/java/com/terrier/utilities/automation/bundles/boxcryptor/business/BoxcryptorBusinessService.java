@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -134,7 +135,8 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 				p,
 				this.yaml, 
 				getKey(ConfigKeyEnums.SOURCE_DIRECTORY, p),
-				getKey(ConfigKeyEnums.CRYPTED_DIRECTORY, p));
+				getKey(ConfigKeyEnums.CRYPTED_DIRECTORY, p),
+				this);
 		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);
 		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(generateInventoryRunnable, 0L, periode, TimeUnit.MINUTES));	
 	}
@@ -214,5 +216,11 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		} catch (KeyNotFoundException e) {
 			return null;
 		}
+	}
+
+	@Override
+	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -6,7 +6,6 @@ package com.terrier.utilities.automation.bundles.boxcryptor.business.runnables;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
@@ -41,8 +40,8 @@ public class TestBCInventoryGeneratorRunnable {
 			Files.delete(FileSystems.getDefault().getPath("src/test/resources/data/clear/liste_Fichiers_BoxCryptor.yml"));
 		}
 
-		runnable = spy(new BCInventoryGeneratorRunnable(0, new Yaml(), "src/test/resources/data/clear/", "src/test/resources/data/bc/"));
-		doNothing().when(runnable).sendNotificationMessage(any(), anyString(), anyString());
+		runnable = spy(new BCInventoryGeneratorRunnable(0, new Yaml(), "src/test/resources/data/clear/", "src/test/resources/data/bc/", null));
+		doNothing().when(runnable).sendMessage(anyString());
 
 		// Encoding en UTF-8
 		// Forcage en UTF-8 pour les caractères chinois utilisés par BC

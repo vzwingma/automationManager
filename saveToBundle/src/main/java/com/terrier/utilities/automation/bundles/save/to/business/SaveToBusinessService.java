@@ -3,6 +3,7 @@ package com.terrier.utilities.automation.bundles.save.to.business;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -106,7 +107,8 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p),
 				getKey(ConfigKeyEnums.FILES_PATTERN_IN, p),
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
-				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p));
+				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p),
+				this);
 		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);
 		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, 0L, periode, TimeUnit.MINUTES));	
 	}
@@ -202,5 +204,13 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	@PreDestroy
 	public void stopService() {
 		scheduledThreadPool.shutdownNow();
+	}
+
+
+
+	@Override
+	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
+		// TODO Auto-generated method stub
+		
 	}
 }

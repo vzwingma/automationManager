@@ -266,4 +266,12 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		}
 		return null;
 	}
+
+
+
+	@Override
+	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
+		// TODO Auto-generated method stub
+		
+	}
 }
