@@ -3,7 +3,6 @@
  */
 package com.terrier.utilities.automation.bundles.supervision.business;
 
-import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -13,12 +12,11 @@ import javax.inject.Singleton;
 
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
+import com.terrier.utilities.automation.bundles.supervision.listeners.AutomationBundlesListener;
 
 /**
  * Supervision Service
@@ -31,7 +29,13 @@ public class SupervisionBusinessService extends AbstractAutomationService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger( SupervisionBusinessService.class );
 	// Message Handler
-	@Inject private BundlesEventsHandler eventsBundlesHander;
+	@Inject private AutomationBundlesListener automationBundlesListener;
+	
+	public SupervisionBusinessService(){
+		LOGGER.info("SupervisionBusinessService");
+	}
+	
+	
 	/**
 	 * Initialisation
 	 */
@@ -40,12 +44,13 @@ public class SupervisionBusinessService extends AbstractAutomationService {
 
 		Dictionary<String, String[]> props = new Hashtable<String, String[]>();
 		String[] listeTopics = new String[]{
-				EventsTopicNameEnum.BUNDLE_EVENTS.getTopicName(),
-				EventsTopicNameEnum.SERVICE_EVENTS.getTopicName()
+				"org/osgi/framework/BundleEvent/",
+				"org/osgi/framework/ServiceEvent/"
 				};
 		props.put(EventConstants.EVENT_TOPIC, listeTopics);
-		LOGGER.info("Enregistrement de l'eventHandler {} sur les topics : {}", eventsBundlesHander, Arrays.asList(listeTopics));
-		FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(EventHandler.class.getName(), eventsBundlesHander , props);
+		//LOGGER.info("Enregistrement de l'eventHandler {} sur les topics : {}", eventsBundlesHander, Arrays.asList(listeTopics));
+		FrameworkUtil.getBundle(this.getClass()).getBundleContext().addBundleListener(automationBundlesListener);
+		FrameworkUtil.getBundle(this.getClass()).getBundleContext().addServiceListener(automationBundlesListener);
 	}
 
 	

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.supervision.business;
+package com.terrier.utilities.automation.bundles.supervision.listeners;
 
 import javax.inject.Singleton;
 
