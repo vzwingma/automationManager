@@ -103,17 +103,18 @@ public class SaveToTaskRunnable extends AbstractAutomationService implements Run
 	protected Calendar getDateInitScan(){
 		// Vérification du répertoire de destination :
 		Path pathRepertoireDest = FileSystems.getDefault().getPath(this.repertoireDestinataire);
-		if(Files.exists(pathRepertoireDest) && Files.isDirectory(pathRepertoireDest)){
+		if(Files.exists(pathRepertoireDest)){
 			try {
 				Calendar cal = Calendar.getInstance();
 				cal.setTimeInMillis(Files.getLastModifiedTime(pathRepertoireDest).toMillis());
+				LOGGER.debug("[{}] Date de {} : {}", this.repertoireDestinataire, cal.getTime());
 				return cal;
 			} catch (IOException e) {
 				LOGGER.error("[{}] Erreur lors de la recherche de la date du dernier scan initial", index);
 			}
 		}
 		else{
-			LOGGER.info("[{}] Le répertoire de destination n'existe pas", index, this.repertoireSource);	
+			LOGGER.warn("[{}] Le répertoire de destination n'existe pas", index, this.repertoireSource);	
 		}
 		return null;
 	}
