@@ -40,5 +40,4 @@ public class AutomationBundlesListener implements BundleListener, ServiceListene
 	public void bundleChanged(BundleEvent event) {
 		LOGGER.info("BundleEvent :: {} {}", event.getOrigin(), OSGIStatusUtils.getBundleStatusLibelle(event.getType()));
 	}
-
 }
