@@ -21,4 +21,18 @@ public enum StatusPropertyNameEnum implements AutomationTopicPropertyNamesEnum {
 	public String getName() {
 		return this.name();
 	}
+	
+	
+	/**
+	 * @param enumName nom de l'enum
+	 * @return l'enum correspondant
+	 */
+	public static StatusPropertyNameEnum getEnumFromName(String enumName){
+		for (StatusPropertyNameEnum enumStatus : StatusPropertyNameEnum.values()) {
+			if(enumStatus.getName().equals(enumName)){
+				return enumStatus;
+			}
+		}
+		return null;
+	}
 }

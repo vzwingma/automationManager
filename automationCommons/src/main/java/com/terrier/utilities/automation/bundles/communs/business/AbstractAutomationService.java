@@ -128,8 +128,8 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 
 
 	/**
-	 * Envoi d'un message pour publication
-	 * @param message message à envoyer
+	 * Ajout des informations du bundle à superviser
+	 * @param supervisionEvents événements de supervision, sous la forme titre->Données
 	 */
 	public abstract void updateSupervisionEvents(Map<String, Object> supervisionEvents);
 	

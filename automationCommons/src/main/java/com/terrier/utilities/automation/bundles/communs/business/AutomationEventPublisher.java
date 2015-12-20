@@ -32,7 +32,7 @@ public class AutomationEventPublisher<PT extends AutomationTopicPropertyNamesEnu
 
 	private final Logger LOGGER = LoggerFactory.getLogger( this.getClass() );
 
-
+	private static final Logger LOG_COMMON = LoggerFactory.getLogger( AutomationEventPublisher.class );
 
 	/**
 	 * Publication vers un topic
@@ -43,23 +43,8 @@ public class AutomationEventPublisher<PT extends AutomationTopicPropertyNamesEnu
 
 		EventAdmin eventAdmin = getEventAdmin();
 		if (eventAdmin != null)  {
-
-			Dictionary<String, Object> properties = new Hashtable<String, Object>();
-			// Transformation des properties messages en propertiestotopic
-			if(propertiesMessages != null && !propertiesMessages.isEmpty()){
-				for (Entry<PT, Object> property : propertiesMessages.entrySet()) {
-					if(property.getKey().getClass().equals(topic.getEnumPropertyName())){
-						properties.put(property.getKey().getName(), property.getValue());	
-					}
-					else{
-						LOGGER.warn("L'enum de la clé {} ne correspond pas au type de l'enum {} du topic {}. Cette propriété est ignorée", property.getKey().getName(), topic.getEnumPropertyName(), topic.getTopicName());
-					}
-				}
-			}
-			// Envoi réellement s'il y a  des propriétés
-			if(!properties.isEmpty()){
-
-				Event toTopicEvent = new Event(topic.getTopicName(), properties);
+			Event toTopicEvent = createEvent(topic, propertiesMessages);
+			if(toTopicEvent != null){
 				LOGGER.debug("Envoi du message sur le topic [{}]", topic.getTopicName());
 				try{
 					eventAdmin.sendEvent(toTopicEvent);
@@ -74,6 +59,36 @@ public class AutomationEventPublisher<PT extends AutomationTopicPropertyNamesEnu
 			}
 		}
 	}
+
+	/**
+	 * Création d'un événement
+	 * @param topic topic 
+	 * @param propertiesMessages propriétés du message
+	 * @return event event à envoyer. Null si erreur ou données incorrectes
+	 */
+	public static Event createEvent(EventsTopicNameEnum topic, Map<?  extends AutomationTopicPropertyNamesEnum, Object> propertiesMessages){
+		Dictionary<String, Object> properties = new Hashtable<String, Object>();
+		// Transformation des properties messages en propertiestotopic
+		if(propertiesMessages != null && !propertiesMessages.isEmpty()){
+			for (Entry<?  extends AutomationTopicPropertyNamesEnum, Object> property : propertiesMessages.entrySet()) {
+				if(property.getKey().getClass().equals(topic.getEnumPropertyName())){
+					properties.put(property.getKey().getName(), property.getValue());	
+				}
+				else{
+					LOG_COMMON.warn("L'enum de la clé {} ne correspond pas au type de l'enum {} du topic {}. Cette propriété est ignorée", property.getKey().getName(), topic.getEnumPropertyName(), topic.getTopicName());
+				}
+			}
+		}
+		// Envoi réellement s'il y a  des propriétés
+		if(!properties.isEmpty()){
+			return new Event(topic.getTopicName(), properties);
+		}
+		else{
+			LOG_COMMON.warn("Le message ne contient aucune propriété.");
+			return null;
+		}
+	}
+
 
 	/**
 	 * @return l'eventAdmin utilisé pour faire des envois

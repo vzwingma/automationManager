@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -40,7 +39,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	/**
 	 * Threads pool
 	 */
-	private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(50);
+	private ScheduledThreadPoolExecutor scheduledThreadPool = new ScheduledThreadPoolExecutor(50);
 
 	// Nombre de patterns écrits
 	protected int nbPatterns = 0;
@@ -208,9 +207,12 @@ public class SaveToBusinessService extends AbstractAutomationService {
 
 
 
+	/* (non-Javadoc)
+	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.Map)
+	 */
 	@Override
 	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
-		// TODO Auto-generated method stub
-		
+		supervisionEvents.put("Activité du ScheduledThreadPool", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
+		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getActiveCount() + "/" + this.scheduledThreadPool.getPoolSize());
 	}
 }

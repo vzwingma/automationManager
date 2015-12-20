@@ -7,9 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -43,7 +42,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger( MessagingBusinessService.class );
 
-	private ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(5);
+	private ScheduledThreadPoolExecutor scheduledThreadPool = new ScheduledThreadPoolExecutor(5);
 
 	/**
 	 * Liste des tâches schedulées
@@ -272,5 +271,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
 		supervisionEvents.put("Statut de l'envoi d'emails", "Done : " + this.sendEmailScheduled.isDone() + ", Cancel : " + this.sendEmailScheduled.isCancelled());
 		supervisionEvents.put("Statut de l'envoi de SMS", "Done : " + this.sendSMSScheduled.isDone() + ", Cancel : " + this.sendSMSScheduled.isCancelled());
+		supervisionEvents.put("Activité du ScheduledThreadPool", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
+		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getActiveCount() + "/" + this.scheduledThreadPool.getPoolSize());
 	}
 }
