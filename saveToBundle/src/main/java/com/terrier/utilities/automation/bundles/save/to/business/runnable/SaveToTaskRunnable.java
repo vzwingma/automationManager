@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;
 import com.terrier.utilities.automation.bundles.save.to.business.SaveToBusinessService;
@@ -209,7 +209,7 @@ public class SaveToTaskRunnable implements Runnable {
 				msg.append(part);
 			}
 			LOGGER.debug("Envoi du message Copie vers BoxCryptor");
-			service.sendNotificationMessage(TypeMessagingEnum.EMAIL, "Copie vers BoxCryptor", msg.toString());
+			service.sendNotificationMessage(MessageTypeEnum.EMAIL, "Copie vers BoxCryptor", msg.toString());
 		}
 	}
 

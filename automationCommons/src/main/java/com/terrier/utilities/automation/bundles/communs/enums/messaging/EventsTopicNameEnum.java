@@ -10,19 +10,20 @@ package com.terrier.utilities.automation.bundles.communs.enums.messaging;
 public enum EventsTopicNameEnum {
 
 	
-	NOTIFIFY_MESSAGE("com/terrier/utilities/automation/message/notify"),
-	SUPERVISION_EVENTS("com/terrier/utilities/automation/supervision/notify");
+	NOTIFIFY_MESSAGE("com/terrier/utilities/automation/message/notify", MessagePropertyNameEnum.class),
+	SUPERVISION_EVENTS("com/terrier/utilities/automation/supervision/notify", StatusPropertyNameEnum.class);
 
 	// Topic name
 	private String topicName;
 	
-	
+	private Class<?> enumPropertyName;
 	/**
 	 * Valeur de l'enum
 	 * @param value
 	 */
-	private EventsTopicNameEnum(String topicName){
+	private EventsTopicNameEnum(String topicName, Class<?> enumPropertyName){
 		this.topicName = topicName;
+		this.enumPropertyName = enumPropertyName;
 	}
 
 
@@ -32,4 +33,15 @@ public enum EventsTopicNameEnum {
 	public String getTopicName() {
 		return topicName;
 	}
+
+
+	/**
+	 * @return the enumPropertyName
+	 */
+	public Class<?> getEnumPropertyName() {
+		return enumPropertyName;
+	}
+	
+	
+	
 }

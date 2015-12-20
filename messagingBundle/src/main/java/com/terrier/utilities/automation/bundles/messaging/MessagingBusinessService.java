@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.messaging.runnable.SendEmailTaskRunnable;
@@ -49,7 +49,6 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 * Liste des tâches schedulées
 	 */
 	private ScheduledFuture<?> sendEmailScheduled;
-
 	private ScheduledFuture<?> sendSMSScheduled;
 
 	// Message Handler
@@ -113,8 +112,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	private void scheduleSendingEmail(){
 		// arrêt des tâches schedulées
 		if(sendEmailScheduled != null){
-			LOGGER.warn("Arrêt de la tâche d'envoi des emails");
-			sendEmailScheduled.cancel(true);
+			boolean cancel = sendEmailScheduled.cancel(true);
+			LOGGER.warn("Arrêt de la tâche d'envoi des emails : {}", cancel);
 		}
 		String apiURL = getConfig(MessagingConfigKeyEnums.EMAIL_URL) + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN) + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE);
 		sendEmailScheduled = scheduledThreadPool.scheduleAtFixedRate(
@@ -135,8 +134,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	private void scheduleSendingSMS(){
 		// arrêt des tâches schedulées
 		if(sendSMSScheduled != null){
-			LOGGER.warn("Arrêt de la tâche d'envoi des SMS");
-			sendSMSScheduled.cancel(true);
+			boolean cancel = sendSMSScheduled.cancel(true);
+			LOGGER.warn("Arrêt de la tâche d'envoi des SMS : {}", cancel);
 		}
 		sendSMSScheduled = scheduledThreadPool.scheduleAtFixedRate(
 				new SendSMSTaskRunnable(
@@ -161,9 +160,9 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		LOGGER.info("[EMAIL] > Nom du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
 		LOGGER.info("[EMAIL] > Clé du service : {}", (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? "**********" : null));
 		LOGGER.info("[EMAIL] > Destinataires : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
-		LOGGER.info("[SMS] > URL du service : {}", getConfig(MessagingConfigKeyEnums.SMS_URL));
-		LOGGER.info("[SMS] > User du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_USER) != null ? "**********" : null));
-		LOGGER.info("[SMS] > Mot de passe du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_PASS) != null ? "**********" : null));
+		LOGGER.info("[ SMS ] > URL du service : {}", getConfig(MessagingConfigKeyEnums.SMS_URL));
+		LOGGER.info("[ SMS ] > User du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_USER) != null ? "**********" : null));
+		LOGGER.info("[ SMS ] > Mot de passe du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_PASS) != null ? "**********" : null));
 
 		boolean configValid = true;
 		try{
@@ -190,8 +189,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		}
 		if(!configValid){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
-			sendNotificationMessage(TypeMessagingEnum.SMS, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
-			sendNotificationMessage(TypeMessagingEnum.EMAIL, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
+			sendNotificationMessage(MessageTypeEnum.SMS, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
+			sendNotificationMessage(MessageTypeEnum.EMAIL, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
 		}
 		else{
 			LOGGER.info("La configuration est correcte.");
@@ -271,7 +270,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 
 	@Override
 	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
-		// TODO Auto-generated method stub
-		
+		supervisionEvents.put("Statut de l'envoi d'emails", "Done : " + this.sendEmailScheduled.isDone() + ", Cancel : " + this.sendEmailScheduled.isCancelled());
+		supervisionEvents.put("Statut de l'envoi de SMS", "Done : " + this.sendSMSScheduled.isDone() + ", Cancel : " + this.sendSMSScheduled.isCancelled());
 	}
 }

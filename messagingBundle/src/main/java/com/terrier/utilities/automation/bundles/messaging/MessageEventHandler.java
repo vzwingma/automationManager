@@ -11,8 +11,8 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventPropertyNameEnum;
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessagePropertyNameEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
 
 /**
  * Event Message Handler
@@ -43,20 +43,20 @@ public class MessageEventHandler implements EventHandler {
 		}
 		sb.append("}");
 
-		Object typeMessageObject = event.getProperty(EventPropertyNameEnum.TYPE_MESSAGE.name());
+		Object typeMessageObject = event.getProperty(MessagePropertyNameEnum.TYPE_MESSAGE.name());
 
 		LOGGER.debug("Topic [{}][type={}] Réception du message [{}]", event.getTopic(), typeMessageObject, sb.toString());
-		if(typeMessageObject != null && typeMessageObject instanceof TypeMessagingEnum){
-			TypeMessagingEnum typeMessage = (TypeMessagingEnum)typeMessageObject;
+		if(typeMessageObject != null && typeMessageObject instanceof MessageTypeEnum){
+			MessageTypeEnum typeMessage = (MessageTypeEnum)typeMessageObject;
 			
 			switch (typeMessage) {
 			case EMAIL:
-				String titre = (String)event.getProperty(EventPropertyNameEnum.TITRE_MESSAGE.name());
-				String message = (String)event.getProperty(EventPropertyNameEnum.MESSAGE.name());
+				String titre = (String)event.getProperty(MessagePropertyNameEnum.TITRE_MESSAGE.name());
+				String message = (String)event.getProperty(MessagePropertyNameEnum.MESSAGE.name());
 				messagingService.sendNotificationEmail(titre, message);
 				break;
 			case SMS:
-				String sms = (String)event.getProperty(EventPropertyNameEnum.MESSAGE.name());
+				String sms = (String)event.getProperty(MessagePropertyNameEnum.MESSAGE.name());
 				messagingService.sendNotificationSMS(sms);
 				break;
 			default:

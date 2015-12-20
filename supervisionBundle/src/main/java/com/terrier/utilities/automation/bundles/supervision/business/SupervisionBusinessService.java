@@ -13,11 +13,14 @@ import javax.inject.Singleton;
 
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.supervision.listeners.AutomationBundlesListener;
+import com.terrier.utilities.automation.bundles.supervision.listeners.BundlesEventsHandler;
 
 /**
  * Supervision Service
@@ -32,6 +35,7 @@ public class SupervisionBusinessService extends AbstractAutomationService {
 	// Message Handler
 	@Inject private AutomationBundlesListener automationBundlesListener;
 
+	@Inject private BundlesEventsHandler supervisionHandler;
 	/**
 	 * Initialisation
 	 */
@@ -39,12 +43,12 @@ public class SupervisionBusinessService extends AbstractAutomationService {
 	public void initService(){
 
 		Dictionary<String, String[]> props = new Hashtable<String, String[]>();
-		String[] listeTopics = new String[]{
-				"org/osgi/framework/BundleEvent/",
-				"org/osgi/framework/ServiceEvent/"
-				};
+		String[] listeTopics = new String[]{EventsTopicNameEnum.SUPERVISION_EVENTS.getTopicName()};
 		props.put(EventConstants.EVENT_TOPIC, listeTopics);
-		//LOGGER.info("Enregistrement de l'eventHandler {} sur les topics : {}", eventsBundlesHander, Arrays.asList(listeTopics));
+		LOGGER.info("Enregistrement de l'eventHandler {} sur le topic : {}", supervisionHandler, EventsTopicNameEnum.SUPERVISION_EVENTS.getTopicName());
+		FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(EventHandler.class.getName(), supervisionHandler , props);
+		
+		// Supervision des bundles et des services
 		FrameworkUtil.getBundle(this.getClass()).getBundleContext().addBundleListener(automationBundlesListener);
 		FrameworkUtil.getBundle(this.getClass()).getBundleContext().addServiceListener(automationBundlesListener);
 	}

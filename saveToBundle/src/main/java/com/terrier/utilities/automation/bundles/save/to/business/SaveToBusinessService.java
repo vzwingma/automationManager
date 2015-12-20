@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.TypeMessagingEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.CommandeEnum;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.ConfigKeyEnums;
@@ -141,7 +141,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 
 		if(!configValid){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
-			sendNotificationMessage(TypeMessagingEnum.SMS, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
+			sendNotificationMessage(MessageTypeEnum.SMS, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
 		}
 		else{
 

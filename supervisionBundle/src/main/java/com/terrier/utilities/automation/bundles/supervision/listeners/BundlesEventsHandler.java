@@ -28,6 +28,7 @@ public class BundlesEventsHandler implements EventHandler {
 	@Override
 	public void handleEvent(Event event) {
 
+		LOGGER.info(">> {}", event);
 		StringBuilder sb = new StringBuilder("{");
 		for (String propertyName : event.getPropertyNames()) {
 			sb.append(propertyName)

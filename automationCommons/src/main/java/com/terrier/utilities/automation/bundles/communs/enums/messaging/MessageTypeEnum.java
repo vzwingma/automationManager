@@ -10,9 +10,7 @@ import java.io.Serializable;
  * @author vzwingma
  *
  */
-public enum TypeMessagingEnum implements Serializable {
- 	EMAIL,
+public enum MessageTypeEnum implements Serializable {
+	EMAIL,
 	SMS;
-	
-	
 }
