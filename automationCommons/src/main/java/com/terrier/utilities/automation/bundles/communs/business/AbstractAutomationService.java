@@ -115,7 +115,7 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
         Map<StatusPropertyNameEnum, Object> properties = new HashMap<>();
         // Status
         Map<String, Object> statusBundle = new HashMap<>();
-        statusBundle.put("Activité Supervision ThreadPool ", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
+        statusBundle.put("Activité du ThreadPool de Supervision", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
 		updateSupervisionEvents(statusBundle);
 		
         properties.put(StatusPropertyNameEnum.STATUS, statusBundle);

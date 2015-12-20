@@ -55,7 +55,7 @@ public class BundlesEventsHandler implements EventHandler {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> statutMap = (Map<String, Object>) statutBundle.get(StatusPropertyNameEnum.STATUS);
 			for (Entry<String, Object> statutEntry : statutMap.entrySet()) {
-				log.append("     [").append(statutEntry.getKey()).append("] ").append(statutEntry.getValue()).append("\n");	
+				log.append("     ").append(statutEntry.getKey()).append(" :: ").append(statutEntry.getValue()).append("\n");	
 			}
 			
 		}
