@@ -12,8 +12,9 @@ deploy:
   file:
     - automationCommons/target/automationCommons-${automation.commons.version}.jar
     - messagingBundle/target/messagingBundle-${automation.messaging.version}.jar
-    - boxcryptorInventoryGenerator/target/boxcryptorInventoryGenerator-${automation.boxcryptor.inventory.version}.jar
+    - boxcryptorInventoryGeneratorBundle/target/boxcryptorInventoryGeneratorBundle-${automation.boxcryptor.inventory.version}.jar
     - saveToBundle/target/saveToBundle-${automation.save.to.version}.jar
+    - supervisionBundle/target/supervisionBundle-${automation.supervision.version}.jar	
   skip_cleanup: true	
   on:
     repo: vzwingma/automationManager
