@@ -1,7 +1,7 @@
 # Automation Manager
 Gestionnaire de tâches automatisées
 
-<a href='https://www.versioneye.com/user/projects/5662fc03f376cc003d0009a1#tab-dependencies'><img src='https://www.versioneye.com/user/projects/5662fc03f376cc003d0009a1/badge.svg?style=flat' alt="Dependency Status" /></a>
+[![Dependency Status](https://www.versioneye.com/user/projects/566f2ef71079970030000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2ef71079970030000001)
 <a href='https://travis-ci.org/vzwingma/automationManager'><img src='https://api.travis-ci.org/vzwingma/automationManager.svg?branch=master' alt='Build Status' /></a>
 <a href='https://github.com/vzwingma/automationManager/issues'><img src='http://githubbadges.herokuapp.com/vzwingma/automationManager/issues?style=square' alt='Issues number' /></a>
 
@@ -12,7 +12,7 @@ Gestionnaire de tâches automatisées
   *  Librairie commune
   * [![Dependency Status](https://www.versioneye.com/user/projects/566f2f0c107997003e000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f0c107997003e000001)
 
-#### [Supervision](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Supervision) v0.1.0-SNAPSHOT
+#### [supervisionBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Supervision) v0.1.0-SNAPSHOT
   *  Libraire de supervision des bundles de l'AutomationManager
   *  [![Dependency Status](https://www.versioneye.com/user/projects/5675bcf2107997002d0008e4/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5675bcf2107997002d0008e4)
 

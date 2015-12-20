@@ -30,7 +30,7 @@ public class AutomationBundlesListener implements BundleListener, ServiceListene
 	 */
 	@Override
 	public void serviceChanged(ServiceEvent event) {
-		LOGGER.info("ServiceEvent :: {}", OSGIStatusUtils.getServiceStatusLibelle(event.getType()));
+		LOGGER.debug("ServiceEvent :: {}", OSGIStatusUtils.getServiceStatusLibelle(event.getType()));
 	}
 
 	/* (non-Javadoc)
