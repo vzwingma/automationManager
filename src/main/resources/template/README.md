@@ -12,7 +12,7 @@ Gestionnaire de tâches automatisées
   *  Librairie commune
   * [![Dependency Status](https://www.versioneye.com/user/projects/566f2f0c107997003e000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f0c107997003e000001)
 
-#### [Supervision](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Supervision) v${automation.supervision.version}
+#### [supervisionBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Supervision) v${automation.supervision.version}
   *  Libraire de supervision des bundles de l'AutomationManager
   *  [![Dependency Status](https://www.versioneye.com/user/projects/5675bcf2107997002d0008e4/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5675bcf2107997002d0008e4)
 
