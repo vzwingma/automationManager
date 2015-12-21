@@ -15,6 +15,14 @@
 		<automation.supervision.version>1.1.0</automation.supervision.version>
 	</properties>
 
+	<modules>
+		<module>automationCommons</module>
+		<module>supervisionBundle</module>
+		<module>messagingBundle</module>
+		<module>saveToBundle</module>
+		<module>boxcryptorInventoryGeneratorBundle</module>
+		<module>automationFeatures</module>
+	</modules>
 
 	<build>
 		<pluginManagement>
@@ -35,7 +43,7 @@
 					</configuration>
 				</plugin>
 			</plugins>
-		</pluginManagement>	
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -68,16 +76,27 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.karaf.tooling</groupId>
+				<artifactId>karaf-maven-plugin</artifactId>
+				<version>4.0.3</version>
+				<executions>
+					<execution>
+						<id>generate-features-file</id>
+						<phase>package</phase>
+						<goals>
+							<goal>features-generate-descriptor</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-	<modules>
-		<module>automationCommons</module>
-		<module>supervisionBundle</module>		
-		<module>messagingBundle</module>
-		<module>saveToBundle</module>
-		<module>boxcryptorInventoryGeneratorBundle</module>
-		<module>automationFeatures</module>
-	</modules>
 
 	<dependencies>
 		<dependency>
