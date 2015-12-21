@@ -31,25 +31,6 @@
 	</dependencies>
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.aries.blueprint</groupId>
-					<artifactId>blueprint-maven-plugin</artifactId>
-					<version>1.2.0</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>blueprint-generate</goal>
-							</goals>
-							<phase>process-classes</phase>
-						</execution>
-					</executions>
-					<configuration>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.aries.blueprint</groupId>
