@@ -39,12 +39,12 @@ public class TestThreadsPool {
 
 		ScheduledFuture<?> f = scheduledThreadPool.scheduleAtFixedRate(new DummyTestRunnable(), 0, 1, TimeUnit.SECONDS);
 		LOGGER.debug("PendingTasks : {}", this.scheduledThreadPool.getQueue().size());
-		Thread.sleep(9500);
+		Thread.sleep(1500);
 		LOGGER.debug("PendingTasks : {}", this.scheduledThreadPool.getQueue().size());
 		LOGGER.debug("** Fin **");
 		logPool();
 
-		assertEquals(10, this.nbExecution);
+		assertEquals(2, this.nbExecution);
 		// 10 s
 		assertEquals(5, scheduledThreadPool.getCorePoolSize());
 
@@ -59,10 +59,10 @@ public class TestThreadsPool {
 
 		f = scheduledThreadPool.scheduleAtFixedRate(new DummyTestRunnable(), 0, 1, TimeUnit.SECONDS);
 		LOGGER.debug("PendingTasks : {}", this.scheduledThreadPool.getQueue().size());
-		Thread.sleep(9500);
+		Thread.sleep(1500);
 		LOGGER.debug("PendingTasks : {}", this.scheduledThreadPool.getQueue().size());
 		LOGGER.debug("** Fin2 **");
-		assertEquals(20, this.nbExecution);
+		assertEquals(4, this.nbExecution);
 		logPool();
 	}
 
