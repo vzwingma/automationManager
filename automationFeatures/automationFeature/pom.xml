@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.terrier.utilities.automation.bundles</groupId>
+		<artifactId>AutomationManager</artifactId>
+		<version>1.1.1</version>
+	</parent>
+	<groupId>com.terrier.utilities.automation.features</groupId>
+	<artifactId>automationFeature</artifactId>
+	<name>[Automation] Features </name>
+	<description>Génération des features de l'AutomationManager</description>
+	<packaging>feature</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.karaf.tooling</groupId>
+				<artifactId>karaf-maven-plugin</artifactId>
+				<version>4.0.3</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>generate-features-file</id>
+						<phase>package</phase>
+						<goals>
+							<goal>features-generate-descriptor</goal>
+						</goals>
+						<configuration>
+							<aggregateFeatures>true</aggregateFeatures>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.features</groupId>
+			<artifactId>automationCommonsFeature</artifactId>
+			<version>${project.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.features</groupId>
+			<artifactId>boxcryptorInventoryGeneratorFeature</artifactId>
+			<version>${project.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.features</groupId>
+			<artifactId>supervisionFeature</artifactId>
+			<version>${project.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.features</groupId>
+			<artifactId>saveToFeature</artifactId>
+			<version>${project.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.features</groupId>
+			<artifactId>messagingFeature</artifactId>
+			<version>${project.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>
+	</dependencies>
+</project>

@@ -7,21 +7,10 @@
 		<version>1.1.1</version>
 	</parent>
 	<groupId>com.terrier.utilities.automation.features</groupId>
-	<artifactId>automationFeatures</artifactId>
-	<name>[Automation] Features </name>
+	<artifactId>saveToFeature</artifactId>
+	<name>[Automation] Feature SaveTo</name>
 	<description>Génération des features de l'AutomationManager</description>
-	<packaging>pom</packaging>
-
-	<modules>
-		<module>automationCommonsFeature</module>
-		<module>messagingFeature</module>
-		<module>supervisionFeature</module>
-		<module>saveToFeature</module>
-		<module>boxcryptorInventoryGeneratorFeature</module>
-		<module>automationFeature</module>
-	</modules>
-
-
+	<packaging>feature</packaging>
 	<build>
 		<plugins>
 			<plugin>
@@ -42,31 +31,15 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.karaf.tooling</groupId>
-				<artifactId>karaf-maven-plugin</artifactId>
-				<version>4.0.3</version>
-				<extensions>true</extensions>
-				<configuration>
-					<startLevel>80</startLevel>
-					<aggregateFeatures>true</aggregateFeatures>
-				</configuration>
-				<executions>
-					<execution>
-						<id>generate-features-file</id>
-						<phase>package</phase>
-						<goals>
-							<goal>features-generate-descriptor</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>saveToBundle</artifactId>
+			<version>${automation.save.to.version}</version>
+		</dependency>
+	</dependencies>
 </project>
