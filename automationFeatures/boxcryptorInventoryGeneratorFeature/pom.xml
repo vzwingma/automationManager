@@ -6,7 +6,7 @@
     <version>1.1.1</version>
   </parent>
   <artifactId>boxcryptorInventoryGeneratorFeature</artifactId>
-  <name>[Automation][Feature] Boxcryptor Inventory Generator</name>
+  <name>[Feature] Boxcryptor Inventory Generator</name>
   <description>Feature Boxcryptor Inventory Generator</description>
   <packaging>feature</packaging>
   
