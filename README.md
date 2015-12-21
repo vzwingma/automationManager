@@ -33,7 +33,7 @@ Gestionnaire de tâches automatisées
 
 ### Ajout du repository de features
 
-     feature:repo-add mvn:com.terrier.utilities.automation.features/automationFeatures/1.1.1/xml/features
+     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.1.1/xml/features
 
 ### Installation des features
 
