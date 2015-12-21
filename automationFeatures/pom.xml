@@ -18,7 +18,7 @@
 		<module>supervisionFeature</module>
 		<module>saveToFeature</module>
 		<module>boxcryptorInventoryGeneratorFeature</module>
-		<module>automationFeature</module>
+		<module>automationManagerFeature</module>
 	</modules>
 
 
