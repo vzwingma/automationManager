@@ -85,6 +85,11 @@
 				<groupId>org.apache.karaf.tooling</groupId>
 				<artifactId>karaf-maven-plugin</artifactId>
 				<version>4.0.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<startLevel>80</startLevel>
+					<aggregateFeatures>true</aggregateFeatures>
+				</configuration>
 				<executions>
 					<execution>
 						<id>generate-features-file</id>
@@ -109,18 +114,21 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
 			<version>5.0.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<!-- Log -->
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-service</artifactId>
 			<version>1.8.4</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.13</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

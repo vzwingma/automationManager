@@ -28,3 +28,16 @@ Gestionnaire de tâches automatisées
 #### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.0.3
   *  Libraire de copie de fichier ou de répertoire
   *  [![Dependency Status](https://www.versioneye.com/user/projects/566f2f24107997003e000004/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f24107997003e000004)
+
+## Installation de features
+
+### Ajout du repository de features
+
+     feature:repo-add mvn:com.terrier.utilities.automation.features/automationFeatures/1.1.1/xml/features
+
+### Installation des features
+
+     feature:install -s supervisionBundle
+     feature:install -s messagingBundle     
+     feature:install -s boxcryptorInventoryGeneratorBundle
+     feature:install -s saveToBundle

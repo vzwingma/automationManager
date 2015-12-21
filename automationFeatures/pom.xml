@@ -8,15 +8,68 @@
 	</parent>
 	<groupId>com.terrier.utilities.automation.features</groupId>
 	<artifactId>automationFeatures</artifactId>
-	<name>Features AutomationManager</name>
+	<name>[Automation] Features </name>
 	<description>Génération des features de l'AutomationManager</description>
-	<packaging>pom</packaging>
+	<packaging>feature</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.karaf.tooling</groupId>
+				<artifactId>karaf-maven-plugin</artifactId>
+				<version>4.0.3</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>generate-features-file</id>
+						<phase>package</phase>
+						<goals>
+							<goal>features-generate-descriptor</goal>
+						</goals>
+						<configuration>
+							<aggregateFeatures>true</aggregateFeatures>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
-	<modules>
-		<module>automationCommonsFeature</module>
-		<module>supervisionFeature</module>
-		<module>messagingFeature</module>
-		<module>boxcryptorInventoryGeneratorFeature</module>
-		<module>saveToFeature</module>
-	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>automationCommons</artifactId>
+			<version>${automation.commons.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>boxcryptorInventoryGeneratorBundle</artifactId>
+			<version>${automation.boxcryptor.inventory.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>supervisionBundle</artifactId>
+			<version>${automation.supervision.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>saveToBundle</artifactId>
+			<version>${automation.save.to.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>messagingBundle</artifactId>
+			<version>${automation.messaging.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>
+	</dependencies>
 </project>
