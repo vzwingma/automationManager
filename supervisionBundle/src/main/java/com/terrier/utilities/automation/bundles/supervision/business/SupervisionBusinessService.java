@@ -61,9 +61,5 @@ public class SupervisionBusinessService extends AbstractAutomationService {
 
 
 	@Override
-	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) { }
 }

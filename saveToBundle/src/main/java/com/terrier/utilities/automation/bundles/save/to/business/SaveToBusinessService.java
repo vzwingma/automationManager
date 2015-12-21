@@ -213,6 +213,6 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	@Override
 	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
 		supervisionEvents.put("Activité du ScheduledThreadPool", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
-		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getPoolSize() + "/" + this.scheduledThreadPool.getCorePoolSize());
+		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize());
 	}
 }

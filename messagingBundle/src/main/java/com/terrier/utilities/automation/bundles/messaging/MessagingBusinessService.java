@@ -272,6 +272,6 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		supervisionEvents.put("Statut de l'envoi d'emails", "Done : " + this.sendEmailScheduled.isDone() + ", Cancel : " + this.sendEmailScheduled.isCancelled());
 		supervisionEvents.put("Statut de l'envoi de SMS", "Done : " + this.sendSMSScheduled.isDone() + ", Cancel : " + this.sendSMSScheduled.isCancelled());
 		supervisionEvents.put("Activité du ScheduledThreadPool", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
-		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getPoolSize() + "/" + this.scheduledThreadPool.getCorePoolSize());
+		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize());
 	}
 }
