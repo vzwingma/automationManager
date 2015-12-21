@@ -1,0 +1,22 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.terrier.utilities.automation.bundles</groupId>
+		<artifactId>AutomationManager</artifactId>
+		<version>1.1.1</version>
+	</parent>
+	<groupId>com.terrier.utilities.automation.features</groupId>
+	<artifactId>automationFeatures</artifactId>
+	<name>Features AutomationManager</name>
+	<description>Génération des features de l'AutomationManager</description>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>automationCommonsFeature</module>
+		<module>supervisionFeature</module>
+		<module>messagingFeature</module>
+		<module>boxcryptorInventoryGeneratorFeature</module>
+		<module>saveToFeature</module>
+	</modules>
+</project>

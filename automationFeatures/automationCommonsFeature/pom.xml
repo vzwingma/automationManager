@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.terrier.utilities.automation.features</groupId>
+    <artifactId>automationFeatures</artifactId>
+    <version>1.1.1</version>
+  </parent>
+  <artifactId>automationCommonsFeature</artifactId>
+  <name>[Automation][Feature] Automation Communs</name>
+  <description>Feature Communs de l'AutomationManager</description>
+  <packaging>feature</packaging>
+  
+  	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.karaf.tooling</groupId>
+				<artifactId>karaf-maven-plugin</artifactId>
+				<version>4.0.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<startLevel>80</startLevel>
+					<aggregateFeatures>false</aggregateFeatures>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>automationCommons</artifactId>
+			<version>${automation.commons.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>automationCommons</artifactId>
+			<version>${automation.boxcryptor.inventory.version}</version>
+		</dependency>
+	</dependencies>
+  
+</project>

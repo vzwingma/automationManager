@@ -57,6 +57,7 @@
 		<module>messagingBundle</module>
 		<module>saveToBundle</module>
 		<module>boxcryptorInventoryGeneratorBundle</module>
+		<module>automationFeatures</module>
 	</modules>
 
 	<dependencies>
