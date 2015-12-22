@@ -37,7 +37,7 @@ Gestionnaire de tâches automatisées
 
 ### Installation des features
 
-     feature:install supervisionFeature
-     feature:install messagingFeature
-     feature:install boxcryptorInventoryGeneratorFeature
-     feature:install saveToFeature
+     feature:install automation-supervision
+     feature:install automation-messaging
+     feature:install automation-boxcryptor-inventory
+     feature:install automation-save-to
