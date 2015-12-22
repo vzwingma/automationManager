@@ -2,13 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.terrier.utilities.automation.bundles</groupId>
-		<artifactId>AutomationManager</artifactId>
+		<groupId>com.terrier.utilities.automation.features</groupId>
+		<artifactId>automationFeatures</artifactId>
 		<version>1.1.1</version>
 	</parent>
-	<groupId>com.terrier.utilities.automation.features</groupId>
-	<artifactId>messagingFeature</artifactId>
-	<name>[Automation] Feature Messaging</name>
+	<artifactId>automation-boxcryptor-inventory</artifactId>
+	<name>[Features] Boxcryptor Inventory Generator</name>
 	<description>Génération des features de l'AutomationManager</description>
 	<packaging>feature</packaging>
 	<build>
@@ -38,8 +37,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.terrier.utilities.automation.bundles</groupId>
-			<artifactId>messagingBundle</artifactId>
-			<version>${automation.messaging.version}</version>
+			<artifactId>boxcryptorInventoryGeneratorBundle</artifactId>
+			<version>${automation.boxcryptor.inventory.version}</version>
 		</dependency>
 	</dependencies>
 </project>

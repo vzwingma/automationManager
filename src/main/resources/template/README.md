@@ -37,7 +37,7 @@ Gestionnaire de tâches automatisées
 
 ### Installation des features
 
-     feature:install -s supervisionBundle
-     feature:install -s messagingBundle     
-     feature:install -s boxcryptorInventoryGeneratorBundle
-     feature:install -s saveToBundle
+     feature:install automation-supervision
+     feature:install automation-messaging
+     feature:install automation-boxcryptor-inventory
+     feature:install automation-save-to

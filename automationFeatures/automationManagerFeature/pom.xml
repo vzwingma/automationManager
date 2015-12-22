@@ -2,13 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.terrier.utilities.automation.bundles</groupId>
-		<artifactId>AutomationManager</artifactId>
+		<groupId>com.terrier.utilities.automation.features</groupId>
+		<artifactId>automationFeatures</artifactId>
 		<version>1.1.1</version>
 	</parent>
-	<groupId>com.terrier.utilities.automation.features</groupId>
 	<artifactId>automationManagerFeature</artifactId>
-	<name>[Automation] Features </name>
+	<name>[Features] Features d'Automation Manager </name>
 	<description>Génération des features de l'AutomationManager</description>
 	<packaging>feature</packaging>
 	<build>
@@ -38,35 +37,28 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.terrier.utilities.automation.features</groupId>
-			<artifactId>automationCommonsFeature</artifactId>
+			<artifactId>automation-boxcryptor-inventory</artifactId>
 			<version>${project.version}</version>
 			<type>xml</type>
 			<classifier>features</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.terrier.utilities.automation.features</groupId>
-			<artifactId>boxcryptorInventoryGeneratorFeature</artifactId>
+			<artifactId>automation-supervision</artifactId>
 			<version>${project.version}</version>
 			<type>xml</type>
 			<classifier>features</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.terrier.utilities.automation.features</groupId>
-			<artifactId>supervisionFeature</artifactId>
+			<artifactId>automation-save-to</artifactId>
 			<version>${project.version}</version>
 			<type>xml</type>
 			<classifier>features</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.terrier.utilities.automation.features</groupId>
-			<artifactId>saveToFeature</artifactId>
-			<version>${project.version}</version>
-			<type>xml</type>
-			<classifier>features</classifier>
-		</dependency>
-		<dependency>
-			<groupId>com.terrier.utilities.automation.features</groupId>
-			<artifactId>messagingFeature</artifactId>
+			<artifactId>automation-messaging</artifactId>
 			<version>${project.version}</version>
 			<type>xml</type>
 			<classifier>features</classifier>

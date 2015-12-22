@@ -6,9 +6,8 @@
 		<artifactId>automationFeatures</artifactId>
 		<version>1.1.1</version>
 	</parent>
-	<groupId>com.terrier.utilities.automation.features</groupId>
-	<artifactId>automationCommonsFeature</artifactId>
-	<name>[Automation] Feature Communs</name>
+	<artifactId>automation-messaging</artifactId>
+	<name>[Features] Messaging Service</name>
 	<description>Génération des features de l'AutomationManager</description>
 	<packaging>feature</packaging>
 	<build>
@@ -38,8 +37,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.terrier.utilities.automation.bundles</groupId>
-			<artifactId>automationCommons</artifactId>
-			<version>${automation.commons.version}</version>
+			<artifactId>messagingBundle</artifactId>
+			<version>${automation.messaging.version}</version>
 		</dependency>
 	</dependencies>
 </project>

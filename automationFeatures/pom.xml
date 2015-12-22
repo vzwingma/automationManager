@@ -8,16 +8,15 @@
 	</parent>
 	<groupId>com.terrier.utilities.automation.features</groupId>
 	<artifactId>automationFeatures</artifactId>
-	<name>[Automation] Features </name>
+	<name>Features Automation Manager</name>
 	<description>Génération des features de l'AutomationManager</description>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>automationCommonsFeature</module>
-		<module>messagingFeature</module>
-		<module>supervisionFeature</module>
-		<module>saveToFeature</module>
-		<module>boxcryptorInventoryGeneratorFeature</module>
+		<module>automation-messaging</module>
+		<module>automation-supervision</module>
+		<module>automation-save-to</module>
+		<module>automation-boxcryptor-inventory</module>
 		<module>automationManagerFeature</module>
 	</modules>
 
