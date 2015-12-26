@@ -15,7 +15,7 @@ addons:
       name: vzwingma/automationManager
     # Where email notification of build analysis results will be sent
     notification_email: vincent.zwingmann@gmail.com
-    build_command_prepend: bin/cov-configure  --comptype java --compiler /usr/lib/jvm/java-8-oracle
+    build_command_prepend: cov-configure --comptype java --compiler /usr/lib/jvm/java-8-oracle
     # The command that will be added as an argument to "cov-build" to compile your project for analysis,
     build_command: mvn clean install
     # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
