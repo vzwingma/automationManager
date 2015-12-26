@@ -87,9 +87,7 @@ public class BCUtils {
 					LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.toAbsolutePath().toString());
 					String content = new String(Files.readAllBytes(inventoryFile));
 					LOGGER.debug("Contenu : \n{}", content);
-					BCInventaireRepertoire inventaire = yml.loadAs(content, BCInventaireRepertoire.class);
-				
-					return inventaire;
+					return yml.loadAs(content, BCInventaireRepertoire.class);
 				}
 			}
 		}

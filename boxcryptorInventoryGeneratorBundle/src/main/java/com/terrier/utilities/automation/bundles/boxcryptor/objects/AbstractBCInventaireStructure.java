@@ -54,12 +54,11 @@ public abstract class AbstractBCInventaireStructure {
 	 * @param nameFileOrDirectory
 	 * @return Hash MD5
 	 */
-	private String getHashMD5(String nameFileOrDirectory){
+	private String getHashMD5(final String nameFileOrDirectory){
 		try {
 			if(nameFileOrDirectory != null){
-				String s = nameFileOrDirectory != null ? nameFileOrDirectory : null;
 				MessageDigest md5 = MessageDigest.getInstance("MD5");
-				md5.update(s.getBytes(),0,s.length());
+				md5.update(nameFileOrDirectory.getBytes(), 0, nameFileOrDirectory.length());
 				String signature = new BigInteger(1,md5.digest()).toString(16);
 				return signature;
 			}

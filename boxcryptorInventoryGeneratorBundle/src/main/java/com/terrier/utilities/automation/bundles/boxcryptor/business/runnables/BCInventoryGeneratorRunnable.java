@@ -64,44 +64,50 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 			LOGGER.info("[{}] Début de la génération de l'inventaire [{}]", index, this.repertoireNonChiffre);
 			// Lecture de l'inventaire
 			BCInventaireRepertoire inventaire = loadFileInventory();
+			if(inventaire != null){
 
-			this.dateDernierTraitement = inventaire.getDateModificationDernierInventaire();
+				this.dateDernierTraitement = inventaire.getDateModificationDernierInventaire();
 
-			if(this.dateDernierTraitement != null && this.dateDernierTraitement > 0){
-				LOGGER.info("[{}] Date du dernier inventaire [{}]", index, BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement));
+				if(this.dateDernierTraitement != null && this.dateDernierTraitement > 0){
+					LOGGER.info("[{}] Date du dernier inventaire [{}]", index, BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement));
+				}
+				else{
+					LOGGER.warn("[{}] Date du dernier inventaire [Jamais]", index);
+				}
+
+				BCUtils.printDelayFrom(this.index, "Read file Inventory", startTraitement);
+
+				// Création de l'inventaire
+				ExecutorService threadsPool = Executors.newFixedThreadPool(100);
+				DirectoryInventoryStreamGeneratorCallable inventory = new DirectoryInventoryStreamGeneratorCallable(
+						this.index,
+						threadsPool,
+						this.repertoireNonChiffre.getName(),
+						inventaire,
+						this.repertoireChiffre.getAbsolutePath(), this.repertoireNonChiffre.getAbsolutePath());
+				BCInventaireRepertoire inventaireNew = inventory.call();
+				threadsPool.shutdown();
+				BCUtils.printDelayFrom(this.index, "Generate Inventory", startTraitement);
+
+
+				// Ecriture de l'inventaire ssi il a changé
+				if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire() > this.dateDernierTraitement){
+					LOGGER.debug("[{}] Date DernierTraitement {} / Date modification dernier inventaire : {}", 
+							BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement), 
+							BCUtils.getLibelleDateUTCFromMillis(inventaireNew.getDateModificationDernierInventaire()));
+
+					BCUtils.dumpYMLInventory(this.yml, this.repertoireNonChiffre, inventaireNew);
+					BCUtils.printDelayFrom(this.index, "Dump Inventory", startTraitement);
+					LOGGER.info("[{}] Inventaire de {} généré", this.index, this.repertoireNonChiffre.getName());
+					sendMessage("Génération de l'inventaire de " + this.repertoireNonChiffre.getName());
+				}
+				else{
+					LOGGER.info("[{}] L'inventaire n'a pas changé depuis. Pas de mise à jour du fichier", this.index);
+				}
 			}
 			else{
-				LOGGER.warn("[{}] Date du dernier inventaire [Jamais]", index);
-			}
-
-			BCUtils.printDelayFrom(this.index, "Read file Inventory", startTraitement);
-
-			// Création de l'inventaire
-			ExecutorService threadsPool = Executors.newFixedThreadPool(100);
-			DirectoryInventoryStreamGeneratorCallable inventory = new DirectoryInventoryStreamGeneratorCallable(
-					this.index,
-					threadsPool,
-					this.repertoireNonChiffre.getName(),
-					inventaire,
-					this.repertoireChiffre.getAbsolutePath(), this.repertoireNonChiffre.getAbsolutePath());
-			BCInventaireRepertoire inventaireNew = inventory.call();
-			threadsPool.shutdown();
-			BCUtils.printDelayFrom(this.index, "Generate Inventory", startTraitement);
-
-
-			// Ecriture de l'inventaire ssi il a changé
-			if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire() > this.dateDernierTraitement){
-				LOGGER.debug("[{}] Date DernierTraitement {} / Date modification dernier inventaire : {}", 
-						BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement), 
-						BCUtils.getLibelleDateUTCFromMillis(inventaireNew.getDateModificationDernierInventaire()));
-
-				BCUtils.dumpYMLInventory(this.yml, this.repertoireNonChiffre, inventaireNew);
-				BCUtils.printDelayFrom(this.index, "Dump Inventory", startTraitement);
-				LOGGER.info("[{}] Inventaire de {} généré", this.index, this.repertoireNonChiffre.getName());
-				sendMessage("Génération de l'inventaire de " + this.repertoireNonChiffre.getName());
-			}
-			else{
-				LOGGER.info("[{}] L'inventaire n'a pas changé depuis. Pas de mise à jour du fichier", this.index);
+				LOGGER.error("[{}] Erreur lors de la génération de l'inventaire",this.index);
+				sendMessage("Erreur lors de la génération de l'inventaire de [" + this.repertoireNonChiffre.getName() +"]");
 			}
 		}
 		catch(Exception e){
