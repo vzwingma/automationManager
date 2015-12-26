@@ -12,7 +12,7 @@ addons:
   coverity_scan:
     # GitHub project metadata
     project:
-      name: vzwingma/automation-manager
+      name: vzwingma/automationManager
     # Where email notification of build analysis results will be sent
     notification_email: vincent.zwingmann@gmail.com
     # The command that will be added as an argument to "cov-build" to compile your project for analysis,
@@ -21,4 +21,4 @@ addons:
     # Take care in resource usage, and consider the build frequency allowances per
     #   https://scan.coverity.com/faq#frequency
     branch_pattern: coverity_scan
-after_script: cat /home/travis/build/vzwingma/automation-manager/cov-int/scm_log.txt
+after_script: cat /home/travis/build/vzwingma/automationManager/cov-int/scm_log.txt
