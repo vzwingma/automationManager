@@ -16,9 +16,11 @@ addons:
     # Where email notification of build analysis results will be sent
     notification_email: vincent.zwingmann@gmail.com
     # The command that will be added as an argument to "cov-build" to compile your project for analysis,
-    build_command: mvn compile
+    build_command: mvn clean install
     # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
     # Take care in resource usage, and consider the build frequency allowances per
     #   https://scan.coverity.com/faq#frequency
     branch_pattern: coverity_scan
+install: 
+  - mvn clean install	
 after_script: cat /home/travis/build/vzwingma/automationManager/cov-int/scm_log.txt
