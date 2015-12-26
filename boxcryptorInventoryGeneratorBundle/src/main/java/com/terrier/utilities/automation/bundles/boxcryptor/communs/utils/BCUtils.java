@@ -1,9 +1,11 @@
 package com.terrier.utilities.automation.bundles.boxcryptor.communs.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -80,12 +82,13 @@ public class BCUtils {
 		try{
 			if(repertoire != null){
 				// This will output the full path where the file will be written to...
-				File inventoryFile = new File(repertoire, BCUtils.INVENTORY_FILENAME);
-				if(inventoryFile.exists()){
-					LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.getCanonicalPath());
-					FileInputStream fis = new FileInputStream(inventoryFile);
-					BCInventaireRepertoire inventaire = yml.loadAs(fis, BCInventaireRepertoire.class);
-					fis.close();
+				Path inventoryFile = FileSystems.getDefault().getPath(repertoire, BCUtils.INVENTORY_FILENAME);
+				if(Files.exists(inventoryFile)){
+					LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.toAbsolutePath().toString());
+					String content = new String(Files.readAllBytes(inventoryFile));
+					LOGGER.debug("Contenu : \n{}", content);
+					BCInventaireRepertoire inventaire = yml.loadAs(content, BCInventaireRepertoire.class);
+				
 					return inventaire;
 				}
 			}
