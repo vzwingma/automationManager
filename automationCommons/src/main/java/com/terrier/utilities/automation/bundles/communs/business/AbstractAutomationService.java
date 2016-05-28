@@ -166,8 +166,14 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 	 * Arrêt de la surveillance
 	 */
 	@PreDestroy
-	public void stopSuperivsion(){
+	public void stopSupervision(){
 		LOGGER.warn("Arrêt de la supervision");
 		this.scheduledThreadPool.shutdown();
+		arretTasks();
+	}
+	
+	
+	public void arretTasks(){
+		LOGGER.debug("Arrêt des tâches lors du @PreDestroy");
 	}
 }
