@@ -23,7 +23,8 @@ public class TestUtils {
 	public void testReplace(){
 		
 		Calendar c = Calendar.getInstance();
-		String cl = "_HUBIC_" +c.get(Calendar.YEAR) + (c.get(Calendar.MONTH)+1)+ ".pdf";
+		int m = c.get(Calendar.MONTH)+1;
+		String cl = "_HUBIC_" +c.get(Calendar.YEAR) + ( m<10 ? "0"+m : m)+ ".pdf";
 		
 		assertEquals(cl, AutomationUtils.replaceDatePatterns("_HUBIC_{{yyyyMM}}.pdf"));
 	}

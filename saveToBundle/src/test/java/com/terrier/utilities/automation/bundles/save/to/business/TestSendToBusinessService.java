@@ -106,7 +106,9 @@ public class TestSendToBusinessService {
 		service.startTreatment(1);
 		Thread.sleep(400);
 		// Verify
-		String cl = "_HUBIC_" +Calendar.getInstance().get(Calendar.YEAR) + (Calendar.getInstance().get(Calendar.MONTH)+1)+ ".pdf";
+		Calendar c = Calendar.getInstance();
+		int m = c.get(Calendar.MONTH)+1;
+		String cl = "_HUBIC_" +c.get(Calendar.YEAR) + ( m<10 ? "0"+m : m)+ ".pdf";
 		Path fichier1 = FileSystems.getDefault().getPath("src/test/resources/bc/Cloud/" + cl);
 		assertTrue(Files.exists(fichier1));
 		Files.delete(fichier1);
