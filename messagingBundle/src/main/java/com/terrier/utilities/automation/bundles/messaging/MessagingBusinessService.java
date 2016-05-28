@@ -224,8 +224,13 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		smsSendingQueue.add(message);
 	}
 
-	@PreDestroy
-	public void arretTask(){
+	
+	
+	/* (non-Javadoc)
+	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#arretTasks()
+	 */
+	@Override
+	public void arretTasks(){
 		LOGGER.warn("Arrêt des tâches d'envoi de mails et de SMS");
 		this.scheduledThreadPool.shutdown();
 	}
