@@ -200,8 +200,8 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	/**
 	 * Arrêt du service
 	 */
-	@PreDestroy
-	public void stopService() {
+	@Override
+	public void arretTasks() {
 		scheduledThreadPool.shutdownNow();
 	}
 
