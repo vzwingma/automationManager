@@ -9,7 +9,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 
 import org.slf4j.Logger;
@@ -108,8 +107,9 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
 				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p),
 				this);
-		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);
-		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, 0L, periode, TimeUnit.MINUTES));	
+		Long start = 10L;
+		LOGGER.info("[{}] Démarrage du scheduler dans 10 minutes puis toutes les {} minutes", start, p ,periode);
+		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, start, periode, TimeUnit.MINUTES));	
 	}
 
 
