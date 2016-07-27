@@ -279,4 +279,16 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		supervisionEvents.put("Activité du ScheduledThreadPool", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
 		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize());
 	}
+	
+	
+	/**
+	 * Arrêt de la surveillance
+	 */
+	@PreDestroy
+	public void stopSupervision(){
+		LOGGER.warn("Arrêt de la supervision");
+		this.scheduledThreadPool.shutdown();
+		arretTasks();
+	}
+	
 }
