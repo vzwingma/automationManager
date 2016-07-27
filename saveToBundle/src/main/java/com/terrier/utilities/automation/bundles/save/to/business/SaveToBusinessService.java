@@ -43,6 +43,9 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	// Nombre de patterns écrits
 	protected int nbPatterns = 0;
 
+	// Durée d'attente avec le démarrage réel
+	protected Long startDelay = 10L;
+	
 	public static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.save.to";
 
 	
@@ -107,9 +110,8 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
 				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p),
 				this);
-		Long start = 10L;
-		LOGGER.info("[{}] Démarrage du scheduler dans 10 minutes puis toutes les {} minutes", start, p ,periode);
-		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, start, periode, TimeUnit.MINUTES));	
+		LOGGER.info("[{}] Démarrage du scheduler dans {} minutes puis toutes les {} minutes", p, startDelay, periode);
+		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, startDelay, periode, TimeUnit.MINUTES));	
 	}
 
 

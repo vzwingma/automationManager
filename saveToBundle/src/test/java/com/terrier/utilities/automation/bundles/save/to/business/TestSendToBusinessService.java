@@ -72,6 +72,7 @@ public class TestSendToBusinessService {
 			}
 			
 		});
+		service.startDelay = 0L;
 	}
 	
 
