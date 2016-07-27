@@ -3,7 +3,6 @@ Gestionnaire de tâches automatisées
 
 [![Dependency Status](https://www.versioneye.com/user/projects/566f2ef71079970030000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2ef71079970030000001)
 <a href='https://travis-ci.org/vzwingma/automationManager'><img src='https://api.travis-ci.org/vzwingma/automationManager.svg?branch=master' alt='Build Status' /></a>
-<a href="https://scan.coverity.com/projects/vzwingma-automationmanager"><img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/7397.svg"/></a>
 <a href='https://github.com/vzwingma/automationManager/issues'><img src='http://githubbadges.herokuapp.com/vzwingma/automationManager/issues?style=square' alt='Issues number' /></a>
 
 
@@ -26,7 +25,7 @@ Gestionnaire de tâches automatisées
   *  Générateur d'inventaire pour BoxCryptor
   * [![Dependency Status](https://www.versioneye.com/user/projects/5675bcf1107997003e000859/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5675bcf1107997003e000859)
 
-#### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.0.3
+#### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.0.4
   *  Libraire de copie de fichier ou de répertoire
   *  [![Dependency Status](https://www.versioneye.com/user/projects/566f2f24107997003e000004/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f24107997003e000004)
 
