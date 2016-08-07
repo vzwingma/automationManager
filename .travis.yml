@@ -13,7 +13,7 @@ deploy:
     - automationCommons/target/automationCommons-1.1.0.jar
     - messagingBundle/target/messagingBundle-1.0.2.jar
     - boxcryptorInventoryGeneratorBundle/target/boxcryptorInventoryGeneratorBundle-1.0.0.jar
-    - saveToBundle/target/saveToBundle-1.0.4.jar
+    - saveToBundle/target/saveToBundle-1.1.0.jar
     - supervisionBundle/target/supervisionBundle-1.1.0.jar	
   skip_cleanup: true	
   on:
