@@ -4,9 +4,14 @@
 package com.terrier.utilities.automation.bundles.communs.utils;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.terrier.utilities.automation.bundles.communs.utils.replace.IReplacePattern;
+import com.terrier.utilities.automation.bundles.communs.utils.replace.ReplaceDatePattern;
 
 /**
  * Utilitaires de l'automation manager
@@ -15,28 +20,30 @@ import java.util.regex.Pattern;
  */
 public class AutomationUtils {
 
+
 	
-	public static final String PATTERN_IN = "\\{";
-	public static final String PATTERN_OUT = "\\}";
+	/**
+	 * Liste des patterns de remplacement
+	 */
+	private static final List<IReplacePattern> listePatterns = Arrays.asList(new ReplaceDatePattern(), new ReplaceDatePattern());
+
+	private static final Logger LOGGER = LoggerFactory.getLogger( AutomationUtils.class );
+	
 	
 	/**
 	 * @param source donnée source à remplacer
 	 * Le pattern est de la forme {{yyyyMMdd}} avec à l'intérieur un format de date {@link SimpleDateFormat}
 	 * @return données remplacée par le pattern
 	 */
-	public static String replaceDatePatterns(String source){
+	public static String replacePatterns(String source, String pattern){
 		if(source == null){
 			return null;
 		}
 		
-		Pattern p = Pattern.compile(".*"+PATTERN_IN+"{2} *(.*) *"+PATTERN_OUT+"{2}.*");
-        Matcher m = p.matcher(source);
-        if(m.find()){
-        	String patternDate = m.group(1);
-        	SimpleDateFormat sdf = new SimpleDateFormat(patternDate);
-        	String date = sdf.format(Calendar.getInstance().getTime());
-        	source = source.replaceAll(PATTERN_IN + PATTERN_IN + patternDate + PATTERN_OUT + PATTERN_OUT, date);
-        }
+		for (IReplacePattern iReplacePattern : listePatterns) {
+			LOGGER.info("Application du pattern {} : {}", iReplacePattern.getClass().getSimpleName(), iReplacePattern.description());
+			source = iReplacePattern.replace(source, pattern);
+		}
 		return source;
 	}
 	

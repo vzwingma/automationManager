@@ -144,7 +144,7 @@ public class SaveToTaskRunnable implements Runnable {
 							outputPattern = fichier.getFileName().toString();
 						}
 						boolean resultat = copyFichierTo(fichier, 
-								AutomationUtils.replaceDatePatterns(outputPattern), 
+								AutomationUtils.replacePatterns(fichier.getFileName().toString(), outputPattern), 
 								repertoireDestinataire);		
 						if(resultat){
 							LOGGER.info("[{}] Copie réalisée vers {}", index, repertoireDestinataire);
