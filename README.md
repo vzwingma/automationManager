@@ -25,7 +25,7 @@ Gestionnaire de tâches automatisées
   *  Générateur d'inventaire pour BoxCryptor
   * [![Dependency Status](https://www.versioneye.com/user/projects/5675bcf1107997003e000859/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5675bcf1107997003e000859)
 
-#### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.0.4
+#### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.1.0
   *  Libraire de copie de fichier ou de répertoire
   *  [![Dependency Status](https://www.versioneye.com/user/projects/566f2f24107997003e000004/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f24107997003e000004)
 
