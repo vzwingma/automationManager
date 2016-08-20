@@ -4,10 +4,8 @@
 package com.terrier.utilities.automation.bundles.messaging.runnable;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.ws.rs.core.MediaType;
 
@@ -19,6 +17,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
 /**
  * Tâche d'envoi des mails
@@ -32,25 +31,25 @@ public class SendEmailTaskRunnable implements Runnable {
 	private static final Logger LOGGER = LoggerFactory.getLogger( SendEmailTaskRunnable.class );
 
 	/**
-	 * Liste 
+	 * Config 
 	 */
-	private Map<String, List<String>> messagesSendingQueue = new ConcurrentHashMap<String, List<String>>();
-
 	private String apiKey;
 	private String apiURL;
 	private String apiDomain;
 	private String listeDestinataires;
-
+	// Service métier
+	private MessagingBusinessService service;
+	
 	/**
 	 * Constructeur de la tâche d'envoi
 	 * @param messagesSendingQueue
 	 */
-	public SendEmailTaskRunnable(final String apiKey, final String apiURL, final String apiDomain, final String listeDestinataires, final Map<String, List<String>> messagesSendingQueue ) {
+	public SendEmailTaskRunnable(final String apiKey, final String apiURL, final String apiDomain, final String listeDestinataires, final MessagingBusinessService service ) {
 		this.apiKey = apiKey;
 		this.apiURL = apiURL;
 		this.apiDomain = apiDomain;
 		this.listeDestinataires = listeDestinataires;
-		this.messagesSendingQueue = messagesSendingQueue;
+		this.service = service;
 	}
 
 	/* (non-Javadoc)
@@ -58,8 +57,8 @@ public class SendEmailTaskRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		LOGGER.info("Envoi des emails : {} messages en attente", this.messagesSendingQueue.size());
-		if(this.messagesSendingQueue.size() > 0){
+		LOGGER.info("Envoi des emails : {} messages en attente", this.service.getEmailsSendingQueue().size());
+		if(this.service.getEmailsSendingQueue().size() > 0){
 			boolean resultat = sendAllMessages();
 			LOGGER.info("> Résulat des envois : {}", resultat);
 		}
@@ -79,9 +78,9 @@ public class SendEmailTaskRunnable implements Runnable {
 		boolean allResponses = true;
 
 		// Envoi de tous les mails, groupé par titre :
-		for (Iterator<Entry<String, List<String>>> gmIterator = messagesSendingQueue.entrySet().iterator(); gmIterator.hasNext();) {
+		for (Iterator<Entry<String, ConcurrentLinkedQueue<String>>> gmIterator = service.getEmailsSendingQueue().entrySet().iterator(); gmIterator.hasNext();) {
 
-			Entry<String, List<String>> groupeMessages = gmIterator.next();
+			Entry<String, ConcurrentLinkedQueue<String>> groupeMessages = gmIterator.next();
 			if(groupeMessages.getValue() != null && !groupeMessages.getValue().isEmpty()){
 				MultivaluedMapImpl formData = getFormData(groupeMessages.getKey(), groupeMessages.getValue());
 				LOGGER.debug("Envoi du mail : {}", formData.get("subject"));
@@ -93,6 +92,7 @@ public class SendEmailTaskRunnable implements Runnable {
 				}
 				catch(Exception e){
 					LOGGER.error("> Resultat : Erreur lors de l'envoi du mail", e);
+					this.service.sendNotificationSMS("Erreur lors de l'envoi du mail, les messages de ["+groupeMessages.getKey()+"] n'ont pas été envoyé :" + e.getMessage());
 					resultat = false;
 				}
 				if(resultat){
@@ -101,6 +101,8 @@ public class SendEmailTaskRunnable implements Runnable {
 				}
 				else{
 					LOGGER.error("Erreur lors de l'envoi, les messages de [{}] sont reprogrammés pour la prochaine échéance", groupeMessages.getKey());
+					// si erreur, on utilise l'autre canal pour envoyer le message d'erreur
+					
 				}
 				allResponses &= resultat;
 			}
@@ -125,7 +127,7 @@ public class SendEmailTaskRunnable implements Runnable {
 	 * @param message
 	 * @return formData pour l'email
 	 */
-	private MultivaluedMapImpl getFormData(String titre, List<String> messages) {
+	private MultivaluedMapImpl getFormData(String titre, ConcurrentLinkedQueue<String> messages) {
 		MultivaluedMapImpl formData = new MultivaluedMapImpl();
 		formData.add("from", "Automation Messaging Service <postmaster@"+this.apiDomain+">");
 		formData.add("to", this.listeDestinataires);

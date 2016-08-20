@@ -1,9 +1,7 @@
 package com.terrier.utilities.automation.bundles.messaging;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -66,7 +64,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	/**
 	 * Liste 
 	 */
-	private Map<String, List<String>> emailSendingQueue = new ConcurrentHashMap<String, List<String>>();
+	private Map<String, ConcurrentLinkedQueue<String>> emailSendingQueue = new ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>();
 
 	/**
 	 * Liste 
@@ -121,7 +119,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 						apiURL,
 						getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN),
 						getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES),
-						this.emailSendingQueue
+						this
 						), 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
 		LOGGER.info("La tâche d'envoi des mails est programmée");
 	}
@@ -141,7 +139,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 						getConfig(MessagingConfigKeyEnums.SMS_URL),
 						getConfig(MessagingConfigKeyEnums.SMS_USER),
 						getConfig(MessagingConfigKeyEnums.SMS_PASS),
-						this.smsSendingQueue
+						this
 						), 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
 		LOGGER.info("La tâche d'envoi des SMS est programmée");
 	}
@@ -208,7 +206,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 */
 	public void sendNotificationEmail(String titre, String message){
 		LOGGER.info("Ajout du message [{}] dans la liste [{}] des envois d'emails", message, titre);
-		List<String> messagesToSend = emailSendingQueue.getOrDefault(titre, new ArrayList<String>());
+		ConcurrentLinkedQueue<String> messagesToSend = emailSendingQueue.getOrDefault(titre, new ConcurrentLinkedQueue<String>());
 		messagesToSend.add(message);
 		emailSendingQueue.put(titre, messagesToSend);
 	}
@@ -239,7 +237,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	/**
 	 * @return the messagesSendingQueue
 	 */
-	protected Map<String, List<String>> getEmailsSendingQueue() {
+	public Map<String, ConcurrentLinkedQueue<String>> getEmailsSendingQueue() {
 		return emailSendingQueue;
 	}
 
@@ -249,7 +247,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	/**
 	 * @return the smsSendingQueue
 	 */
-	protected ConcurrentLinkedQueue<String> getSmsSendingQueue() {
+	public ConcurrentLinkedQueue<String> getSmsSendingQueue() {
 		return smsSendingQueue;
 	}
 

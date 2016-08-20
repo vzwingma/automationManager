@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.ws.rs.core.MediaType;
 
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
 /**
  * Tâche d'envoi des mails
@@ -32,20 +32,22 @@ public class SendSMSTaskRunnable implements Runnable {
 	/**
 	 * Liste 
 	 */
-	private ConcurrentLinkedQueue<String> messagesSendingQueue = new ConcurrentLinkedQueue<String>();
+	private MessagingBusinessService service;
 	private String user;
 	private String password;
 	private String apiURL;
 
+	
+	
 	/**
 	 * Constructeur de la tâche d'envoi
 	 * @param messagesSendingQueue
 	 */
-	public SendSMSTaskRunnable(final String apiURL, final String user, final String password, final ConcurrentLinkedQueue<String> messagesSendingQueue) {
+	public SendSMSTaskRunnable(final String apiURL, final String user, final String password, final MessagingBusinessService service) {
 		this.user = user;
 		this.password = password;
 		this.apiURL = apiURL;
-		this.messagesSendingQueue = messagesSendingQueue;
+		this.service = service;
 	}
 
 	/* (non-Javadoc)
@@ -53,8 +55,8 @@ public class SendSMSTaskRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		LOGGER.info("Envoi des SMS : {} messages en attente", this.messagesSendingQueue.size());
-		if(this.messagesSendingQueue.size() > 0){
+		LOGGER.info("Envoi des SMS : {} messages en attente", this.service.getSmsSendingQueue().size());
+		if(this.service.getSmsSendingQueue().size() > 0){
 			boolean resultat = sendAllMessages();
 			LOGGER.info("> Résulat des envois : {}", resultat);
 		}
@@ -74,11 +76,11 @@ public class SendSMSTaskRunnable implements Runnable {
 
 		// Envoi de tous les mails, groupé par titre :
 
-		if(this.messagesSendingQueue.size() > 0){
+		if(this.service.getSmsSendingQueue().size() > 0){
 
 			List<String> messages = new ArrayList<>();
-			while(messagesSendingQueue.size() > 0){
-				messages.add(messagesSendingQueue.poll());
+			while(this.service.getSmsSendingQueue().size() > 0){
+				messages.add(this.service.getSmsSendingQueue().poll());
 			}
 			LOGGER.debug("Envoi des {} messages par SMS", messages.size());
 			boolean resultat = false;
@@ -90,13 +92,14 @@ public class SendSMSTaskRunnable implements Runnable {
 			}
 			catch(Exception e){
 				LOGGER.error("> Resultat : Erreur lors de l'envoi du SMS", e);
+				this.service.sendNotificationEmail("Erreur envoi de SMS", "Erreur lors de l'envoi du SMS " + e.getMessage());
 			}
 			if(resultat){
 				LOGGER.debug("Suppression des messages SMS de la liste d'envoi");
 			}
 			else{
 				for (String msg : messages) {
-					messagesSendingQueue.add(msg);
+					this.service.sendNotificationSMS(msg);
 				}
 				LOGGER.error("Erreur lors de l'envoi, les messages sont reprogrammés pour la prochaine échéance");
 			}

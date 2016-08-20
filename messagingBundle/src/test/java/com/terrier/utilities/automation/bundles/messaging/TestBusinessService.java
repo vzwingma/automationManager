@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -77,7 +76,7 @@ public class TestBusinessService {
 		service.sendNotificationEmail("test", "message de test2");
 		service.sendNotificationEmail("test2", "message de test3");
 
-		Map<String, List<String>> queue = service.getEmailsSendingQueue();
+		Map<String, ConcurrentLinkedQueue<String>> queue = service.getEmailsSendingQueue();
 		assertEquals(2, queue.keySet().size());
 		assertEquals(2, queue.get("test").size());
 		assertEquals(1, queue.get("test2").size());
