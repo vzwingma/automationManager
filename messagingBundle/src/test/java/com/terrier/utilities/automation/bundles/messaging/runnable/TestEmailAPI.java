@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.ws.rs.core.MediaType;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
@@ -166,7 +167,7 @@ public class TestEmailAPI {
 	/**
 	 * Test pour appeler l'API réelle
 	 */
-	@Test
+	@Ignore
 	public void testRealAPI(){
 
 		// Préparation
