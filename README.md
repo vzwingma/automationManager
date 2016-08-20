@@ -16,7 +16,7 @@ Gestionnaire de tâches automatisées
   *  Libraire de supervision des bundles de l'AutomationManager
   *  [![Dependency Status](https://www.versioneye.com/user/projects/5675bcf2107997002d0008e4/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5675bcf2107997002d0008e4)
 
-#### [messagingBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Messaging) v1.0.2 
+#### [messagingBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Messaging) v1.0.3 
   *  Librairie d'envoi de mail et de SMS
   * [![Dependency Status](https://www.versioneye.com/user/projects/566f2f1b1079970030000014/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f1b1079970030000014)
     
@@ -33,7 +33,7 @@ Gestionnaire de tâches automatisées
 
 ### Ajout du repository de features
 
-     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.1.2/xml/features
+     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.1.3/xml/features
 
 ### Installation des features
 

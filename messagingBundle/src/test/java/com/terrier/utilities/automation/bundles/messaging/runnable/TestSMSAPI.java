@@ -20,6 +20,7 @@ import java.io.InputStream;
 
 import javax.ws.rs.core.MediaType;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
@@ -130,7 +131,7 @@ public class TestSMSAPI {
 	/**
 	 * Test pour appeler l'API réelle
 	 */
-	@Test
+	@Ignore
 	public void testRealAPI(){
 
 		// Préparation
