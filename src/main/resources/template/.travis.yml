@@ -14,7 +14,8 @@ deploy:
     - messagingBundle/target/messagingBundle-${automation.messaging.version}.jar
     - boxcryptorInventoryGeneratorBundle/target/boxcryptorInventoryGeneratorBundle-${automation.boxcryptor.inventory.version}.jar
     - saveToBundle/target/saveToBundle-${automation.save.to.version}.jar
-    - supervisionBundle/target/supervisionBundle-${automation.supervision.version}.jar	
+    - supervisionBundle/target/supervisionBundle-${automation.supervision.version}.jar
+    - feature.xml
   skip_cleanup: true	
   on:
     repo: vzwingma/automationManager
