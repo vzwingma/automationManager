@@ -32,7 +32,8 @@ Gestionnaire de tâches automatisées
 ## Installation de features
 
 ### Ajout du repository de features
-
+	  
+	  feature:repo-remove automationManagerFeature
      feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v${project.version}/feature.xml
 
 ### Installation des features
