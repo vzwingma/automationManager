@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -132,6 +133,19 @@ public class TestSaveToTaskRunnable {
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/d1.txt"));
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory/d2.txt"));
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory"));
+	}
+	
+	
+	@Ignore
+	public void testReel(){
+		SaveToTaskRunnable copyTask = new SaveToTaskRunnable(0, 
+				CommandeEnum.MOVE, 
+				"D:/Profiles/vzwingma/Downloads", 
+				"[A-Za-z]*.postman_collection.json", 
+				"X:/encrypted-sync/Postman", 
+				null, null);
+		
+		copyTask.run();
 	}
 
 }
