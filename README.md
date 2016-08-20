@@ -33,7 +33,7 @@ Gestionnaire de tâches automatisées
 
 ### Ajout du repository de features
 
-     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.1.3/feature.xml
+     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.2.0-RC1/feature.xml
 
 ### Installation des features
 
