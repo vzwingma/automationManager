@@ -140,9 +140,9 @@ public class TestSMSAPI {
 		service.getSmsSendingQueue().add("message de test3");
 	
 		SendSMSTaskRunnable runnable = new SendSMSTaskRunnable(
+				"https://smsapi.free-mobile.fr/sendmsg?", 
 				"15739977", 
 				"YX6D0iQQPw49Fy", 
-				"https://smsapi.free-mobile.fr/sendmsg?", 
 				service);
 		runnable.run();
 	}

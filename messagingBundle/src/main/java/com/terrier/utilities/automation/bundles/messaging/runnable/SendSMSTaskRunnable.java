@@ -37,8 +37,8 @@ public class SendSMSTaskRunnable implements Runnable {
 	private String password;
 	private String apiURL;
 
-	
-	
+
+
 	/**
 	 * Constructeur de la tâche d'envoi
 	 * @param messagesSendingQueue
@@ -70,21 +70,20 @@ public class SendSMSTaskRunnable implements Runnable {
 
 		Client client = getClient();
 
-		boolean allResponses = true;
-
-		String prepareAPIURL = this.apiURL + "user=" + this.user + "&pass=" + this.password + "&msg=";
+		boolean resultat = false;
 
 		// Envoi de tous les mails, groupé par titre :
 
-		if(this.service.getSmsSendingQueue().size() > 0){
+		if(this.service.getSmsSendingQueue().size() > 0 && client != null){
 
 			List<String> messages = new ArrayList<>();
 			while(this.service.getSmsSendingQueue().size() > 0){
 				messages.add(this.service.getSmsSendingQueue().poll());
 			}
 			LOGGER.debug("Envoi des {} messages par SMS", messages.size());
-			boolean resultat = false;
 			try{
+				String prepareAPIURL = this.apiURL + "user=" + this.user + "&pass=" + this.password + "&msg=";
+				LOGGER.debug("Appel de l'URI [{}]", prepareAPIURL + getFormData(messages));
 				WebResource.Builder webResource = client.resource(prepareAPIURL + getFormData(messages)).type(MediaType.APPLICATION_FORM_URLENCODED);
 				ClientResponse response = webResource.get(ClientResponse.class);
 				LOGGER.debug("> Resultat : {}", response);
@@ -103,9 +102,8 @@ public class SendSMSTaskRunnable implements Runnable {
 				}
 				LOGGER.error("Erreur lors de l'envoi, les messages sont reprogrammés pour la prochaine échéance");
 			}
-			allResponses &= resultat;
 		}
-		return allResponses;
+		return resultat;
 	}
 
 
@@ -115,7 +113,13 @@ public class SendSMSTaskRunnable implements Runnable {
 	 * @return client HTTP
 	 */
 	protected Client getClient(){
-		return Client.create();
+		try{
+			return Client.create();
+		}
+		catch(Exception e){
+			this.service.sendNotificationEmail("Erreur envoi de SMS", "Erreur lors de la création du CLient pour l'envoi du SMS " + e.getMessage());
+			return null;
+		}
 	}
 
 
