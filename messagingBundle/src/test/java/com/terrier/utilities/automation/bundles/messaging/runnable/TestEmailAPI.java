@@ -17,14 +17,17 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.ws.rs.core.MediaType;
 
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
@@ -33,6 +36,7 @@ import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
 /**
@@ -43,6 +47,21 @@ public class TestEmailAPI {
 
 	private Client mockClient = mock(Client.class);
 
+	private static Properties properties = new Properties();
+	/**
+	 * Charge les données privées issues de com.terrier.utilities.automation.private.messaging
+	 * Ce fichier ne doit pas être commité
+	 * @throws KeyNotFoundException
+	 */
+	@BeforeClass
+	public static void loadPrivateData() throws KeyNotFoundException{
+		
+		try {
+			properties.load(new FileInputStream(new File("src/test/resources/com.terrier.utilities.automation.private.messaging.cfg")));
+		} catch (IOException e) { e.printStackTrace();}
+	}
+	
+	
 	/**
 	 * Test d'envoi
 	 */
@@ -147,7 +166,7 @@ public class TestEmailAPI {
 	/**
 	 * Test pour appeler l'API réelle
 	 */
-	@Ignore
+	@Test
 	public void testRealAPI(){
 
 		// Préparation
@@ -155,11 +174,14 @@ public class TestEmailAPI {
 		addToQueue(service.getEmailsSendingQueue(), "test", "message de test1");
 		addToQueue(service.getEmailsSendingQueue(), "test", "message de test2");
 
+		
+		assertNotNull(TestEmailAPI.properties.getProperty("automation.bundle.messaging.email.key"));
+		
 		SendEmailTaskRunnable runnable = new SendEmailTaskRunnable(
-				"key-3e5ebd208254c706eccd2c0157f6858f", 
+				TestEmailAPI.properties.getProperty("automation.bundle.messaging.email.key"), 
 				"https://api.mailgun.net/v3/sandboxc3830b67ded34305912ad73326e9af2f.mailgun.org/messages", 
-				"sandboxc.mailgun.org", 
-				"vincent.zwingmann@gmail.com", 
+				TestEmailAPI.properties.getProperty("automation.bundle.messaging.email.mailgun.domain"), 
+				TestEmailAPI.properties.getProperty("automation.bundle.messaging.email.destinataires"), 
 				service);
 		runnable.run();
 	}

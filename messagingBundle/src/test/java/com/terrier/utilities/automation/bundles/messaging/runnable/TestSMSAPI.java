@@ -15,11 +15,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 import javax.ws.rs.core.MediaType;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -27,6 +31,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
 /**
@@ -36,6 +41,21 @@ import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessServi
 public class TestSMSAPI {
 
 	private Client mockClient = mock(Client.class);
+	
+	private static Properties properties = new Properties();
+	/**
+	 * Charge les données privées issues de com.terrier.utilities.automation.private.messaging
+	 * Ce fichier ne doit pas être commité
+	 * @throws KeyNotFoundException
+	 */
+	@BeforeClass
+	public static void loadPrivateData() throws KeyNotFoundException{
+		
+		try {
+			properties.load(new FileInputStream(new File("src/test/resources/com.terrier.utilities.automation.private.messaging.cfg")));
+		} catch (IOException e) { e.printStackTrace();}
+	}
+	
 	
 	/**
 	 * Test d'envoi
@@ -142,8 +162,8 @@ public class TestSMSAPI {
 	
 		SendSMSTaskRunnable runnable = new SendSMSTaskRunnable(
 				"https://smsapi.free-mobile.fr/sendmsg?", 
-				"15739977", 
-				"YX6D0iQQPw49Fy", 
+				properties.getProperty("automation.bundle.messaging.sms.user"), 
+				properties.getProperty("automation.bundle.messaging.sms.pass"), 
 				service);
 		runnable.run();
 	}
