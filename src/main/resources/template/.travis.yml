@@ -3,7 +3,7 @@
 language: java
 jdk:
   - oraclejdk8
-install: 
+script: 
   - mvn clean install
 before_deploy:
   - "echo Génération pour la branche : $TRAVIS_BRANCH" 
