@@ -10,6 +10,7 @@ script:
 before_deploy:
   - cd src/main/resources
   - ./feature_github_generation.sh
+  - cd ../../../
 deploy:
   provider: releases
   api_key:
