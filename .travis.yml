@@ -8,7 +8,11 @@ install:
 before_deploy:
   - "echo Génération pour la branche : $TRAVIS_BRANCH" 
   - cd src/main/resources
-  - ./feature_github_generation.sh  
+  - ./feature_github_generation.sh
+  - cd
+  - git add README.md
+  - git commit -m "Mise à jour des versions"
+  - git push    
 deploy:
   provider: releases
   api_key:
