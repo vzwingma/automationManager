@@ -43,13 +43,11 @@ Gestionnaire de tâches automatisées
 #### à partir de GitHub
 
      feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v${project.version}/feature.xml
+     feature:install automation-manager
      
 #### à partir de Maven
 
      feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/${project.version}/xml/features
-     
-### Installation des features
-
      feature:install automation-supervision
      feature:install automation-messaging
      feature:install automation-boxcryptor-inventory
