@@ -36,8 +36,8 @@ public class SupervisionServlet extends HttpServlet {
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected void doGet(final HttpServletRequest request,
-						 final HttpServletResponse response) throws ServletException,
-			IOException {
+			final HttpServletResponse response) throws ServletException,
+	IOException {
 		response.setContentType("text/html");
 
 		final PrintWriter writer = response.getWriter();
@@ -45,11 +45,11 @@ public class SupervisionServlet extends HttpServlet {
 		header(writer);
 
 		statutPage(writer);
-		
+
 		// Création du footer		
 		footer(writer);
 	}
-	
+
 	/**
 	 * Entête
 	 * @param writer
@@ -57,7 +57,6 @@ public class SupervisionServlet extends HttpServlet {
 	private void header(final PrintWriter writer){
 		writer.println("<html><body align='center'>");
 		writer.println("<h1>Supervision des bundles de l'AutomationManager</h1>");
-		writer.println("<p align='left'>");
 	}
 
 
@@ -67,26 +66,26 @@ public class SupervisionServlet extends HttpServlet {
 	 */
 	private void statutPage(final PrintWriter writer){
 		List<StatutBundleTopicObject> supervision = SupervisionBusinessService.getStatutBundles();
-		
+		writer.println("<p align='left'>");
 		for (StatutBundleTopicObject bundleStatut : supervision) {
 			writer.println("<h2> [" + bundleStatut.getBundle().getBundleId() + "] " + bundleStatut.getBundle().getSymbolicName() + "</h2");
+			writer.println("<br> [" + bundleStatut.getStatut() + "]"); 
 			writer.println("<ul>");
 			for (StatutPropertyBundleObject bundleValue : bundleStatut.getProperties()) {
 				writer.println("<li>" + bundleValue.getLibelle() + " : " + bundleValue.getValue() + "</li>");	
 			}
 			writer.println("</ul>");
-			
 		}
-		
+		writer.println("</p>");
 	}
-	
+
 	/**
 	 * Footer
 	 * @param writer
 	 */
 	private void footer(final PrintWriter writer){
 		writer.println("<br/>");
-		writer.println("</p>");
+
 		writer.println("</body></html>");
 	}
 }

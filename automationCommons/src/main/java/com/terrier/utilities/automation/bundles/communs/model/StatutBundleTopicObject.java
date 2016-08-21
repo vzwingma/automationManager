@@ -20,8 +20,6 @@ public class StatutBundleTopicObject {
 	// Bundle
 	private Bundle bundle;
 	
-	private StatutBundleEnum statut;
-	
 	// Properties
 	private List<StatutPropertyBundleObject> properties = new ArrayList<StatutPropertyBundleObject>();
 	
@@ -53,20 +51,18 @@ public class StatutBundleTopicObject {
 
 
 	/**
-	 * @return the statut
+	 * @return the statut du bundle
 	 */
 	public StatutBundleEnum getStatut() {
-		return statut;
+		
+		StatutBundleEnum statutBundle = StatutBundleEnum.OK;
+		if(!this.properties.isEmpty()){
+			for (StatutPropertyBundleObject statutPropertyBundleObject : properties) {
+				if(statutPropertyBundleObject.getStatut().ordinal() > statutBundle.ordinal()){
+					statutBundle = statutPropertyBundleObject.getStatut();
+				}
+			}
+		}
+		return statutBundle;
 	}
-
-
-
-	/**
-	 * @param statut the statut to set
-	 */
-	public void setStatut(StatutBundleEnum statut) {
-		this.statut = statut;
-	}
-	
-	
 }
