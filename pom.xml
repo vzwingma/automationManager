@@ -13,7 +13,7 @@
 		<automation.boxcryptor.inventory.version>1.0.0</automation.boxcryptor.inventory.version>
 		<automation.messaging.version>1.0.3</automation.messaging.version>
 		<automation.supervision.version>1.1.0</automation.supervision.version>
-		<karaf.maven.plugin.version>4.0.3</karaf.maven.plugin.version>
+		<karaf.maven.plugin.version>4.0.5</karaf.maven.plugin.version>
 	</properties>
 
 	<modules>
