@@ -73,6 +73,7 @@ public class SupervisionBusinessService extends AbstractAutomationService implem
 	public void handleEvent(Event event) {
 		LOGGER.debug("Topic [{}] Réception du message [{}]", event.getTopic(), event);
 
+		
 		StatutBundleTopicObject statutBundleObject = (StatutBundleTopicObject)event.getProperty(StatutPropertyNameEnum.STATUS.getName());
 
 		MAP_SUPERVISION_BUNDLE.add(statutBundleObject);
