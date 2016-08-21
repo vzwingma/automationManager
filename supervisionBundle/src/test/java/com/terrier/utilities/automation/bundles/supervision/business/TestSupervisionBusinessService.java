@@ -1,4 +1,4 @@
-package com.terrier.utilities.automation.bundles.supervision.listeners;
+package com.terrier.utilities.automation.bundles.supervision.business;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyMap;
@@ -15,13 +15,14 @@ import org.osgi.service.event.Event;
 import com.terrier.utilities.automation.bundles.communs.business.AutomationEventPublisher;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.StatusPropertyNameEnum;
+import com.terrier.utilities.automation.bundles.supervision.business.SupervisionBusinessService;
 
 /**
  * Test de réception des messages
  * @author vzwingma
  *
  */
-public class TestBundlesEventsHandler {
+public class TestSupervisionBusinessService {
 
 	
 	/**
@@ -43,7 +44,7 @@ public class TestBundlesEventsHandler {
         Event event = AutomationEventPublisher.createEvent(EventsTopicNameEnum.SUPERVISION_EVENTS, properties);
         assertNotNull(event);
         
-        BundlesEventsHandler hander = spy(new BundlesEventsHandler());
+        SupervisionBusinessService hander = spy(new SupervisionBusinessService());
         hander.handleEvent(event);
         
         verify(hander, times(1)).logStatut(anyMap());

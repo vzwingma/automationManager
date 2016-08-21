@@ -12,8 +12,9 @@
 		<automation.save.to.version>1.1.0</automation.save.to.version>
 		<automation.boxcryptor.inventory.version>1.0.0</automation.boxcryptor.inventory.version>
 		<automation.messaging.version>1.0.3</automation.messaging.version>
-		<automation.supervision.version>1.1.0</automation.supervision.version>
+		<automation.supervision.version>1.2.0</automation.supervision.version>
 		<karaf.maven.plugin.version>4.0.5</karaf.maven.plugin.version>
+		<jersey.version>1.19.1</jersey.version>
 	</properties>
 
 	<modules>

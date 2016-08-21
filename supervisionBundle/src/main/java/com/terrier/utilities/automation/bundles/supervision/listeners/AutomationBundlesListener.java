@@ -23,7 +23,7 @@ import com.terrier.utilities.automation.bundles.supervision.communs.OSGIStatusUt
 public class AutomationBundlesListener implements BundleListener, ServiceListener {
 
 
-	private static final Logger LOGGER = LoggerFactory.getLogger( BundlesEventsHandler.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( AutomationBundlesListener.class );
 
 	/* (non-Javadoc)
 	 * @see org.osgi.framework.ServiceListener#serviceChanged(org.osgi.framework.ServiceEvent)

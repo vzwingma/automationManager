@@ -20,7 +20,7 @@ deploy:
     - messagingBundle/target/messagingBundle-1.0.3.jar
     - boxcryptorInventoryGeneratorBundle/target/boxcryptorInventoryGeneratorBundle-1.0.0.jar
     - saveToBundle/target/saveToBundle-1.1.0.jar
-    - supervisionBundle/target/supervisionBundle-1.1.0.jar
+    - supervisionBundle/target/supervisionBundle-1.2.0.jar
   skip_cleanup: true	
   on:
     repo: vzwingma/automationManager
