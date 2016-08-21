@@ -5,6 +5,10 @@ jdk:
   - oraclejdk8
 install: 
   - mvn clean install
+before_deploy:
+  - "echo Génération pour la branche : $TRAVIS_BRANCH" 
+  - cd src/main/resources
+  - ./feature_github_generation.sh  
 deploy:
   provider: releases
   api_key:
