@@ -8,14 +8,13 @@
 	</parent>
 	<artifactId>automation-save-to</artifactId>
 	<name>[Features] SaveTo</name>
-	<description>Génération des features de l'AutomationManager</description>
 	<packaging>feature</packaging>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.karaf.tooling</groupId>
 				<artifactId>karaf-maven-plugin</artifactId>
-				<version>4.0.3</version>
+				<version>${karaf.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<executions>
 					<execution>
@@ -41,4 +40,5 @@
 			<version>${automation.save.to.version}</version>
 		</dependency>
 	</dependencies>
+	<description>Feature associée au module SaveTo</description>
 </project>
