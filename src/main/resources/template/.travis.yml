@@ -9,7 +9,7 @@ before_deploy:
   - "echo Génération pour la branche : $TRAVIS_BRANCH" 
   - cd src/main/resources
   - ./feature_github_generation.sh  
-  - cd vzwingma/automationManager
+  - cd ../../../
   - git add README.md
   - git commit -m "Mise à jour des versions"
   - git push  
