@@ -1,4 +1,4 @@
-# Automation Manager v1.2.0-RC3
+# Automation Manager v1.2.0
 Gestionnaire de tâches automatisées
 
 [![Dependency Status](https://www.versioneye.com/user/projects/566f2ef71079970030000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2ef71079970030000001)
@@ -42,12 +42,12 @@ Gestionnaire de tâches automatisées
 
 #### à partir de GitHub
 
-     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.2.0-RC3/feature.xml
+     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v{git_release}/feature.xml
      feature:install automation-manager
      
 #### à partir de Maven
 
-     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.2.0-RC3/xml/features
+     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.2.0/xml/features
      feature:install automation-supervision
      feature:install automation-messaging
      feature:install automation-boxcryptor-inventory

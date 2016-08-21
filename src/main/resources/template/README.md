@@ -42,7 +42,7 @@ Gestionnaire de tâches automatisées
 
 #### à partir de GitHub
 
-     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v${project.version}/feature.xml
+     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v{git_release}/feature.xml
      feature:install automation-manager
      
 #### à partir de Maven
