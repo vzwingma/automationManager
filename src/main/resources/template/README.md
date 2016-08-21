@@ -32,10 +32,17 @@ Gestionnaire de tâches automatisées
 ## Installation de features
 
 ### Ajout du repository de features
-	  
-	  feature:repo-remove automationManagerFeature
-     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v${project.version}/feature.xml
 
+#### à partir de GitHub
+	  
+     feature:repo-remove automationManagerFeature
+     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v${project.version}/feature.xml
+     
+#### à partir de Maven
+
+     feature:repo-remove automationManagerFeature
+     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/${project.version}/xml/features
+     
 ### Installation des features
 
      feature:install automation-supervision
