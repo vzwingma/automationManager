@@ -4,9 +4,9 @@ language: java
 jdk:
   - oraclejdk8
 install: 
-  - mvn clean
-before_deploy:
   - echo "Génération pour la branche : $TRAVIS_BRANCH" 
+  - mvn clean
+  - echo "Génération pour la branche : $TRAVIS_BRANCH"   
 deploy:
   provider: releases
   api_key:
