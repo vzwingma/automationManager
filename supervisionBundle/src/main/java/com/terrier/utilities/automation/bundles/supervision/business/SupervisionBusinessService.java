@@ -3,10 +3,11 @@
  */
 package com.terrier.utilities.automation.bundles.supervision.business;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -40,7 +41,7 @@ public class SupervisionBusinessService extends AbstractAutomationService implem
 	@Inject private AutomationBundlesListener automationBundlesListener;
 
 
-	private static final List<StatutBundleTopicObject> MAP_SUPERVISION_BUNDLE = new ArrayList<StatutBundleTopicObject>();
+	private static final Map<Long, StatutBundleTopicObject> MAP_SUPERVISION_BUNDLE = new HashMap<Long, StatutBundleTopicObject>();
 
 	/**
 	 * Initialisation
@@ -76,7 +77,7 @@ public class SupervisionBusinessService extends AbstractAutomationService implem
 		
 		StatutBundleTopicObject statutBundleObject = (StatutBundleTopicObject)event.getProperty(StatutPropertyNameEnum.STATUS.getName());
 
-		MAP_SUPERVISION_BUNDLE.add(statutBundleObject);
+		MAP_SUPERVISION_BUNDLE.put(statutBundleObject.getBundle().getBundleId(), statutBundleObject);
 		LOGGER.info(logStatut(statutBundleObject));
 	}
 
@@ -99,7 +100,7 @@ public class SupervisionBusinessService extends AbstractAutomationService implem
 	/**
 	 * @return le statut des bundles
 	 */
-	public static final List<StatutBundleTopicObject> getStatutBundles(){
+	public static final Map<Long, StatutBundleTopicObject> getStatutBundles(){
 		return MAP_SUPERVISION_BUNDLE;
 	}
 

@@ -9,7 +9,7 @@ package com.terrier.utilities.automation.bundles.supervision.business;
  */
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.terrier.utilities.automation.bundles.communs.model.StatutBundleTopicObject;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
+import com.terrier.utilities.automation.bundles.supervision.communs.OSGIStatusUtils;
 
 
 /**
@@ -65,11 +66,11 @@ public class SupervisionServlet extends HttpServlet {
 	 * @param writer
 	 */
 	private void statutPage(final PrintWriter writer){
-		List<StatutBundleTopicObject> supervision = SupervisionBusinessService.getStatutBundles();
+		Map<Long, StatutBundleTopicObject> supervision = SupervisionBusinessService.getStatutBundles();
 		writer.println("<p align='left'>");
-		for (StatutBundleTopicObject bundleStatut : supervision) {
+		for (StatutBundleTopicObject bundleStatut : supervision.values()) {
 			writer.println("<h2> [" + bundleStatut.getBundle().getBundleId() + "] " + bundleStatut.getBundle().getSymbolicName() + "</h2");
-			writer.println("<br> [" + bundleStatut.getStatut() + "]"); 
+			writer.println("<br> [" + OSGIStatusUtils.getBundleStatusLibelle(bundleStatut.getBundle().getState()) + "] [" + bundleStatut.getStatut() + "]"); 
 			writer.println("<ul>");
 			for (StatutPropertyBundleObject bundleValue : bundleStatut.getProperties()) {
 				writer.println("<li>" + bundleValue.getLibelle() + " : " + bundleValue.getValue() + "</li>");	
