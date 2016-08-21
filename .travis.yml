@@ -5,7 +5,7 @@ jdk:
   - oraclejdk8
 install: 
   - "echo Génération pour la branche : $TRAVIS_BRANCH" 
-  - cd automationManager/src/main/resources/template
+  - cd src/main/resources/template
   - ./feature_github_generation.sh
 deploy:
   provider: releases
