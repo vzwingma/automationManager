@@ -7,13 +7,3 @@ cd template/
 sed -i -e "s/\${project.version}/$TRAVIS_BRANCH/g" feature.xml
 # Todo : Doit être recommité sur master
 sed -i -e "s/v\${project.version}/$TRAVIS_BRANCH/g" README.md
-
-
-echo ""
-echo ""
-echo "************** feature.xml ****************"
-cat feature.xml
-echo ""
-echo ""
-echo "************** README.md ****************"
-cat README.md

@@ -1,4 +1,4 @@
-# Automation Manager
+# Automation Manager v1.2.0-RC3
 Gestionnaire de tâches automatisées
 
 [![Dependency Status](https://www.versioneye.com/user/projects/566f2ef71079970030000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2ef71079970030000001)

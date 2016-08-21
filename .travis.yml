@@ -14,11 +14,11 @@ deploy:
   api_key:
     secure: RWU7uEO6iHDEsVRTNg+aUns/8GNeUnzd7m2s1jDohakAyx/HYytstum2rODn1vTpTh4xjjTbeoAkC+hJmsfgTSwgV3r0AbSdzOwk8+WPitBO9ZxIL640MTcCT0bZWMcXAphkXOQMK1RntU42ib/0jMQ7+eBSdWPp4jRb5VzvXGrot9/K7oNwKpojGLXJxFokaAhX1H/22qjSH9jXzi/ahWRtolb6PEKY1YCnl0belmlYn//b6GXlkYkt+zn3YoTSvPnzt+1DFg/O9wWCyKdZ050YGbJUs9LUIsH+VL8tU2tDLVPyd+nsgEHTjof1BVyvR6kaaPLWn6rdUUdyPnAfNBP8JW+jfB1TuJEs64C7wOm1Et72VrWh+AnNEHrq7oPYBtHDXTtLrqVrsqtivNH2KQGUGTVLM8nggIC98VO+A/vsdvEHrXSN4FMfciqG6a43x8r1gXQMZVoAb6jlGV1RfN5XC4z7ucmsE65GV+pzdR/mZrK7/SeGHhP1DtpRo4ODLQLEV8vl+sfuC1VtyU9CWkH6kuUWBLAbk4mQGrgQQJ52tfS5kJlRUCyO3DmEu+/Xt6FocHPoc6dnUptILEl+FN4doy5Z8Vv+2ltKTwn5P5hzJq2uquECPV0EtUiqVtk6EXS9ZHricbB22lGtCLFMp0W65vvO0BLizI6Tz3HSxxA=
   file:
-    - automationCommons/target/automationCommons-${automation.commons.version}.jar
-    - messagingBundle/target/messagingBundle-${automation.messaging.version}.jar
-    - boxcryptorInventoryGeneratorBundle/target/boxcryptorInventoryGeneratorBundle-${automation.boxcryptor.inventory.version}.jar
-    - saveToBundle/target/saveToBundle-${automation.save.to.version}.jar
-    - supervisionBundle/target/supervisionBundle-${automation.supervision.version}.jar
+    - automationCommons/target/automationCommons-1.1.0.jar
+    - messagingBundle/target/messagingBundle-1.0.3.jar
+    - boxcryptorInventoryGeneratorBundle/target/boxcryptorInventoryGeneratorBundle-1.0.0.jar
+    - saveToBundle/target/saveToBundle-1.1.0.jar
+    - supervisionBundle/target/supervisionBundle-1.1.0.jar
     - feature.xml
   skip_cleanup: true	
   on:
