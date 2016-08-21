@@ -35,12 +35,12 @@ Gestionnaire de tâches automatisées
 
 #### à partir de GitHub
 	  
-	  feature:repo-remove automationManagerFeature
+     feature:repo-remove automationManagerFeature
      feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.2.0-RC1/feature.xml
      
 #### à partir de Maven
 
-	  feature:repo-remove automationManagerFeature
+     feature:repo-remove automationManagerFeature
      feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.2.0-RC1/xml/features
      
 ### Installation des features
