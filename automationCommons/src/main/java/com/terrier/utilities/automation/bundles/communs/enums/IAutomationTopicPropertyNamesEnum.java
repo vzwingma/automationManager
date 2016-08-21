@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.communs.enums.messaging;
+package com.terrier.utilities.automation.bundles.communs.enums;
 
 /**
  * Interface d'un enum utilisé pour les propriétés d'un message dans un topic
  * @author vzwingma
  *
  */
-public interface AutomationTopicPropertyNamesEnum {
+public interface IAutomationTopicPropertyNamesEnum {
 
 	
 	public String getName();

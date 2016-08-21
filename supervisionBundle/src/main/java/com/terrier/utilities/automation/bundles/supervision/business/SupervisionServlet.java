@@ -9,15 +9,15 @@ package com.terrier.utilities.automation.bundles.supervision.business;
  */
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.StatusPropertyNameEnum;
+import com.terrier.utilities.automation.bundles.communs.model.StatutBundleTopicObject;
+import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 
 
 /**
@@ -66,13 +66,13 @@ public class SupervisionServlet extends HttpServlet {
 	 * @param writer
 	 */
 	private void statutPage(final PrintWriter writer){
-		Map<String, Map<StatusPropertyNameEnum, Object>> supervision = SupervisionBusinessService.getStatutBundles();
+		List<StatutBundleTopicObject> supervision = SupervisionBusinessService.getStatutBundles();
 		
-		for (Entry<String, Map<StatusPropertyNameEnum, Object>> bundleStatut : supervision.entrySet()) {
-			writer.println("<h2>" + bundleStatut.getKey() + "</h2");
+		for (StatutBundleTopicObject bundleStatut : supervision) {
+			writer.println("<h2> [" + bundleStatut.getBundle().getBundleId() + "] " + bundleStatut.getBundle().getSymbolicName() + "</h2");
 			writer.println("<ul>");
-			for (Entry<StatusPropertyNameEnum, Object> bundleValue : bundleStatut.getValue().entrySet()) {
-				writer.println("<li>" + bundleValue.getKey() + " : " + bundleValue.getValue() + "</li>");	
+			for (StatutPropertyBundleObject bundleValue : bundleStatut.getProperties()) {
+				writer.println("<li>" + bundleValue.getLibelle() + " : " + bundleValue.getValue() + "</li>");	
 			}
 			writer.println("</ul>");
 			

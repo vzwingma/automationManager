@@ -3,7 +3,6 @@ package com.terrier.utilities.automation.bundles.save.to.business;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
+import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.CommandeEnum;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.save.to.business.runnable.SaveToTaskRunnable;
@@ -210,11 +211,19 @@ public class SaveToBusinessService extends AbstractAutomationService {
 
 
 	/* (non-Javadoc)
-	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.Map)
+	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
 	 */
 	@Override
-	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
-		supervisionEvents.put("Activité du ScheduledThreadPool", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
-		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize());
+	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Activité du Pool de threads de traitement", 
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutBundleEnum.OK : StatutBundleEnum.ERROR ));
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Threads du pool utilisés", 
+						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
+						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutBundleEnum.OK : StatutBundleEnum.WARNING));
 	}
 }

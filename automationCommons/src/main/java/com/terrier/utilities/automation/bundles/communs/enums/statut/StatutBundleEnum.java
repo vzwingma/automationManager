@@ -1,17 +1,19 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.communs.enums.messaging;
+package com.terrier.utilities.automation.bundles.communs.enums.statut;
+
+import com.terrier.utilities.automation.bundles.communs.enums.IAutomationTopicPropertyNamesEnum;
 
 /**
  * Nom des propriétés de l'event vers Type de messages
  * @author vzwingma
  *
  */
-public enum StatusPropertyNameEnum implements AutomationTopicPropertyNamesEnum {
-	STATUS,
-	TIME,
-	BUNDLE
+public enum StatutBundleEnum implements IAutomationTopicPropertyNamesEnum {
+	OK,
+	WARNING,
+	ERROR
 	;
 
 	/* (non-Javadoc)
@@ -27,8 +29,8 @@ public enum StatusPropertyNameEnum implements AutomationTopicPropertyNamesEnum {
 	 * @param enumName nom de l'enum
 	 * @return l'enum correspondant
 	 */
-	public static StatusPropertyNameEnum getEnumFromName(String enumName){
-		for (StatusPropertyNameEnum enumStatus : StatusPropertyNameEnum.values()) {
+	public static StatutBundleEnum getEnumFromName(String enumName){
+		for (StatutBundleEnum enumStatus : StatutBundleEnum.values()) {
 			if(enumStatus.getName().equals(enumName)){
 				return enumStatus;
 			}

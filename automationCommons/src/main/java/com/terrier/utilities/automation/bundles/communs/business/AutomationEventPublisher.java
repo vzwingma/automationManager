@@ -14,7 +14,7 @@ import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.AutomationTopicPropertyNamesEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.IAutomationTopicPropertyNamesEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 
 
@@ -26,7 +26,7 @@ import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTo
  * @param <T> nom du topic
  * @param <PT> liste des propriétés du message
  */
-public class AutomationEventPublisher<PT extends AutomationTopicPropertyNamesEnum> {
+public class AutomationEventPublisher<PT extends IAutomationTopicPropertyNamesEnum> {
 
 
 
@@ -66,11 +66,11 @@ public class AutomationEventPublisher<PT extends AutomationTopicPropertyNamesEnu
 	 * @param propertiesMessages propriétés du message
 	 * @return event event à envoyer. Null si erreur ou données incorrectes
 	 */
-	public static Event createEvent(EventsTopicNameEnum topic, Map<?  extends AutomationTopicPropertyNamesEnum, Object> propertiesMessages){
+	public static Event createEvent(EventsTopicNameEnum topic, Map<?  extends IAutomationTopicPropertyNamesEnum, Object> propertiesMessages){
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		// Transformation des properties messages en propertiestotopic
 		if(propertiesMessages != null && !propertiesMessages.isEmpty()){
-			for (Entry<?  extends AutomationTopicPropertyNamesEnum, Object> property : propertiesMessages.entrySet()) {
+			for (Entry<?  extends IAutomationTopicPropertyNamesEnum, Object> property : propertiesMessages.entrySet()) {
 				if(property.getKey().getClass().equals(topic.getEnumPropertyName())){
 					properties.put(property.getKey().getName(), property.getValue());	
 				}

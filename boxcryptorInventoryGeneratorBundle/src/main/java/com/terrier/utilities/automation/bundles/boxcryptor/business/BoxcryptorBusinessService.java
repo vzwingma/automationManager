@@ -8,7 +8,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +27,9 @@ import com.terrier.utilities.automation.bundles.boxcryptor.business.runnables.BC
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
+import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 
 /**
  * @author vzwingma
@@ -49,13 +50,13 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 
 	// YAML
 	private Yaml yaml;
-	
+
 	/**
 	 * Liste des tâches schedulées
 	 */
 	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<ScheduledFuture<?>>();
 
-	
+
 	/**
 	 * Construction du service
 	 */
@@ -76,8 +77,8 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		charset.setAccessible(true);
 		charset.set(null,null);
 	}
-	
-	
+
+
 	/**
 	 * Init YAML
 	 */
@@ -91,7 +92,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 			this.yaml = new Yaml();
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#notifyUpdateDictionary()
 	 */
@@ -105,7 +106,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		}
 		LOGGER.info(" > Nombre de pattern : {}", nbPatterns);
 		this.nbInventaires = nbPatterns;
-		
+
 		// arrêt des tâches schedulées
 		for (Iterator<ScheduledFuture<?>> iterator = listeScheduled.iterator(); iterator.hasNext();) {
 			ScheduledFuture<?> scheduledFuture = (ScheduledFuture<?>) iterator.next();
@@ -139,8 +140,8 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);
 		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(generateInventoryRunnable, 0L, periode, TimeUnit.MINUTES));	
 	}
-	
-	
+
+
 	/**
 	 * @return validation de la configuration
 	 */
@@ -157,7 +158,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 			period = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
 		}
 		catch(NumberFormatException e){
-			
+
 		}
 		configValid = period != null
 				&& getKey(ConfigKeyEnums.SOURCE_DIRECTORY, p) != null
@@ -218,11 +219,19 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	}
 
 	/* (non-Javadoc)
-	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.Map)
+	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
 	 */
 	@Override
-	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
-		supervisionEvents.put("Activité du Pool de threads de traitement", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
-		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize());
+	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Activité du Pool de threads de traitement", 
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutBundleEnum.OK : StatutBundleEnum.ERROR ));
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Threads du pool utilisés", 
+						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
+						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutBundleEnum.OK : StatutBundleEnum.WARNING));
 	}
 }

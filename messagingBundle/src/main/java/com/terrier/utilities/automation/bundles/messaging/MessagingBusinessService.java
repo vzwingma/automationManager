@@ -2,6 +2,7 @@ package com.terrier.utilities.automation.bundles.messaging;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -23,7 +24,9 @@ import org.slf4j.LoggerFactory;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
+import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.messaging.runnable.SendEmailTaskRunnable;
 import com.terrier.utilities.automation.bundles.messaging.runnable.SendSMSTaskRunnable;
@@ -270,12 +273,34 @@ public class MessagingBusinessService extends AbstractAutomationService {
 
 
 
+	/* (non-Javadoc)
+	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
+	 */
 	@Override
-	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
-		supervisionEvents.put("Statut de l'envoi d'emails", "Done : " + this.sendEmailScheduled.isDone() + ", Cancel : " + this.sendEmailScheduled.isCancelled());
-		supervisionEvents.put("Statut de l'envoi de SMS", "Done : " + this.sendSMSScheduled.isDone() + ", Cancel : " + this.sendSMSScheduled.isCancelled());
-		supervisionEvents.put("Activité du ScheduledThreadPool", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
-		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize());
+	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
+
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Statut de l'envoi d'emails", 
+						"Done : " + this.sendEmailScheduled.isDone() + ", Cancel : " + this.sendEmailScheduled.isCancelled(),
+						!this.sendEmailScheduled.isDone() && !this.sendEmailScheduled.isCancelled() ? StatutBundleEnum.OK : StatutBundleEnum.ERROR ));
+
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Statut de l'envoi de SMS", 
+						"Done : " + this.sendSMSScheduled.isDone() + ", Cancel : " + this.sendSMSScheduled.isCancelled(),
+						!this.sendSMSScheduled.isDone() && !this.sendSMSScheduled.isCancelled() ? StatutBundleEnum.OK : StatutBundleEnum.ERROR ));
+		
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Activité du Pool de threads de traitement", 
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutBundleEnum.OK : StatutBundleEnum.ERROR ));
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Threads du pool utilisés", 
+						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
+						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutBundleEnum.OK : StatutBundleEnum.WARNING));
 	}
 	
 	
