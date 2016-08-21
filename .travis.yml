@@ -13,6 +13,8 @@ before_deploy:
   - cd ../../../
   - git add README.md
   - git commit -m "Mise à jour des versions"
+  - git config user.email "vincent.zwingmann@gmail.com"
+  - git config user.name "vzwingma"
   - git push    
 deploy:
   provider: releases
