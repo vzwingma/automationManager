@@ -3,7 +3,7 @@
  */
 package com.terrier.utilities.automation.bundles.communs.model;
 
-import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutBundleEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 
 /**
  * Object de statut transmis dans le topic
@@ -16,7 +16,7 @@ public class StatutPropertyBundleObject {
 	// Libellé de la propriété
 	private String libelle;
 	
-	private StatutBundleEnum statut;
+	private StatutPropertyBundleEnum statut;
 	
 	// Valeur
 	private Object value;
@@ -29,7 +29,7 @@ public class StatutPropertyBundleObject {
 	 * @param statut
 	 * @param value
 	 */
-	public StatutPropertyBundleObject(String libelle, Object value, StatutBundleEnum statut) {
+	public StatutPropertyBundleObject(String libelle, Object value, StatutPropertyBundleEnum statut) {
 		super();
 		this.libelle = libelle;
 		this.statut = statut;
@@ -53,14 +53,14 @@ public class StatutPropertyBundleObject {
 	/**
 	 * @return the statut
 	 */
-	public StatutBundleEnum getStatut() {
+	public StatutPropertyBundleEnum getStatut() {
 		return statut;
 	}
 
 	/**
 	 * @param statut the statut to set
 	 */
-	public void setStatut(StatutBundleEnum statut) {
+	public void setStatut(StatutPropertyBundleEnum statut) {
 		this.statut = statut;
 	}
 

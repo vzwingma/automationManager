@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.osgi.framework.Bundle;
 
-import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutBundleEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 
 /**
  * Object de statut transmis dans le topic
@@ -34,6 +34,15 @@ public class StatutBundleTopicObject {
 	
 	
 	/**
+	 * @param bundle the bundle to set
+	 */
+	public void setBundle(Bundle bundle) {
+		this.bundle = bundle;
+	}
+
+
+
+	/**
 	 * @return the bundle
 	 */
 	public Bundle getBundle() {
@@ -53,9 +62,9 @@ public class StatutBundleTopicObject {
 	/**
 	 * @return the statut du bundle
 	 */
-	public StatutBundleEnum getStatut() {
+	public StatutPropertyBundleEnum getStatut() {
 		
-		StatutBundleEnum statutBundle = StatutBundleEnum.OK;
+		StatutPropertyBundleEnum statutBundle = StatutPropertyBundleEnum.OK;
 		if(!this.properties.isEmpty()){
 			for (StatutPropertyBundleObject statutPropertyBundleObject : properties) {
 				if(statutPropertyBundleObject.getStatut().ordinal() > statutBundle.ordinal()){

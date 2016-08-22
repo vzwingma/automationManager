@@ -12,6 +12,8 @@ import org.osgi.framework.ServiceListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.terrier.utilities.automation.bundles.communs.model.StatutBundleTopicObject;
+import com.terrier.utilities.automation.bundles.supervision.business.SupervisionBusinessService;
 import com.terrier.utilities.automation.bundles.supervision.communs.OSGIStatusUtils;
 
 /**
@@ -25,6 +27,7 @@ public class AutomationBundlesListener implements BundleListener, ServiceListene
 
 	private static final Logger LOGGER = LoggerFactory.getLogger( AutomationBundlesListener.class );
 
+	
 	/* (non-Javadoc)
 	 * @see org.osgi.framework.ServiceListener#serviceChanged(org.osgi.framework.ServiceEvent)
 	 */
@@ -39,6 +42,11 @@ public class AutomationBundlesListener implements BundleListener, ServiceListene
 	@Override
 	public void bundleChanged(BundleEvent event) {
 		LOGGER.info("BundleEvent :: {} {}", event.getOrigin(), OSGIStatusUtils.getBundleStatusLibelle(event.getType()));
-		
+		StatutBundleTopicObject obj = SupervisionBusinessService.getStatutBundles().get(event.getOrigin().getBundleId());
+		if(obj == null){
+			obj = new StatutBundleTopicObject(event.getBundle());
+		}
+		obj.setBundle(event.getBundle());
+		SupervisionBusinessService.getStatutBundles().put(event.getOrigin().getBundleId(), obj);
 	}
 }

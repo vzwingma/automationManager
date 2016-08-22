@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
-import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutBundleEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigKeyEnums;
@@ -283,24 +283,24 @@ public class MessagingBusinessService extends AbstractAutomationService {
 				new StatutPropertyBundleObject(
 						"Statut de l'envoi d'emails", 
 						"Done : " + this.sendEmailScheduled.isDone() + ", Cancel : " + this.sendEmailScheduled.isCancelled(),
-						!this.sendEmailScheduled.isDone() && !this.sendEmailScheduled.isCancelled() ? StatutBundleEnum.OK : StatutBundleEnum.ERROR ));
+						!this.sendEmailScheduled.isDone() && !this.sendEmailScheduled.isCancelled() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Statut de l'envoi de SMS", 
 						"Done : " + this.sendSMSScheduled.isDone() + ", Cancel : " + this.sendSMSScheduled.isCancelled(),
-						!this.sendSMSScheduled.isDone() && !this.sendSMSScheduled.isCancelled() ? StatutBundleEnum.OK : StatutBundleEnum.ERROR ));
+						!this.sendSMSScheduled.isDone() && !this.sendSMSScheduled.isCancelled() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 		
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Activité du Pool de threads de traitement", 
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
-						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutBundleEnum.OK : StatutBundleEnum.ERROR ));
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Threads du pool utilisés", 
 						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
-						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutBundleEnum.OK : StatutBundleEnum.WARNING));
+						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 	}
 	
 	

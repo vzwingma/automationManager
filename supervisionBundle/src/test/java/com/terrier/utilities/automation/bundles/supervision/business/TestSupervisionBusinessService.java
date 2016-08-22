@@ -16,7 +16,7 @@ import org.osgi.service.event.Event;
 
 import com.terrier.utilities.automation.bundles.communs.business.AutomationEventPublisher;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
-import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutBundleEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyNameEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutBundleTopicObject;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
@@ -39,7 +39,7 @@ public class TestSupervisionBusinessService {
         Map<StatutPropertyNameEnum, Object> properties = new HashMap<>();
         // Status
         StatutBundleTopicObject statusBundle = new StatutBundleTopicObject(mock(Bundle.class));
-        statusBundle.getProperties().add(new StatutPropertyBundleObject("Activité Supervision ThreadPool", true, StatutBundleEnum.OK));
+        statusBundle.getProperties().add(new StatutPropertyBundleObject("Activité Supervision ThreadPool", true, StatutPropertyBundleEnum.OK));
         properties.put(StatutPropertyNameEnum.STATUS, statusBundle);
         properties.put(StatutPropertyNameEnum.TIME, System.currentTimeMillis());
         

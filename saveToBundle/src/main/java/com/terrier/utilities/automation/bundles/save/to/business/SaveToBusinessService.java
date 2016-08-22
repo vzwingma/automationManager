@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
-import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutBundleEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.CommandeEnum;
@@ -219,11 +219,11 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				new StatutPropertyBundleObject(
 						"Activité du Pool de threads de traitement", 
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
-						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutBundleEnum.OK : StatutBundleEnum.ERROR ));
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Threads du pool utilisés", 
 						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
-						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutBundleEnum.OK : StatutBundleEnum.WARNING));
+						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 	}
 }

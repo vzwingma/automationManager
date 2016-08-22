@@ -3,6 +3,8 @@ package com.terrier.utilities.automation.bundles.supervision.communs;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.ServiceEvent;
 
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
+
 public class OSGIStatusUtils {
 
 	
@@ -54,6 +56,60 @@ public class OSGIStatusUtils {
 			return "UNRESOLVED";
 		case BundleEvent.UPDATED:
 			return "UPDATED";
+		default:
+			return null;
+		}
+	}
+	
+
+	/**
+	 * @param status statut
+	 * @return le libelle du status du service
+	 */
+	public static String getBundleStatusStyleColor(int status){
+		
+		switch (status) {
+		case BundleEvent.INSTALLED:
+			return "grey";
+		case BundleEvent.LAZY_ACTIVATION:
+			return "yellow";
+		case BundleEvent.RESOLVED:
+			return "orange";
+		case BundleEvent.STARTED:
+			return "green";
+		case BundleEvent.STARTING:
+			return "orange";
+		case BundleEvent.STOPPED:
+			return "red";
+		case BundleEvent.STOPPING:
+			return "red";
+		case BundleEvent.UNINSTALLED:
+			return "black";
+		case BundleEvent.UNRESOLVED:
+			return "red";
+		case BundleEvent.UPDATED:
+			return "yellow";
+		default:
+			return null;
+		}
+	}
+	
+	
+
+
+	/**
+	 * @param status statut
+	 * @return le libelle du status du service
+	 */
+	public static String getBundleStatusStyleColor(StatutPropertyBundleEnum status){
+		
+		switch (status.ordinal()) {
+		case StatutPropertyBundleEnum.ORD_OK:
+			return "green";
+		case StatutPropertyBundleEnum.ORD_WARNING:
+			return "orange";
+		case StatutPropertyBundleEnum.ORD_ERROR:
+			return "red";
 		default:
 			return null;
 		}

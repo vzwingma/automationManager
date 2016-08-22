@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessagePropertyNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
-import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutBundleEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyNameEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.communs.model.StatutBundleTopicObject;
@@ -126,7 +126,7 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 		StatutPropertyBundleObject statutThread = new StatutPropertyBundleObject(
 				"Activité du pool de threads de Supervision",
 				!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
-				!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutBundleEnum.OK : StatutBundleEnum.WARNING
+				!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING
 				);
 		statutBundle.getProperties().add(statutThread);
 		updateSupervisionEvents(statutBundle.getProperties());

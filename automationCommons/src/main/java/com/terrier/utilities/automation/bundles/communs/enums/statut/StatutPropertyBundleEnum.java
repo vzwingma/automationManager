@@ -10,7 +10,7 @@ import com.terrier.utilities.automation.bundles.communs.enums.IAutomationTopicPr
  * @author vzwingma
  *
  */
-public enum StatutBundleEnum implements IAutomationTopicPropertyNamesEnum {
+public enum StatutPropertyBundleEnum implements IAutomationTopicPropertyNamesEnum {
 	OK,
 	WARNING,
 	ERROR
@@ -29,12 +29,17 @@ public enum StatutBundleEnum implements IAutomationTopicPropertyNamesEnum {
 	 * @param enumName nom de l'enum
 	 * @return l'enum correspondant
 	 */
-	public static StatutBundleEnum getEnumFromName(String enumName){
-		for (StatutBundleEnum enumStatus : StatutBundleEnum.values()) {
+	public static StatutPropertyBundleEnum getEnumFromName(String enumName){
+		for (StatutPropertyBundleEnum enumStatus : StatutPropertyBundleEnum.values()) {
 			if(enumStatus.getName().equals(enumName)){
 				return enumStatus;
 			}
 		}
 		return null;
 	}
+	
+	// StaticFinal ordinal
+	public static final int ORD_OK = 0;
+	public static final int ORD_WARNING = 1;
+	public static final int ORD_ERROR = 2;
 }

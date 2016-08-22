@@ -27,7 +27,7 @@ import com.terrier.utilities.automation.bundles.boxcryptor.business.runnables.BC
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
-import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutBundleEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 
@@ -227,11 +227,11 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 				new StatutPropertyBundleObject(
 						"Activité du Pool de threads de traitement", 
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
-						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutBundleEnum.OK : StatutBundleEnum.ERROR ));
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Threads du pool utilisés", 
 						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
-						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutBundleEnum.OK : StatutBundleEnum.WARNING));
+						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 	}
 }

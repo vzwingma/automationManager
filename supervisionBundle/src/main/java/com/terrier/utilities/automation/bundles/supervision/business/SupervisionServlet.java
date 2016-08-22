@@ -67,17 +67,20 @@ public class SupervisionServlet extends HttpServlet {
 	 */
 	private void statutPage(final PrintWriter writer){
 		Map<Long, StatutBundleTopicObject> supervision = SupervisionBusinessService.getStatutBundles();
-		writer.println("<p align='left'>");
+		writer.println("<table align='left'>");
+		writer.println("<tr colspan='2'>");
 		for (StatutBundleTopicObject bundleStatut : supervision.values()) {
-			writer.println("<h2> [" + bundleStatut.getBundle().getBundleId() + "] " + bundleStatut.getBundle().getSymbolicName() + "</h2");
-			writer.println("<br> [" + OSGIStatusUtils.getBundleStatusLibelle(bundleStatut.getBundle().getState()) + "] [" + bundleStatut.getStatut() + "]"); 
-			writer.println("<ul>");
+			writer.println("<td><b> [" + bundleStatut.getBundle().getBundleId() + "] " + bundleStatut.getBundle().getSymbolicName() +"</b></td>"
+					+ "<td>[<span style='color:"+OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getBundle().getState())+"'>" + OSGIStatusUtils.getBundleStatusLibelle(bundleStatut.getBundle().getState()) + "</span>]</td>");
+			writer.println("</tr>");
+			writer.println("<tr><td>Statut des composants du bundle</td><td>[<span style='color:"+OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getStatut())+"'>" + bundleStatut.getStatut() + "</span>] </td></tr>"); 
+			writer.println("<tr><td></td></tr>");
 			for (StatutPropertyBundleObject bundleValue : bundleStatut.getProperties()) {
-				writer.println("<li>" + bundleValue.getLibelle() + " : " + bundleValue.getValue() + "</li>");	
+				writer.println("<tr><td>" + bundleValue.getLibelle() + "</td>"
+						+ "<td>" + bundleValue.getValue() + "</td></tr>");	
 			}
-			writer.println("</ul>");
 		}
-		writer.println("</p>");
+		writer.println("</table>");
 	}
 
 	/**
