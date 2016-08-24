@@ -282,13 +282,13 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Statut de l'envoi d'emails", 
-						"Done : " + this.sendEmailScheduled.isDone() + ", Cancel : " + this.sendEmailScheduled.isCancelled(),
+						(!this.sendEmailScheduled.isDone() & !this.sendEmailScheduled.isCancelled()),
 						!this.sendEmailScheduled.isDone() && !this.sendEmailScheduled.isCancelled() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Statut de l'envoi de SMS", 
-						"Done : " + this.sendSMSScheduled.isDone() + ", Cancel : " + this.sendSMSScheduled.isCancelled(),
+						(!this.sendSMSScheduled.isDone() && !this.sendSMSScheduled.isCancelled()),
 						!this.sendSMSScheduled.isDone() && !this.sendSMSScheduled.isCancelled() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 		
 		supervisionEvents.add(
@@ -300,7 +300,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 				new StatutPropertyBundleObject(
 						"Threads du pool utilisés", 
 						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
-						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
+						this.scheduledThreadPool.getQueue().size() <= this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 	}
 	
 	

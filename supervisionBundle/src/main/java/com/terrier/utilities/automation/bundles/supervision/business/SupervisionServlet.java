@@ -73,7 +73,7 @@ public class SupervisionServlet extends HttpServlet {
 			writer.println("<td><b> [" + bundleStatut.getBundle().getBundleId() + "] " + bundleStatut.getBundle().getSymbolicName() +"</b></td>"
 					+ "<td>[<span style='color:"+OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getBundle().getState())+"'>" + OSGIStatusUtils.getBundleStatusLibelle(bundleStatut.getBundle().getState()) + "</span>]</td>");
 			writer.println("</tr>");
-			writer.println("<tr><td>Statut des composants du bundle</td><td>[<span style='color:"+OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getStatut())+"'>" + bundleStatut.getStatut() + "</span>] </td></tr>"); 
+			writer.println("<tr><td>Statut des composants du bundle</td><td>[<span style='color:"+OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getStatutComponents())+"'>" + bundleStatut.getStatutComponents() + "</span>] </td></tr>"); 
 			writer.println("<tr><td></td></tr>");
 			for (StatutPropertyBundleObject bundleValue : bundleStatut.getProperties()) {
 				writer.println("<tr><td>" + bundleValue.getLibelle() + "</td>"

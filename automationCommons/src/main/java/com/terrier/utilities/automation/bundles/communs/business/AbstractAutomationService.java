@@ -60,7 +60,7 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 	 * Init de la supervision
 	 */
 	public AbstractAutomationService(){
-		scheduledThreadPool.scheduleAtFixedRate(this, 1, 10, TimeUnit.MINUTES);
+		scheduledThreadPool.scheduleAtFixedRate(this, 0, 1, TimeUnit.MINUTES);
 	}
 
 	/**

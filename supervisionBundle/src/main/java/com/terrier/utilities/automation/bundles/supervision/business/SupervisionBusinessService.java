@@ -25,6 +25,7 @@ import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTo
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyNameEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutBundleTopicObject;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
+import com.terrier.utilities.automation.bundles.supervision.communs.OSGIStatusUtils;
 import com.terrier.utilities.automation.bundles.supervision.listeners.AutomationBundlesListener;
 
 /**
@@ -87,7 +88,7 @@ public class SupervisionBusinessService extends AbstractAutomationService implem
 	 */
 	protected String logStatut(StatutBundleTopicObject statutBundle){
 
-		StringBuilder log = new StringBuilder("\n> Statut de ").append(statutBundle.getBundle().getSymbolicName()).append("\n");
+		StringBuilder log = new StringBuilder("\n> Statut de ").append(statutBundle.getBundle().getSymbolicName()).append(" : ").append(OSGIStatusUtils.getBundleStatusLibelle(statutBundle.getBundle().getState())).append("\n");
 
 		List<StatutPropertyBundleObject> statutMap = statutBundle.getProperties();
 		for (StatutPropertyBundleObject statutEntry : statutMap) {

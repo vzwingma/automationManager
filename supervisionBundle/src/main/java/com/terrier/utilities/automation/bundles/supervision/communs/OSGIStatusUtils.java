@@ -1,5 +1,6 @@
 package com.terrier.utilities.automation.bundles.supervision.communs;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.ServiceEvent;
 
@@ -29,11 +30,13 @@ public class OSGIStatusUtils {
 		}
 	}
 	
+	
+	
 	/**
 	 * @param status statut
 	 * @return le libelle du status du service
 	 */
-	public static String getBundleStatusLibelle(int status){
+	public static String getBundleStatusEventLibelle(int status){
 		
 		switch (status) {
 		case BundleEvent.INSTALLED:
@@ -61,7 +64,30 @@ public class OSGIStatusUtils {
 		}
 	}
 	
-
+	
+	/**
+	 * @param status statut
+	 * @return le libelle du status du service
+	 */
+	public static String getBundleStatusLibelle(int status){
+		
+		switch (status) {
+		case Bundle.INSTALLED:
+			return "INSTALLED";
+		case Bundle.RESOLVED:
+			return "STOPPED";
+		case Bundle.ACTIVE:
+			return "STARTED";
+		case Bundle.STARTING:
+			return "STARTING";
+		case Bundle.STOPPING:
+			return "STOPPING";
+		case Bundle.UNINSTALLED:
+			return "UNINSTALLED";
+		default:
+			return null;
+		}
+	}
 	/**
 	 * @param status statut
 	 * @return le libelle du status du service
@@ -69,26 +95,18 @@ public class OSGIStatusUtils {
 	public static String getBundleStatusStyleColor(int status){
 		
 		switch (status) {
-		case BundleEvent.INSTALLED:
+		case Bundle.INSTALLED:
 			return "grey";
-		case BundleEvent.LAZY_ACTIVATION:
-			return "yellow";
-		case BundleEvent.RESOLVED:
-			return "orange";
-		case BundleEvent.STARTED:
+		case Bundle.RESOLVED:
+			return "red";
+		case Bundle.ACTIVE:
 			return "green";
-		case BundleEvent.STARTING:
+		case Bundle.STARTING:
 			return "orange";
-		case BundleEvent.STOPPED:
-			return "red";
-		case BundleEvent.STOPPING:
-			return "red";
-		case BundleEvent.UNINSTALLED:
-			return "black";
-		case BundleEvent.UNRESOLVED:
-			return "red";
-		case BundleEvent.UPDATED:
-			return "yellow";
+		case Bundle.STOPPING:
+			return "orange";
+		case Bundle.UNINSTALLED:
+			return "grey";
 		default:
 			return null;
 		}

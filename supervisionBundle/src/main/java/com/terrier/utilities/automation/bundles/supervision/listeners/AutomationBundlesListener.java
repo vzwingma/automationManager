@@ -41,12 +41,13 @@ public class AutomationBundlesListener implements BundleListener, ServiceListene
 	 */
 	@Override
 	public void bundleChanged(BundleEvent event) {
-		LOGGER.info("BundleEvent :: {} {}", event.getOrigin(), OSGIStatusUtils.getBundleStatusLibelle(event.getType()));
+		LOGGER.info("BundleEvent :: {} {}", event.getOrigin(), OSGIStatusUtils.getBundleStatusEventLibelle(event.getType()));
 		StatutBundleTopicObject obj = SupervisionBusinessService.getStatutBundles().get(event.getOrigin().getBundleId());
 		if(obj == null){
+			LOGGER.warn("Création du statutBundleTopicObject pour {}", event.getOrigin().getBundleId());
 			obj = new StatutBundleTopicObject(event.getBundle());
 		}
-		obj.setBundle(event.getBundle());
+		obj.setBundle(event.getOrigin());
 		SupervisionBusinessService.getStatutBundles().put(event.getOrigin().getBundleId(), obj);
 	}
 }

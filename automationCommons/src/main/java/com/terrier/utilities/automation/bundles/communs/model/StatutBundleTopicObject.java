@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 
@@ -19,9 +21,9 @@ public class StatutBundleTopicObject {
 
 	// Bundle
 	private Bundle bundle;
-	
 	// Properties
 	private List<StatutPropertyBundleObject> properties = new ArrayList<StatutPropertyBundleObject>();
+	
 	
 	/**
 	 * Statut du Bundle
@@ -32,7 +34,8 @@ public class StatutBundleTopicObject {
 	}
 
 	
-	
+
+
 	/**
 	 * @param bundle the bundle to set
 	 */
@@ -62,7 +65,7 @@ public class StatutBundleTopicObject {
 	/**
 	 * @return the statut du bundle
 	 */
-	public StatutPropertyBundleEnum getStatut() {
+	public StatutPropertyBundleEnum getStatutComponents() {
 		
 		StatutPropertyBundleEnum statutBundle = StatutPropertyBundleEnum.OK;
 		if(!this.properties.isEmpty()){
