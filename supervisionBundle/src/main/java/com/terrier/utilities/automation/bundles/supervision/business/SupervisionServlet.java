@@ -9,6 +9,7 @@ package com.terrier.utilities.automation.bundles.supervision.business;
  */
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -32,6 +33,8 @@ public class SupervisionServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -7218593433411480431L;
+	
+	private static final SimpleDateFormat DATE_MAJ_FORMAT = new SimpleDateFormat("jj/MM/yyyy HH:mm:ss");
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -41,7 +44,8 @@ public class SupervisionServlet extends HttpServlet {
 	IOException {
 		response.setContentType("text/html");
 
-		final PrintWriter writer = response.getWriter();
+		final PrintWriter writerPage = response.getWriter();
+		final StringBuilder writer = new StringBuilder();
 		// Création de l'entête
 		header(writer);
 
@@ -49,15 +53,17 @@ public class SupervisionServlet extends HttpServlet {
 
 		// Création du footer		
 		footer(writer);
+		
+		writerPage.println(writer.toString());
 	}
 
 	/**
 	 * Entête
 	 * @param writer
 	 */
-	private void header(final PrintWriter writer){
-		writer.println("<html><body align='center'>");
-		writer.println("<h1>Supervision des bundles de l'AutomationManager</h1>");
+	private void header(final StringBuilder writer){
+		writer.append("<html><body align='center'>");
+		writer.append("<h1>Supervision des bundles de l'AutomationManager</h1>");
 	}
 
 
@@ -65,31 +71,32 @@ public class SupervisionServlet extends HttpServlet {
 	 * Page de statut
 	 * @param writer
 	 */
-	private void statutPage(final PrintWriter writer){
+	private void statutPage(final StringBuilder writer){
 		Map<Long, StatutBundleTopicObject> supervision = SupervisionBusinessService.getStatutBundles();
-		writer.println("<table align='left'>");
-		writer.println("<tr colspan='2'>");
 		for (StatutBundleTopicObject bundleStatut : supervision.values()) {
-			writer.println("<td><b> [" + bundleStatut.getBundle().getBundleId() + "] " + bundleStatut.getBundle().getSymbolicName() +"</b></td>"
-					+ "<td>[<span style='color:"+OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getBundle().getState())+"'>" + OSGIStatusUtils.getBundleStatusLibelle(bundleStatut.getBundle().getState()) + "</span>]</td>");
-			writer.println("</tr>");
-			writer.println("<tr><td>Statut des composants du bundle</td><td>[<span style='color:"+OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getStatutComponents())+"'>" + bundleStatut.getStatutComponents() + "</span>] </td></tr>"); 
-			writer.println("<tr><td></td></tr>");
+			writer.append("<table align='left'>");
+			writer.append("<tr colspan='2'>");
+			writer.append("<td><b> [").append(bundleStatut.getBundle().getBundleId()).append("] ").append(bundleStatut.getBundle().getSymbolicName()).append("</b></td>")
+				.append("<td>[<span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getBundle().getState())).append("'>").append(OSGIStatusUtils.getBundleStatusLibelle(bundleStatut.getBundle().getState())).append("</span>]</td>");
+			writer.append("</tr>");
+			writer.append("<tr><td>Heure de mise à jour</td><td>").append(DATE_MAJ_FORMAT.format(bundleStatut.getMiseAJour().getTime())).append("</td></tr>");
+			writer.append("<tr><td>Statut des composants du bundle</td><td>[<span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getStatutComponents())).append("'>" ).append(bundleStatut.getStatutComponents()).append("</span>] </td></tr>"); 
+			writer.append("<tr><td></td></tr>");
 			for (StatutPropertyBundleObject bundleValue : bundleStatut.getProperties()) {
-				writer.println("<tr><td>" + bundleValue.getLibelle() + "</td>"
-						+ "<td>" + bundleValue.getValue() + "</td></tr>");	
+				writer.append("<tr><td></td><td>").append(bundleValue.getLibelle()).append("</td>")
+						.append("<td>").append(bundleValue.getValue()).append("</td></tr>");	
 			}
+			writer.append("</table>");
 		}
-		writer.println("</table>");
 	}
 
 	/**
 	 * Footer
 	 * @param writer
 	 */
-	private void footer(final PrintWriter writer){
-		writer.println("<br/>");
+	private void footer(final StringBuilder writer){
+		writer.append("<br/>");
 
-		writer.println("</body></html>");
+		writer.append("</body></html>");
 	}
 }

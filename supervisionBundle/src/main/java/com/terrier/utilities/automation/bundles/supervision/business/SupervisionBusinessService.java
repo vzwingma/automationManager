@@ -77,7 +77,8 @@ public class SupervisionBusinessService extends AbstractAutomationService implem
 
 		
 		StatutBundleTopicObject statutBundleObject = (StatutBundleTopicObject)event.getProperty(StatutPropertyNameEnum.STATUS.getName());
-
+		long time = (long)event.getProperty(StatutPropertyNameEnum.TIME.getName());
+		statutBundleObject.getMiseAJour().setTimeInMillis(time);
 		MAP_SUPERVISION_BUNDLE.put(statutBundleObject.getBundle().getBundleId(), statutBundleObject);
 		LOGGER.info(logStatut(statutBundleObject));
 	}
