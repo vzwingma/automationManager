@@ -93,7 +93,7 @@ public class SupervisionBusinessService extends AbstractAutomationService implem
 
 		List<StatutPropertyBundleObject> statutMap = statutBundle.getProperties();
 		for (StatutPropertyBundleObject statutEntry : statutMap) {
-			log.append("     ").append(statutEntry.getLibelle()).append(" :: ").append(statutEntry.getValue()).append("\n");	
+			log.append("     ").append(statutEntry);	
 		}
 
 		return log.toString();

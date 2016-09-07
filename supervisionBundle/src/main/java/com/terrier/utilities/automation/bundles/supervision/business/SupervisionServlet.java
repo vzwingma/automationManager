@@ -34,7 +34,7 @@ public class SupervisionServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -7218593433411480431L;
 	
-	private static final SimpleDateFormat DATE_MAJ_FORMAT = new SimpleDateFormat("jj/MM/yyyy HH:mm:ss");
+	private static final SimpleDateFormat DATE_MAJ_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -74,7 +74,7 @@ public class SupervisionServlet extends HttpServlet {
 	private void statutPage(final StringBuilder writer){
 		Map<Long, StatutBundleTopicObject> supervision = SupervisionBusinessService.getStatutBundles();
 		for (StatutBundleTopicObject bundleStatut : supervision.values()) {
-			writer.append("<table align='left'>");
+			writer.append("<table align='left' style='border:1px solid grey; margin:10px;'>");
 			writer.append("<tr colspan='2'>");
 			writer.append("<td><b> [").append(bundleStatut.getBundle().getBundleId()).append("] ").append(bundleStatut.getBundle().getSymbolicName()).append("</b></td>")
 				.append("<td>[<span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getBundle().getState())).append("'>").append(OSGIStatusUtils.getBundleStatusLibelle(bundleStatut.getBundle().getState())).append("</span>]</td>");
@@ -83,7 +83,7 @@ public class SupervisionServlet extends HttpServlet {
 			writer.append("<tr><td>Statut des composants du bundle</td><td>[<span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getStatutComponents())).append("'>" ).append(bundleStatut.getStatutComponents()).append("</span>] </td></tr>"); 
 			writer.append("<tr><td></td></tr>");
 			for (StatutPropertyBundleObject bundleValue : bundleStatut.getProperties()) {
-				writer.append("<tr><td></td><td>").append(bundleValue.getLibelle()).append("</td>")
+				writer.append("<tr><td>- ").append(bundleValue.getLibelle()).append("</td>")
 						.append("<td>").append(bundleValue.getValue()).append("</td></tr>");	
 			}
 			writer.append("</table>");

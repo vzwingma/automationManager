@@ -4,11 +4,10 @@
 package com.terrier.utilities.automation.bundles.communs.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.osgi.framework.Bundle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 
@@ -23,7 +22,8 @@ public class StatutBundleTopicObject {
 	private Bundle bundle;
 	// Properties
 	private List<StatutPropertyBundleObject> properties = new ArrayList<StatutPropertyBundleObject>();
-	
+	// Timestamp
+	private Calendar miseAJour = Calendar.getInstance();
 	
 	/**
 	 * Statut du Bundle
@@ -59,6 +59,26 @@ public class StatutBundleTopicObject {
 	public List<StatutPropertyBundleObject> getProperties() {
 		return properties;
 	}
+
+
+
+	/**
+	 * @return the miseAJour
+	 */
+	public Calendar getMiseAJour() {
+		return miseAJour;
+	}
+
+
+
+
+	/**
+	 * @param miseAJour the miseAJour to set
+	 */
+	public void setMiseAJour(Calendar miseAJour) {
+		this.miseAJour = miseAJour;
+	}
+
 
 
 

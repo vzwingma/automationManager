@@ -65,13 +65,9 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	private static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.messaging";
 
 	/**
-	 * Liste 
+	 * Liste de messages à envoyer
 	 */
 	private Map<String, ConcurrentLinkedQueue<String>> emailSendingQueue = new ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>();
-
-	/**
-	 * Liste 
-	 */
 	private ConcurrentLinkedQueue<String> smsSendingQueue = new ConcurrentLinkedQueue<String>();
 	
 	/**
@@ -282,18 +278,31 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Statut de l'envoi d'emails", 
-						(!this.sendEmailScheduled.isDone() & !this.sendEmailScheduled.isCancelled()),
-						!this.sendEmailScheduled.isDone() && !this.sendEmailScheduled.isCancelled() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+						(this.scheduledThreadPool.getQueue().contains(this.sendEmailScheduled)),
+						this.scheduledThreadPool.getQueue().contains(this.sendEmailScheduled) && !this.sendEmailScheduled.isCancelled() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+		
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Nombre d'emails en attente", 
+						this.emailSendingQueue.size(),
+						StatutPropertyBundleEnum.OK));
 
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Statut de l'envoi de SMS", 
-						(!this.sendSMSScheduled.isDone() && !this.sendSMSScheduled.isCancelled()),
-						!this.sendSMSScheduled.isDone() && !this.sendSMSScheduled.isCancelled() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+						(this.scheduledThreadPool.getQueue().contains(this.sendSMSScheduled)),
+						(this.scheduledThreadPool.getQueue().contains(this.sendSMSScheduled)) && !this.sendSMSScheduled.isCancelled() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Nombre de SMS en attente", 
+						this.smsSendingQueue.size(),
+						StatutPropertyBundleEnum.OK));
+
 		
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
-						"Activité du Pool de threads de traitement", 
+						"Activité du pool de threads de traitements périodiques", 
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 		supervisionEvents.add(

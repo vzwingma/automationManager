@@ -77,5 +77,16 @@ public class StatutPropertyBundleObject {
 	public void setValue(Object value) {
 		this.value = value;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("\n StatutPropertyBundleObject [libelle=").append(libelle).append(", statut=").append(statut)
+				.append(", value=").append(value).append("]");
+		return builder.toString();
+	}
 	
 }
