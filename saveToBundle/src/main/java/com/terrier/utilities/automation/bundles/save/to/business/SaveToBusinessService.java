@@ -217,13 +217,19 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
-						"Activité du Pool de threads de traitement", 
+						"Activité de traitements périodiques", 
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
-						"Threads du pool utilisés", 
+						"Threads utilisés", 
 						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
 						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
+		
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Nombre de patterns de copie", 
+						this.nbPatterns,
+						this.nbPatterns > 0 ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 	}
 }

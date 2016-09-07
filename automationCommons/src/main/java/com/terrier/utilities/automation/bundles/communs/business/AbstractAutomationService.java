@@ -124,7 +124,7 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 
 
 		StatutPropertyBundleObject statutThread = new StatutPropertyBundleObject(
-				"Activité du pool de threads de Supervision",
+				"Activité du pool de threads de supervision",
 				!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
 				!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING
 				);

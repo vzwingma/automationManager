@@ -8,14 +8,10 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.MediaType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
 /**
@@ -23,7 +19,7 @@ import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessServi
  * @author vzwingma
  *
  */
-public class SendSMSTaskRunnable implements Runnable {
+public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 
 
 
@@ -32,12 +28,9 @@ public class SendSMSTaskRunnable implements Runnable {
 	/**
 	 * Liste 
 	 */
-	private MessagingBusinessService service;
 	private String user;
 	private String password;
 	private String apiURL;
-
-
 
 	/**
 	 * Constructeur de la tâche d'envoi
@@ -47,16 +40,16 @@ public class SendSMSTaskRunnable implements Runnable {
 		this.user = user;
 		this.password = password;
 		this.apiURL = apiURL;
-		this.service = service;
+		super.setService(service);
 	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 */
 	@Override
-	public void run() {
-		LOGGER.info("Envoi des SMS : {} messages en attente", this.service.getSmsSendingQueue().size());
-		if(this.service.getSmsSendingQueue().size() > 0){
+	public void HTTPClientRun() {
+		LOGGER.info("Envoi des SMS : {} messages en attente", getService().getSmsSendingQueue().size());
+		if(getService().getSmsSendingQueue().size() > 0){
 			boolean resultat = sendAllMessages();
 			LOGGER.info("> Résulat des envois : {}", resultat);
 		}
@@ -68,59 +61,32 @@ public class SendSMSTaskRunnable implements Runnable {
 	 */
 	public boolean sendAllMessages(){
 
-		Client client = getClient();
-
 		boolean resultat = false;
-
+		
 		// Envoi de tous les mails, groupé par titre :
-
-		if(this.service.getSmsSendingQueue().size() > 0 && client != null){
+		if(getService().getSmsSendingQueue().size() > 0){
 
 			List<String> messages = new ArrayList<>();
-			while(this.service.getSmsSendingQueue().size() > 0){
-				messages.add(this.service.getSmsSendingQueue().poll());
+			while(getService().getSmsSendingQueue().size() > 0){
+				messages.add(getService().getSmsSendingQueue().poll());
 			}
 			LOGGER.debug("Envoi des {} messages par SMS", messages.size());
-			try{
-				String prepareAPIURL = this.apiURL + "user=" + this.user + "&pass=" + this.password + "&msg=";
-				LOGGER.debug("Appel de l'URI [{}]", prepareAPIURL + getFormData(messages));
-				WebResource.Builder webResource = client.resource(prepareAPIURL + getFormData(messages)).type(MediaType.APPLICATION_FORM_URLENCODED);
-				ClientResponse response = webResource.get(ClientResponse.class);
-				LOGGER.debug("> Resultat : {}", response);
-				resultat = response != null && response.getStatus() == 200;
-			}
-			catch(Exception e){
-				LOGGER.error("> Resultat : Erreur lors de l'envoi du SMS", e);
-				this.service.sendNotificationEmail("Erreur envoi de SMS", "Erreur lors de l'envoi du SMS " + e.getMessage());
-			}
+			resultat = callHTTPGet(getClient(), this.apiURL, "user=" + this.user + "&pass=" + this.password + "&msg=",  getFormData(messages));
+
 			if(resultat){
 				LOGGER.debug("Suppression des messages SMS de la liste d'envoi");
 			}
 			else{
 				for (String msg : messages) {
-					this.service.sendNotificationSMS(msg);
+					getService().sendNotificationSMS(msg);
 				}
 				LOGGER.error("Erreur lors de l'envoi, les messages sont reprogrammés pour la prochaine échéance");
+				getService().sendNotificationEmail("Erreur envoi de SMS", "Erreur lors de l'envoi du SMS ");
 			}
 		}
 		return resultat;
 	}
 
-
-	/**
-	 * Créé un client HTTP 
-	 * (dans une méthode séparée pour pouvoir être mocké facilement)
-	 * @return client HTTP
-	 */
-	protected Client getClient(){
-		try{
-			return Client.create();
-		}
-		catch(Exception e){
-			this.service.sendNotificationEmail("Erreur envoi de SMS", "Erreur lors de la création du CLient pour l'envoi du SMS " + e.getMessage());
-			return null;
-		}
-	}
 
 
 
@@ -141,6 +107,15 @@ public class SendSMSTaskRunnable implements Runnable {
 			LOGGER.error("Erreur lors de l'encodage du message", e);
 			return "Erreur%20encoding%20messages";
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.terrier.utilities.automation.bundles.messaging.runnable.AbstractHTTPClientRunnable#updateSupervisionEvents(java.util.List)
+	 */
+	@Override
+	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -48,8 +47,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	/**
 	 * Liste des tâches schedulées
 	 */
-	private ScheduledFuture<?> sendEmailScheduled;
-	private ScheduledFuture<?> sendSMSScheduled;
+	private SendEmailTaskRunnable sendEmailScheduled;
+	private SendSMSTaskRunnable sendSMSScheduled;
 
 	// Message Handler
 	@Inject private MessageEventHandler eventMessages;
@@ -69,7 +68,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 */
 	private Map<String, ConcurrentLinkedQueue<String>> emailSendingQueue = new ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>();
 	private ConcurrentLinkedQueue<String> smsSendingQueue = new ConcurrentLinkedQueue<String>();
-	
+
 	/**
 	 * Initialisation
 	 */
@@ -108,42 +107,46 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	private void scheduleSendingEmail(){
 		// arrêt des tâches schedulées
 		if(sendEmailScheduled != null){
-			boolean cancel = sendEmailScheduled.cancel(true);
+			boolean cancel = scheduledThreadPool.getQueue().remove(sendEmailScheduled);
+			this.sendEmailScheduled = null;
 			LOGGER.warn("Arrêt de la tâche d'envoi des emails : {}", cancel);
 		}
 		String apiURL = getConfig(MessagingConfigKeyEnums.EMAIL_URL) + getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN) + getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE);
-		sendEmailScheduled = scheduledThreadPool.scheduleAtFixedRate(
-				new SendEmailTaskRunnable(
-						getConfig(MessagingConfigKeyEnums.EMAIL_KEY),
-						apiURL,
-						getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN),
-						getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES),
-						this
-						), 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
+		sendEmailScheduled = new SendEmailTaskRunnable(
+				getConfig(MessagingConfigKeyEnums.EMAIL_KEY),
+				apiURL,
+				getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN),
+				getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES),
+				this
+				);
+		scheduledThreadPool.scheduleAtFixedRate(sendEmailScheduled, 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
+
 		LOGGER.info("La tâche d'envoi des mails est programmée");
 	}
 
-	
+
 	/**
 	 * Envoi des emails
 	 */
 	private void scheduleSendingSMS(){
 		// arrêt des tâches schedulées
 		if(sendSMSScheduled != null){
-			boolean cancel = sendSMSScheduled.cancel(true);
+			boolean cancel = scheduledThreadPool.getQueue().remove(sendSMSScheduled);
+			this.sendSMSScheduled = null;
 			LOGGER.warn("Arrêt de la tâche d'envoi des SMS : {}", cancel);
 		}
-		sendSMSScheduled = scheduledThreadPool.scheduleAtFixedRate(
+		sendSMSScheduled = 
 				new SendSMSTaskRunnable(
 						getConfig(MessagingConfigKeyEnums.SMS_URL),
 						getConfig(MessagingConfigKeyEnums.SMS_USER),
 						getConfig(MessagingConfigKeyEnums.SMS_PASS),
 						this
-						), 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
+						);
+		scheduledThreadPool.scheduleAtFixedRate(sendSMSScheduled, 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
 		LOGGER.info("La tâche d'envoi des SMS est programmée");
 	}
 
-	
+
 
 	/**
 	 * @return validation de la configuration
@@ -221,8 +224,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		smsSendingQueue.add(message);
 	}
 
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#arretTasks()
 	 */
@@ -240,7 +243,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		return emailSendingQueue;
 	}
 
-	
+
 
 
 	/**
@@ -275,23 +278,26 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	@Override
 	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
 
+
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Statut de l'envoi d'emails", 
 						(this.scheduledThreadPool.getQueue().contains(this.sendEmailScheduled)),
-						this.scheduledThreadPool.getQueue().contains(this.sendEmailScheduled) && !this.sendEmailScheduled.isCancelled() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
-		
+						this.scheduledThreadPool.getQueue().contains(this.sendEmailScheduled) ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Nombre d'emails en attente", 
 						this.emailSendingQueue.size(),
 						StatutPropertyBundleEnum.OK));
 
+		this.sendEmailScheduled.updateSupervisionEvents(supervisionEvents);
+
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Statut de l'envoi de SMS", 
 						(this.scheduledThreadPool.getQueue().contains(this.sendSMSScheduled)),
-						(this.scheduledThreadPool.getQueue().contains(this.sendSMSScheduled)) && !this.sendSMSScheduled.isCancelled() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+						(this.scheduledThreadPool.getQueue().contains(this.sendSMSScheduled)) ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
@@ -299,20 +305,21 @@ public class MessagingBusinessService extends AbstractAutomationService {
 						this.smsSendingQueue.size(),
 						StatutPropertyBundleEnum.OK));
 
-		
+		this.sendSMSScheduled.updateSupervisionEvents(supervisionEvents);
+
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
-						"Activité du pool de threads de traitements périodiques", 
+						"Activité de traitements périodiques", 
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
-						"Threads du pool utilisés", 
+						"Threads utilisés", 
 						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
 						this.scheduledThreadPool.getQueue().size() <= this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 	}
-	
-	
+
+
 	/**
 	 * Arrêt de la surveillance
 	 */
@@ -322,5 +329,5 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		this.scheduledThreadPool.shutdown();
 		arretTasks();
 	}
-	
+
 }
