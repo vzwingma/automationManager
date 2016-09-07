@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
@@ -33,6 +34,7 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	private String apiKey;
 	private String apiURL;
 	private String apiDomain;
+	private String apiService;
 	private String listeDestinataires;
 	
 	
@@ -40,10 +42,11 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	 * Constructeur de la tâche d'envoi
 	 * @param messagesSendingQueue
 	 */
-	public SendEmailTaskRunnable(final String apiKey, final String apiURL, final String apiDomain, final String listeDestinataires, final MessagingBusinessService service ) {
+	public SendEmailTaskRunnable(final String apiKey, final String apiURL, final String apiDomain, final String apiService, final String listeDestinataires, final MessagingBusinessService service ) {
 		this.apiKey = apiKey;
 		this.apiURL = apiURL;
 		this.apiDomain = apiDomain;
+		this.apiService = apiService;
 		this.listeDestinataires = listeDestinataires;
 		super.setService(service);
 	}
@@ -75,7 +78,7 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 			if(groupeMessages.getValue() != null && !groupeMessages.getValue().isEmpty()){
 				MultivaluedMapImpl formData = getFormData(groupeMessages.getKey(), groupeMessages.getValue());
 				LOGGER.debug("Envoi du mail : {}", formData.get("subject"));
-				boolean resultat = callHTTPPost(getClient(new HTTPBasicAuthFilter("api", this.apiKey)), this.apiURL, formData);
+				boolean resultat = callHTTPPost(getClient(new HTTPBasicAuthFilter("api", this.apiKey)), this.apiURL + this.apiDomain + this.apiService, formData);
 				if(resultat){
 					LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi", groupeMessages.getKey());
 					gmIterator.remove();
@@ -120,8 +123,19 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	 */
 	@Override
 	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
-		// TODO Auto-generated method stub
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Nombre d'emails en attente", 
+						this.getService().getEmailsSendingQueue().size(),
+						StatutPropertyBundleEnum.OK));
 		
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Dernier d'appel du service " + this.apiURL, 
+						this.getLastResponseCode(),
+						this.getLastResponseCode() == 200 ?
+								StatutPropertyBundleEnum.OK : 
+									this.getLastResponseCode() == 0 ? StatutPropertyBundleEnum.WARNING : StatutPropertyBundleEnum.ERROR));
 	}
 	
 	

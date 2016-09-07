@@ -95,7 +95,7 @@ public class TestSMSAPI {
 
 		assertEquals(3, service.getSmsSendingQueue().size());
 		// Envoi d'un mail indiquant l'erreur d'envoi
-		assertEquals(0, service.getEmailsSendingQueue().size());
+		assertEquals(1, service.getEmailsSendingQueue().size());
 
 		
 		// Run

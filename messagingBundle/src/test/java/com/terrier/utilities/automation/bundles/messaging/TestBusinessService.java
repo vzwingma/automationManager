@@ -138,11 +138,12 @@ public class TestBusinessService {
 		
 		List<StatutPropertyBundleObject> statuts = new ArrayList<StatutPropertyBundleObject>();
 		service.updateSupervisionEvents(statuts);
+		LOGGER.info("{}", statuts);
 		
 		assertNotNull(statuts);
 		assertTrue(statuts.size() > 0);
-		assertTrue((Boolean)statuts.get(2).getValue());
-		assertEquals(3, statuts.get(3).getValue());
+		assertTrue((Boolean)statuts.get(3).getValue());
+		assertEquals(3, statuts.get(4).getValue());
 	}
 	
 
@@ -157,7 +158,8 @@ public class TestBusinessService {
 		
 		assertNotNull(statuts);
 		assertTrue(statuts.size() > 0);
-		assertTrue((Boolean)statuts.get(2).getValue());
+		// Statut des threads
+		assertTrue((Boolean)statuts.get(3).getValue());
 		assertTrue((Boolean)statuts.get(0).getValue());
 	}
 }

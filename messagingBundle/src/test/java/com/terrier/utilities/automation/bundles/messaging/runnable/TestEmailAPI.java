@@ -78,8 +78,9 @@ public class TestEmailAPI {
 		SendEmailTaskRunnable runnable = spy(
 				new SendEmailTaskRunnable(
 						"123", 
-						"https://api.mailgun.net/v3/sandboxc.mailgun.org/messages", 
+						"https://api.mailgun.net/v3/", 
 						"sandboxc.mailgun.org", 
+						"/messages",
 						"toto@world.com", 
 						service));
 
@@ -100,8 +101,8 @@ public class TestEmailAPI {
 		runnable.run();
 
 		//verify : Création du client 1 fois
-		verify(mockClient, times(1)).addFilter(any(ClientFilter.class));
-		verify(mockClient, times(1)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
+		verify(mockClient, times(2)).addFilter(any(ClientFilter.class));
+		verify(mockClient, times(2)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
 		// Mais envoi de test par contre, test2 reste
 		assertEquals(1, service.getEmailsSendingQueue().keySet().size());
 		assertEquals(1, service.getEmailsSendingQueue().get("test2").size());
@@ -128,8 +129,9 @@ public class TestEmailAPI {
 		SendEmailTaskRunnable runnable = spy(
 				new SendEmailTaskRunnable(
 						"123", 
-						"https://api.mailgun.net/v3/sandboxc.mailgun.org/messages", 
+						"https://api.mailgun.net/v3/", 
 						"sandboxc.mailgun.org", 
+						"/messages",
 						"toto@world.com", 
 						service));
 
@@ -180,8 +182,9 @@ public class TestEmailAPI {
 		
 		SendEmailTaskRunnable runnable = new SendEmailTaskRunnable(
 				TestEmailAPI.properties.getProperty("automation.bundle.messaging.email.key"), 
-				"https://api.mailgun.net/v3/sandboxc3830b67ded34305912ad73326e9af2f.mailgun.org/messages", 
-				TestEmailAPI.properties.getProperty("automation.bundle.messaging.email.mailgun.domain"), 
+				TestEmailAPI.properties.getProperty("automation.bundle.messaging.email.mailgun.url"), 
+				TestEmailAPI.properties.getProperty("automation.bundle.messaging.email.mailgun.domain"),
+				TestEmailAPI.properties.getProperty("automation.bundle.messaging.email.mailgun.service"), 
 				TestEmailAPI.properties.getProperty("automation.bundle.messaging.email.destinataires"), 
 				service);
 		runnable.run();

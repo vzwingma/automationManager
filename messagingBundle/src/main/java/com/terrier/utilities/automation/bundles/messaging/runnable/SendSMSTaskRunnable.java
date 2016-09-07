@@ -11,6 +11,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
@@ -114,8 +115,19 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 	 */
 	@Override
 	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
-		// TODO Auto-generated method stub
-		
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Nombre de SMS en attente", 
+						this.getService().getSmsSendingQueue().size(),
+						StatutPropertyBundleEnum.OK));
+
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Dernier d'appel du service " + this.apiURL, 
+						this.getLastResponseCode(),
+						this.getLastResponseCode() == 200 ?
+								StatutPropertyBundleEnum.OK : 
+									this.getLastResponseCode() == 0 ? StatutPropertyBundleEnum.WARNING : StatutPropertyBundleEnum.ERROR));
 	}
 
 }
