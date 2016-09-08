@@ -224,7 +224,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				new StatutPropertyBundleObject(
 						"Threads utilisés", 
 						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
-						this.scheduledThreadPool.getQueue().size() < this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
+						this.scheduledThreadPool.getQueue().size() <= this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 		
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
