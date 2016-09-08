@@ -60,7 +60,7 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 	 * Init de la supervision
 	 */
 	public AbstractAutomationService(){
-		scheduledThreadPool.scheduleAtFixedRate(this, 0, 1, TimeUnit.MINUTES);
+		scheduledThreadPool.scheduleAtFixedRate(this, 1, 1, TimeUnit.MINUTES);
 	}
 
 	/**
@@ -131,6 +131,7 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 		statutBundle.getProperties().add(statutThread);
 		updateSupervisionEvents(statutBundle.getProperties());
 
+		LOGGER.debug("Envoi des éléments de supervision : {}", statutBundle.getProperties());
 		properties.put(StatutPropertyNameEnum.STATUS, statutBundle);
 		properties.put(StatutPropertyNameEnum.TIME, System.currentTimeMillis());
 		// Publication
