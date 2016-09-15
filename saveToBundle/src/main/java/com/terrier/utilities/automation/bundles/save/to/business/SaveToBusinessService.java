@@ -3,7 +3,6 @@ package com.terrier.utilities.automation.bundles.save.to.business;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +34,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	/**
 	 * Liste des tâches schedulées
 	 */
-	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<ScheduledFuture<?>>();
+	private List<SaveToTaskRunnable> listeScheduled = new ArrayList<SaveToTaskRunnable>();
 	/**
 	 * Threads pool
 	 */
@@ -77,11 +76,11 @@ public class SaveToBusinessService extends AbstractAutomationService {
 
 		if(this.nbPatterns > 0){
 			// arrêt des tâches schedulées
-			for (Iterator<ScheduledFuture<?>> iterator = listeScheduled.iterator(); iterator.hasNext();) {
-				ScheduledFuture<?> scheduledFuture = (ScheduledFuture<?>) iterator.next();
-				scheduledFuture.cancel(true);
-				iterator.remove();
+			for (Iterator<Runnable> iterator = scheduledThreadPool.getQueue().iterator(); iterator.hasNext();) {
+				Runnable scheduledFuture = iterator.next();
+				scheduledThreadPool.remove(scheduledFuture);
 			}
+			this.listeScheduled.clear();
 
 			// Démarrage des treatments reprogrammées
 			for (int p = 0; p < nbPatterns; p++) {
@@ -112,7 +111,8 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p),
 				this);
 		LOGGER.info("[{}] Démarrage du scheduler dans {} minutes puis toutes les {} minutes", p, startDelay, periode);
-		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, startDelay, periode, TimeUnit.MINUTES));	
+		this.listeScheduled.add(copyRunnable);
+		scheduledThreadPool.scheduleAtFixedRate(copyRunnable, startDelay, periode, TimeUnit.MINUTES);
 	}
 
 
@@ -231,5 +231,9 @@ public class SaveToBusinessService extends AbstractAutomationService {
 						"Nombre de patterns de copie", 
 						this.nbPatterns,
 						this.nbPatterns > 0 ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
+		
+		for (SaveToTaskRunnable copie : this.listeScheduled) {
+			copie.updateSupervisionEvents(supervisionEvents);
+		}
 	}
 }

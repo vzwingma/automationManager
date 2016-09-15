@@ -12,12 +12,15 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
+import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;
 import com.terrier.utilities.automation.bundles.save.to.business.SaveToBusinessService;
@@ -44,6 +47,8 @@ public class SaveToTaskRunnable implements Runnable {
 
 	private Calendar dateDernierScan = null;
 
+	private boolean dernierResultat = true;
+	
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	// Service
 	private SaveToBusinessService service;
@@ -84,11 +89,11 @@ public class SaveToTaskRunnable implements Runnable {
 			LOGGER.debug("[{}] > Matcher : {}", index, regExMatch);
 			if(regExMatch != null && !regExMatch.isEmpty()){
 
-				traitementFichiersSaveTo(scanDir, regExMatch, dateDernierScan);
+				this.dernierResultat = traitementFichiersSaveTo(scanDir, regExMatch, dateDernierScan);
 			}
 			else{
 				// Save To d'un répertoire
-				traitementRepertoireSaveTo(scanDir, this.dateDernierScan);
+				this.dernierResultat = traitementRepertoireSaveTo(scanDir, this.dateDernierScan);
 			}
 
 		}
@@ -128,8 +133,9 @@ public class SaveToTaskRunnable implements Runnable {
 	 * @param regExMatch regex des fichiers
 	 * @param dateDernierScan date du dernier scann
 	 */
-	private void traitementFichiersSaveTo(String scanDir, String regExMatch, Calendar dateDernierScan){
+	private boolean traitementFichiersSaveTo(String scanDir, String regExMatch, Calendar dateDernierScan){
 
+		boolean resultatGlobal = true;
 		try{
 			DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
 			for (Path fichier : downloadDirectoryPath) {
@@ -163,6 +169,7 @@ public class SaveToTaskRunnable implements Runnable {
 							// Et notification de l'erreur
 							sendNotificationMessage("Erreur lors de la copie de ",fichier.getFileName().toString(), " vers ", repertoireDestinataire);
 						}
+						resultatGlobal &= resultat;
 					}
 					else{
 						LOGGER.debug("[{}] Le fichier {} n'a pas été modifié", index, fichier.getFileName().toString());
@@ -171,7 +178,9 @@ public class SaveToTaskRunnable implements Runnable {
 			}
 		} catch (IOException e) {
 			LOGGER.error("[{}] Erreur lors du scan de {}", index, FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
+			resultatGlobal = false;
 		}
+		return resultatGlobal;
 	}
 
 	/**
@@ -179,10 +188,10 @@ public class SaveToTaskRunnable implements Runnable {
 	 * @param scanDir scan dir
 	 * @param dateDernierScan date du dernier scan
 	 */
-	private void traitementRepertoireSaveTo(String scanDir, Calendar dateDernierScan){
+	private boolean traitementRepertoireSaveTo(String scanDir, Calendar dateDernierScan){
 		LOGGER.debug("[{}] Copie du répertoire complet", index);
 		int nbFichiersCopies = copyDirTo(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire).get();
-
+		boolean resultat = true;
 		if(nbFichiersCopies > 0){
 			LOGGER.info("[{}] Copie réalisée vers BoxCrytor : {} fichiers copiés", index, nbFichiersCopies);
 			sendNotificationMessage("Copie du répertoire ", scanDir, " vers BoxCryptor : ", ""+nbFichiersCopies, " fichiers copiés");
@@ -191,10 +200,12 @@ public class SaveToTaskRunnable implements Runnable {
 			LOGGER.error("[{}] Erreur lors de la copie de [{}] vers BoxCrytor [{}]", index, scanDir, repertoireDestinataire);
 			// Et notification de l'erreur
 			sendNotificationMessage("Erreur lors de la copie du répertoire ", scanDir, " vers ", repertoireDestinataire);
+			resultat = false;
 		}
 		else{
 			LOGGER.debug("[{}] Aucun fichier copié", index);
 		}
+		return resultat;
 	}
 
 
@@ -287,4 +298,17 @@ public class SaveToTaskRunnable implements Runnable {
 		return this.dateDernierScan;
 	}
 
+	
+
+	/* (non-Javadoc)
+	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
+	 */
+	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Traitement n°"+this.index + " au " + (this.dateDernierScan != null ? this.dateDernierScan.getTime() : "N/A"), 
+						this.dernierResultat,
+						this.dernierResultat ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING ));
+
+	}
 }
