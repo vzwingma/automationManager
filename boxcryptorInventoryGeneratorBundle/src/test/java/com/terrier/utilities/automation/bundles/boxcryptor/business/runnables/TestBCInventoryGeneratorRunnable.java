@@ -104,8 +104,8 @@ public class TestBCInventoryGeneratorRunnable {
 		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
 				0,
 				new Yaml(), 
-				"D:\\Perso\\eBooks",
 				"X:\\eBooks",
+				"D:\\Perso\\eBooks",
 				null);
 		generateInventoryRunnable.run();
 	}
