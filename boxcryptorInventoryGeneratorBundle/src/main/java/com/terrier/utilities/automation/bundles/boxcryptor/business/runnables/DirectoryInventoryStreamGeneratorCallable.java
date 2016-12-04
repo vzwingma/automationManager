@@ -121,7 +121,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 				dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new FileFilter());
 				for (Path fichierChiffre : dsfChiffre) {
 					try{
-						if(Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
+						if(fichierChiffre.toFile().exists() && Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
 							inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
 							LOGGER.trace("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
 									index, 
