@@ -4,6 +4,7 @@
 package com.terrier.utilities.automation.bundles.boxcryptor.business.runnables;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -119,6 +120,8 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 			for (Path fichierNonChiffre : dsfNonChiffre) {
 				dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new FileFilter());
 				for (Path fichierChiffre : dsfChiffre) {
+					try{
+					
 					if(Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
 						inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
 						LOGGER.trace("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
@@ -137,6 +140,10 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 									BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
 							inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
 						}
+					}
+					}
+					catch(AccessDeniedException e){
+						LOGGER.warn("[{}] - THREAD [{}] Le fichier {} est introuvable. Passage au fichier suivant", index, this.nomTraitementParent, fichierNonChiffre.getFileName());
 					}
 				}
 			}

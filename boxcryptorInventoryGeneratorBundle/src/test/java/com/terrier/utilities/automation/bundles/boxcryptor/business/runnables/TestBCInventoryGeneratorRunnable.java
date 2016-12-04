@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.util.Calendar;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -93,7 +94,19 @@ public class TestBCInventoryGeneratorRunnable {
 		BCInventaireRepertoire inventaire2 = BCUtils.loadYMLInventory(new Yaml(), inventoryFile.getAbsolutePath());
 		assertNotNull(inventaire2);
 		assertEquals(dateMiseAJour, inventaire2.getDateModificationDernierInventaire());
-		
+
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/data/clear/liste_Fichiers_BoxCryptor.yml"));
+	}
+
+
+	@Ignore
+	public void testReal(){
+		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
+				0,
+				new Yaml(), 
+				"D:\\Perso\\eBooks",
+				"X:\\eBooks",
+				null);
+		generateInventoryRunnable.run();
 	}
 }
