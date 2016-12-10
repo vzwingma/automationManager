@@ -119,7 +119,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 				getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES),
 				this
 				);
-		scheduledThreadPool.scheduleAtFixedRate(sendEmailScheduled, 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
+		scheduledThreadPool.scheduleWithFixedDelay(sendEmailScheduled, 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
 
 		LOGGER.info("La tâche d'envoi des mails est programmée");
 	}

@@ -138,7 +138,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 				getKey(ConfigKeyEnums.CRYPTED_DIRECTORY, p),
 				this);
 		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);
-		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(generateInventoryRunnable, 0L, periode, TimeUnit.MINUTES));	
+		this.listeScheduled.add(scheduledThreadPool.scheduleWithFixedDelay(generateInventoryRunnable, 0L, periode, TimeUnit.MINUTES));	
 	}
 
 
