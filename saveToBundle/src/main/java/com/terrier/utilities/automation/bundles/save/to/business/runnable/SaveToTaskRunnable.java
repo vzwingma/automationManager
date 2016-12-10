@@ -305,9 +305,12 @@ public class SaveToTaskRunnable implements Runnable {
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
 	 */
 	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
-						"Traitement n°"+this.index + " au " + (this.dateDernierScan != null ? this.dateDernierScan.getTime() : "N/A"), 
+						"Traitement n°"+this.index + " au " + (this.dateDernierScan != null ? sdf.format(this.dateDernierScan.getTime()) : "N/A"), 
 						this.dernierResultat,
 						this.dernierResultat ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING ));
 
