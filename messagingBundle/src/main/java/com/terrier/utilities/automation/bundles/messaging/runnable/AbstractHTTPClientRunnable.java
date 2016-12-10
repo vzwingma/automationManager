@@ -21,6 +21,7 @@ import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBund
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
 /**
+ * Classe d'un client HTTP
  * @author vzwingma
  *
  */
@@ -104,6 +105,7 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	 */
 	public boolean callHTTPGet(Client clientHTTP, String url, String... urlParams){
 		LOGGER.debug("[HTTP GET] Appel de l'URI [{}]", url);
+		boolean resultat;
 		try{
 			StringBuilder urlComplete = new StringBuilder(url);
 			for (String param : urlParams) {
@@ -113,12 +115,14 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 			WebResource.Builder webResource = clientHTTP.resource(urlComplete.toString()).type(MediaType.APPLICATION_FORM_URLENCODED);
 			ClientResponse response = webResource.get(ClientResponse.class);
 			LOGGER.debug("[HTTP GET] Resultat : {}", response);
-			return response != null && response.getStatus() == 200;
+			this.lastResponseCode = response != null ? response.getStatus() : 0;
+			resultat = response != null && response.getStatus() == 200;
 		}
 		catch(Exception e){
 			LOGGER.error("> Resultat : Erreur lors de l'appel HTTP GET", e);
-			return false;
+			resultat = false;
 		}
+		return resultat;
 	}
 
 

@@ -124,10 +124,10 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Dernier d'appel du service " + this.apiURL, 
-						this.getLastResponseCode(),
+						this.getLastResponseCode() == 0 ? "?" : this.getLastResponseCode(),
 						this.getLastResponseCode() == 200 ?
 								StatutPropertyBundleEnum.OK : 
-									this.getLastResponseCode() == 0 ? StatutPropertyBundleEnum.WARNING : StatutPropertyBundleEnum.ERROR));
+									this.getLastResponseCode() == 0 ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR));
 	}
 
 }
