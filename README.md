@@ -16,7 +16,7 @@ Gestionnaire de tâches automatisées
   *  Libraire de supervision des bundles de l'AutomationManager
   *  [![Dependency Status](https://www.versioneye.com/user/projects/5675bcf2107997002d0008e4/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5675bcf2107997002d0008e4)
 
-#### [messagingBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Messaging) v1.1.1 
+#### [messagingBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Messaging) v1.1.2 
   *  Librairie d'envoi de mail et de SMS
   * [![Dependency Status](https://www.versioneye.com/user/projects/566f2f1b1079970030000014/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f1b1079970030000014)
     
@@ -25,7 +25,7 @@ Gestionnaire de tâches automatisées
   *  Générateur d'inventaire pour BoxCryptor
   * [![Dependency Status](https://www.versioneye.com/user/projects/5675bcf1107997003e000859/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5675bcf1107997003e000859)
 
-#### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.1.1
+#### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.1.2
   *  Libraire de copie de fichier ou de répertoire
   *  [![Dependency Status](https://www.versioneye.com/user/projects/566f2f24107997003e000004/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f24107997003e000004)
 

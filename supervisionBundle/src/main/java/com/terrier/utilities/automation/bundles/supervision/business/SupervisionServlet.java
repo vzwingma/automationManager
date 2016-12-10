@@ -76,7 +76,7 @@ public class SupervisionServlet extends HttpServlet {
 		for (StatutBundleTopicObject bundleStatut : supervision.values()) {
 			writer.append("<table align='left' style='border:1px solid grey; margin:10px;'>");
 			writer.append("<tr colspan='2'>");
-			writer.append("<td><b> [").append(bundleStatut.getBundle().getBundleId()).append("] ").append(bundleStatut.getBundle().getSymbolicName()).append("</b></td>")
+			writer.append("<td><b> [").append(bundleStatut.getBundle().getBundleId()).append("] ").append(bundleStatut.getBundle().getSymbolicName()).append(" ").append(bundleStatut.getBundle().getVersion()).append("</b></td>")
 				.append("<td>[<span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getBundle().getState())).append("'>").append(OSGIStatusUtils.getBundleStatusLibelle(bundleStatut.getBundle().getState())).append("</span>]</td>");
 			writer.append("</tr>");
 			writer.append("<tr><td>Heure de mise à jour</td><td>").append(DATE_MAJ_FORMAT.format(bundleStatut.getMiseAJour().getTime())).append("</td></tr>");

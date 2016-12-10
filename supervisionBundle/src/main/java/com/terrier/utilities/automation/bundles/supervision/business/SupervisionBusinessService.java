@@ -4,6 +4,7 @@
 package com.terrier.utilities.automation.bundles.supervision.business;
 
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -79,8 +80,12 @@ public class SupervisionBusinessService extends AbstractAutomationService implem
 		StatutBundleTopicObject statutBundleObject = (StatutBundleTopicObject)event.getProperty(StatutPropertyNameEnum.STATUS.getName());
 		long time = (long)event.getProperty(StatutPropertyNameEnum.TIME.getName());
 		statutBundleObject.getMiseAJour().setTimeInMillis(time);
-		MAP_SUPERVISION_BUNDLE.put(statutBundleObject.getBundle().getBundleId(), statutBundleObject);
 		LOGGER.info(logStatut(statutBundleObject));
+		// Ajout du bundle seulement s'il s'agit d'automation
+		if(statutBundleObject.getBundle().getHeaders().get("Bundle-Name").contains("Automation")){
+			MAP_SUPERVISION_BUNDLE.put(statutBundleObject.getBundle().getBundleId(), statutBundleObject);
+		}
+		
 	}
 
 	/**
@@ -90,7 +95,12 @@ public class SupervisionBusinessService extends AbstractAutomationService implem
 	protected String logStatut(StatutBundleTopicObject statutBundle){
 
 		StringBuilder log = new StringBuilder("\n> Statut de ").append(statutBundle.getBundle().getSymbolicName()).append(" : ").append(OSGIStatusUtils.getBundleStatusLibelle(statutBundle.getBundle().getState())).append("\n");
-
+		Enumeration<String> keysHeaders = statutBundle.getBundle().getHeaders().keys();
+		while (keysHeaders.hasMoreElements()) {
+			String key = (String) keysHeaders.nextElement();
+			log.append("\n  ").append(key).append(":").append(statutBundle.getBundle().getHeaders().get(key));	
+		}
+		
 		List<StatutPropertyBundleObject> statutMap = statutBundle.getProperties();
 		for (StatutPropertyBundleObject statutEntry : statutMap) {
 			log.append("     ").append(statutEntry);	

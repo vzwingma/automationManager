@@ -48,6 +48,8 @@ public class AutomationBundlesListener implements BundleListener, ServiceListene
 			obj = new StatutBundleTopicObject(event.getBundle());
 		}
 		obj.setBundle(event.getOrigin());
-		SupervisionBusinessService.getStatutBundles().put(event.getOrigin().getBundleId(), obj);
+		if(event.getOrigin().getHeaders().get("Bundle-Name").contains("Automation")){
+			SupervisionBusinessService.getStatutBundles().put(event.getOrigin().getBundleId(), obj);
+		}
 	}
 }

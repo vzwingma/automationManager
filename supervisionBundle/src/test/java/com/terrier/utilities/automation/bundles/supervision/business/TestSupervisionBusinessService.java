@@ -6,12 +6,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 import org.osgi.service.event.Event;
 
 import com.terrier.utilities.automation.bundles.communs.business.AutomationEventPublisher;
@@ -38,7 +41,14 @@ public class TestSupervisionBusinessService {
 		// MessageProperties
         Map<StatutPropertyNameEnum, Object> properties = new HashMap<>();
         // Status
-        StatutBundleTopicObject statusBundle = new StatutBundleTopicObject(mock(Bundle.class));
+        Bundle mockBundle = mock(Bundle.class);
+        when(mockBundle.getSymbolicName()).thenReturn("MockBundle");
+        when(mockBundle.getVersion()).thenReturn(new Version(1, 1, 1));
+        
+        Hashtable<String, String> mapHeaders= new Hashtable<String, String>();
+        mapHeaders.put("Bundle-Name", "[Automation] MockBundle");
+        when(mockBundle.getHeaders()).thenReturn(mapHeaders);
+        StatutBundleTopicObject statusBundle = new StatutBundleTopicObject(mockBundle);
         statusBundle.getProperties().add(new StatutPropertyBundleObject("Activité Supervision ThreadPool", true, StatutPropertyBundleEnum.OK));
         properties.put(StatutPropertyNameEnum.STATUS, statusBundle);
         properties.put(StatutPropertyNameEnum.TIME, System.currentTimeMillis());
