@@ -80,11 +80,11 @@ public class SupervisionServlet extends HttpServlet {
 				.append("<td>[<span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getBundle().getState())).append("'>").append(OSGIStatusUtils.getBundleStatusLibelle(bundleStatut.getBundle().getState())).append("</span>]</td>");
 			writer.append("</tr>");
 			writer.append("<tr><td>Heure de mise à jour</td><td>").append(DATE_MAJ_FORMAT.format(bundleStatut.getMiseAJour().getTime())).append("</td></tr>");
-			writer.append("<tr><td>Statut des composants du bundle</td><td>[<span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getStatutComponents())).append("'>" ).append(bundleStatut.getStatutComponents()).append("</span>] </td></tr>"); 
+			writer.append("<tr><td><i>Statut des composants du bundle</i></td><td>[<span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getStatutComponents())).append("'>" ).append(bundleStatut.getStatutComponents()).append("</span>] </td></tr>"); 
 			writer.append("<tr><td></td></tr>");
 			for (StatutPropertyBundleObject bundleValue : bundleStatut.getProperties()) {
 				writer.append("<tr><td>- ").append(bundleValue.getLibelle()).append("</td>")
-						.append("<td>").append(bundleValue.getValue()).append("</td></tr>");	
+						.append("<td><span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleValue.getStatut())).append("'>" ).append(bundleValue.getValue()).append("</span></td></tr>");	
 			}
 			writer.append("</table>");
 		}
