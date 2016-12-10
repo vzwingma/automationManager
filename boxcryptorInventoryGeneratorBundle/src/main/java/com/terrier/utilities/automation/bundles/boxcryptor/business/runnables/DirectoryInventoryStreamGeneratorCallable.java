@@ -3,8 +3,6 @@
  */
 package com.terrier.utilities.automation.bundles.boxcryptor.business.runnables;
 
-import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -98,19 +96,25 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 			DirectoryStream<Path> dsNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), new DirectoryFilter());
 			DirectoryStream<Path> dsChiffre;
 			for (Path sousRepertoireNonChiffre : dsNonChiffre) {
-				dsChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new DirectoryFilter());
-				for (Path sousRepertoireChiffre : dsChiffre) {
-					if(Files.getLastModifiedTime(sousRepertoireChiffre).toMillis() == Files.getLastModifiedTime(sousRepertoireNonChiffre).toMillis()){
-						listeExecSousRepertoires.add(
-								this.executorPool.submit(
-										new DirectoryInventoryStreamGeneratorCallable(
-												this.index,
-												this.executorPool,
-												this.nomTraitementParent + "|" + sousRepertoireNonChiffre.getFileName().toString(), 
-												this.inventaireR.getBCInventaireSousRepertoire(sousRepertoireChiffre, sousRepertoireNonChiffre),
-												sousRepertoireChiffre.toFile().getAbsolutePath(), sousRepertoireNonChiffre.toFile().getAbsolutePath()))
-								);						
+				try{
+					dsChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new DirectoryFilter());
+					for (Path sousRepertoireChiffre : dsChiffre) {
+
+						if(Files.getLastModifiedTime(sousRepertoireChiffre).toMillis() == Files.getLastModifiedTime(sousRepertoireNonChiffre).toMillis()){
+							listeExecSousRepertoires.add(
+									this.executorPool.submit(
+											new DirectoryInventoryStreamGeneratorCallable(
+													this.index,
+													this.executorPool,
+													this.nomTraitementParent + "|" + sousRepertoireNonChiffre.getFileName().toString(), 
+													this.inventaireR.getBCInventaireSousRepertoire(sousRepertoireChiffre, sousRepertoireNonChiffre),
+													sousRepertoireChiffre.toFile().getAbsolutePath(), sousRepertoireNonChiffre.toFile().getAbsolutePath()))
+									);						
+						}
 					}
+				}
+				catch(Exception e){
+					LOGGER.warn("[{}] - THREAD [{}] Le répertoire {} est introuvable. Passage au répertoire suivant", index, this.nomTraitementParent, sousRepertoireNonChiffre);
 				}
 			}
 
@@ -118,9 +122,10 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 			DirectoryStream<Path> dsfNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), new FileFilter());
 			DirectoryStream<Path> dsfChiffre;
 			for (Path fichierNonChiffre : dsfNonChiffre) {
-				dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new FileFilter());
-				for (Path fichierChiffre : dsfChiffre) {
-					try{
+				try{
+					dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new FileFilter());
+					for (Path fichierChiffre : dsfChiffre) {
+
 						if(fichierChiffre.toFile().exists() && Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
 							inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
 							LOGGER.trace("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
@@ -141,13 +146,13 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 							}
 						}
 					}
-					catch(Exception e){
-						LOGGER.warn("[{}] - THREAD [{}] Le fichier {} est introuvable. Passage au fichier suivant", index, this.nomTraitementParent, fichierNonChiffre.getFileName());
-					}
+				}
+				catch(Exception e){
+					LOGGER.warn("[{}] - THREAD [{}] Le fichier {} est introuvable. Passage au fichier suivant", index, this.nomTraitementParent, fichierNonChiffre.getFileName());
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.info("Erreur lors du traitement", e);
+			LOGGER.info("Erreur lors du traitement du répertoire [{}]", absRepertoireNonChiffre, e);
 		}
 
 		// Récupération des résultats des sous répertoires
