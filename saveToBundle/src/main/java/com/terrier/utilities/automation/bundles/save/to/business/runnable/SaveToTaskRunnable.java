@@ -99,6 +99,7 @@ public class SaveToTaskRunnable implements Runnable {
 		}
 		else{
 			LOGGER.error("[{}] Erreur lors du scan de {}. Ce n'est pas un répertoire", index, FileSystems.getDefault().getPath(scanDir).toAbsolutePath());
+			this.dernierResultat = false;
 		}
 		// Mise à jour
 		this.dateDernierScan = Calendar.getInstance();
