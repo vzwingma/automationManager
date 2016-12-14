@@ -223,11 +223,23 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	 */
 	@Override
 	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
+		
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Traitements de génération", 
+						this.nbInventaires,
+						this.nbInventaires == this.listeScheduled.size() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+		
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Activité de traitements périodiques", 
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
 						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Traitements programmés", 
+						this.listeScheduled.size(),
+						this.listeScheduled.size() > 0 ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Threads utilisés", 
