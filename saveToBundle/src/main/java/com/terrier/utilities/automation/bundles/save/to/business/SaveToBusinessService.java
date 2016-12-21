@@ -112,7 +112,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				this);
 		LOGGER.info("[{}] Démarrage du scheduler dans {} minutes puis toutes les {} minutes", p, startDelay, periode);
 		this.listeScheduled.add(copyRunnable);
-		scheduledThreadPool.scheduleAtFixedRate(copyRunnable, startDelay, periode, TimeUnit.MINUTES);
+		scheduledThreadPool.scheduleWithFixedDelay(copyRunnable, startDelay, periode, TimeUnit.MINUTES);
 	}
 
 
