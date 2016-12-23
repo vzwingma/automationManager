@@ -161,8 +161,10 @@ public class TestSaveToTaskRunnable {
 		d44.toFile().setReadable(true);
 		d44.toFile().setWritable(true);
 		d44.toFile().setExecutable(true);
-		Files.delete(FileSystems.getDefault().getPath("src/test/resources/download/directory/d44.txt"));
+		d44.toFile().delete();
+		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory/d2.txt"));
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/d44.txt"));
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory"));
 	}
 	
