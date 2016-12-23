@@ -122,13 +122,13 @@ public class TestSaveToTaskRunnable {
 		spyTask.run();
 
 		assertNotNull(spyTask.getDateDernierScan());
-		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("2"),anyString(),anyString());
+		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),anyString(),anyString(),anyString());
 
 		// 2nd traitement, la copie n'est pas réalisée (toujours un seul appel)
 		LOGGER.info("*** 2ème traitement ***");
 		spyTask.run();
 		// Toujours qu'un seul appel
-		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("2"),anyString(),anyString());
+		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),anyString(),anyString(),anyString());
 		
 		// 3nd traitement, la copie est réalisée car changement
 		LOGGER.info("*** 3ème traitement ***");
