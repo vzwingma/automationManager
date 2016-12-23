@@ -140,31 +140,11 @@ public class TestSaveToTaskRunnable {
 		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("1"), anyString(),eq(""));
 		
 		// 4nd traitement, la copie est réalisée car changement mais erreur lors de la copie
-		LOGGER.info("*** 4ème traitement ***");
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
 		Thread.sleep(2000);
 		
-
-		// Gestion d'erreurs en cas d'accès readonly
-
-		Path d44 = Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/directory/d44.txt"));
-		d44.toFile().setReadable(false);
-		d44.toFile().setWritable(false);
-		d44.toFile().setExecutable(false);
-
-		spyTask.run();
-		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("1"), anyString(),eq(""));
-		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("0"), anyString(),
-				contains("d44.txt"));
-		
-		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/d1.txt"));		
-		d44.toFile().setReadable(true);
-		d44.toFile().setWritable(true);
-		d44.toFile().setExecutable(true);
-		d44.toFile().delete();
 		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory/d2.txt"));
-		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/d44.txt"));
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory"));
 	}
 	
