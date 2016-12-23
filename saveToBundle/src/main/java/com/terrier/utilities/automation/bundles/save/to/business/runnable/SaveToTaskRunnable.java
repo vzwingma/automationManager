@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,11 +49,11 @@ public class SaveToTaskRunnable implements Runnable {
 	private Calendar dateDernierScan = null;
 
 	private boolean dernierResultat = true;
-	
+
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	// Service
 	private SaveToBusinessService service;
-	
+
 	/**
 	 * @param repertoireSource répertoire source
 	 * @param patternEntree pattern d'entrée (si null : copie du répertoire)
@@ -191,11 +192,14 @@ public class SaveToTaskRunnable implements Runnable {
 	 */
 	private boolean traitementRepertoireSaveTo(String scanDir, Calendar dateDernierScan){
 		LOGGER.debug("[{}] Copie du répertoire complet", index);
-		int nbFichiersCopies = copyDirTo(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire).get();
+
+		List<String> fichiersEnErreur = new ArrayList<String>();
+
+		int nbFichiersCopies = copyDirTo(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire, fichiersEnErreur).get();
 		boolean resultat = true;
 		if(nbFichiersCopies > 0){
 			LOGGER.info("[{}] Copie réalisée vers BoxCrytor : {} fichiers copiés", index, nbFichiersCopies);
-			sendNotificationMessage("Copie du répertoire ", scanDir, " vers BoxCryptor : ", ""+nbFichiersCopies, " fichiers copiés");
+			sendNotificationMessage("Copie du répertoire ", scanDir, " vers BoxCryptor : ", ""+nbFichiersCopies, " fichiers copiés", getMessageFichiersEnErreur(fichiersEnErreur));
 		}
 		else if(nbFichiersCopies < 0){
 			LOGGER.error("[{}] Erreur lors de la copie de [{}] vers BoxCrytor [{}]", index, scanDir, repertoireDestinataire);
@@ -204,11 +208,32 @@ public class SaveToTaskRunnable implements Runnable {
 			resultat = false;
 		}
 		else{
-			LOGGER.debug("[{}] Aucun fichier copié", index);
+			if(!fichiersEnErreur.isEmpty()){
+				sendNotificationMessage("Copie du répertoire ", scanDir, " vers BoxCryptor : ", "0", " fichiers copiés", getMessageFichiersEnErreur(fichiersEnErreur));
+			}
+			else{
+				LOGGER.debug("[{}] Aucun fichier copié", index);
+			}
 		}
 		return resultat;
 	}
 
+	/**
+	 * Erreur lors de la copie
+	 * @param fichiersEnErreur
+	 * @return le message à notifer
+	 */
+	private String getMessageFichiersEnErreur(List<String> fichiersEnErreur){
+		// Gestion des erreurs
+		StringBuilder errors = new StringBuilder();
+		if(!fichiersEnErreur.isEmpty()){
+			for (String error : fichiersEnErreur) {
+				LOGGER.warn("[{}] > Erreur lors de la copie du {}", index, error);
+				errors.append("\n").append("> Erreur lors de la copie du ").append(error);
+			}
+		}
+		return errors.toString();
+	}
 
 	/**
 	 * Envoi d'un email de notification
@@ -220,7 +245,7 @@ public class SaveToTaskRunnable implements Runnable {
 			for (String part : message) {
 				msg.append(part);
 			}
-			LOGGER.debug("Envoi du message Copie vers BoxCryptor");
+			LOGGER.debug("Envoi du message Copie vers BoxCryptor : [{}]", msg.toString());
 			service.sendNotificationMessage(MessageTypeEnum.EMAIL, "Copie vers BoxCryptor", msg.toString());
 		}
 	}
@@ -233,7 +258,7 @@ public class SaveToTaskRunnable implements Runnable {
 	 * @param outFileName pattern de sortie
 	 * @param directoryCible répertoire cible
 	 */
-	protected AtomicInteger copyDirTo(Path fichierSource, String directoryCible){
+	protected AtomicInteger copyDirTo(Path fichierSource, String directoryCible, List<String> fichiersEnErreur){
 
 		AtomicInteger nbFichiersCopies = new AtomicInteger(0);
 		try {
@@ -241,7 +266,7 @@ public class SaveToTaskRunnable implements Runnable {
 			if(fichierCible != null && fichierSource != null){
 				LOGGER.debug("[{}]  > Copie du répertoire {} vers : {}", index, fichierSource, fichierCible);
 
-				Files.walkFileTree(fichierSource, new CopyDirVisitor(fichierSource, fichierCible, nbFichiersCopies, this.dateDernierScan));
+				Files.walkFileTree(fichierSource, new CopyDirVisitor(fichierSource, fichierCible, nbFichiersCopies, fichiersEnErreur, this.dateDernierScan));
 			}
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
@@ -299,15 +324,15 @@ public class SaveToTaskRunnable implements Runnable {
 		return this.dateDernierScan;
 	}
 
-	
+
 
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
 	 */
 	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		
+
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Traitement n°"+this.index + " au " + (this.dateDernierScan != null ? sdf.format(this.dateDernierScan.getTime()) : "N/A"), 
@@ -315,4 +340,6 @@ public class SaveToTaskRunnable implements Runnable {
 						this.dernierResultat ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING ));
 
 	}
+
+
 }

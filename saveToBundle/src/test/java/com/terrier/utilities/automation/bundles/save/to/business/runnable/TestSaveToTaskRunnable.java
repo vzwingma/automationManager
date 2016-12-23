@@ -5,7 +5,10 @@ package com.terrier.utilities.automation.bundles.save.to.business.runnable;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -16,6 +19,11 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -106,19 +114,21 @@ public class TestSaveToTaskRunnable {
 				null, null));
 
 		Mockito.doNothing().when(spyTask).sendNotificationMessage(anyString());
-		when(spyTask.copyDirTo(any(Path.class), anyString())).thenCallRealMethod();
+		when(spyTask.copyDirTo(any(Path.class), anyString(), anyListOf(String.class))).thenCallRealMethod();
 		when(spyTask.getDateInitScan()).thenReturn(null);
+
 		LOGGER.info("*** 1er traitement ***");
 		// Premier traitement, la copie est réalisée
 		spyTask.run();
 
 		assertNotNull(spyTask.getDateDernierScan());
-		verify(spyTask, times(1)).sendNotificationMessage(anyString(),anyString(),anyString(),anyString(),anyString());
+		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("2"),anyString(),anyString());
 
 		// 2nd traitement, la copie n'est pas réalisée (toujours un seul appel)
 		LOGGER.info("*** 2ème traitement ***");
 		spyTask.run();
-		verify(spyTask, times(1)).sendNotificationMessage(anyString(),anyString(),anyString(),anyString(),anyString());
+		// Toujours qu'un seul appel
+		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("2"),anyString(),anyString());
 		
 		// 3nd traitement, la copie est réalisée car changement
 		LOGGER.info("*** 3ème traitement ***");
@@ -127,10 +137,31 @@ public class TestSaveToTaskRunnable {
 		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
 
 		spyTask.run();
-		verify(spyTask, times(2)).sendNotificationMessage(anyString(),anyString(),anyString(),anyString(),anyString());
+		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("1"), anyString(),eq(""));
 		
+		// 4nd traitement, la copie est réalisée car changement mais erreur lors de la copie
+		LOGGER.info("*** 4ème traitement ***");
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
+		Thread.sleep(2000);
 		
-		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/d1.txt"));
+
+		// Gestion d'erreurs en cas d'accès readonly
+
+		Path d44 = Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/directory/d44.txt"));
+		d44.toFile().setReadable(false);
+		d44.toFile().setWritable(false);
+		d44.toFile().setExecutable(false);
+
+		spyTask.run();
+		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("1"), anyString(),eq(""));
+		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("0"), anyString(),
+				contains("d44.txt"));
+		
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/d1.txt"));		
+		d44.toFile().setReadable(true);
+		d44.toFile().setWritable(true);
+		d44.toFile().setExecutable(true);
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/download/directory/d44.txt"));
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory/d2.txt"));
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory"));
 	}
