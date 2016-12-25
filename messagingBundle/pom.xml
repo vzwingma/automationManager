@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.terrier.utilities.automation.bundles</groupId>
 		<artifactId>AutomationManager</artifactId>
-		<version>1.4.0</version>
+		<version>1.5.0</version>
 	</parent>
 	<artifactId>messagingBundle</artifactId>
 	<version>${automation.messaging.version}</version>
