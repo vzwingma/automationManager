@@ -89,7 +89,7 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 		}
 		catch(Exception e){
 			LOGGER.error("> Resultat : Erreur lors de l'appel HTTP POST", e);
-
+			this.lastResponseCode = 500;
 			resultat = false;
 		}
 		return resultat;
@@ -121,6 +121,7 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 		catch(Exception e){
 			LOGGER.error("> Resultat : Erreur lors de l'appel HTTP GET", e);
 			resultat = false;
+			this.lastResponseCode = 500;
 		}
 		return resultat;
 	}
