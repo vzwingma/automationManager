@@ -11,13 +11,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
+import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
 import com.terrier.utilities.automation.bundles.communs.utils.files.visitors.CopyDirVisitor;
 import com.terrier.utilities.automation.bundles.save.to.business.SaveToBusinessService;
@@ -44,10 +48,12 @@ public class SaveToTaskRunnable implements Runnable {
 
 	private Calendar dateDernierScan = null;
 
+	private boolean dernierResultat = true;
+
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	// Service
 	private SaveToBusinessService service;
-	
+
 	/**
 	 * @param repertoireSource répertoire source
 	 * @param patternEntree pattern d'entrée (si null : copie du répertoire)
@@ -84,16 +90,17 @@ public class SaveToTaskRunnable implements Runnable {
 			LOGGER.debug("[{}] > Matcher : {}", index, regExMatch);
 			if(regExMatch != null && !regExMatch.isEmpty()){
 
-				traitementFichiersSaveTo(scanDir, regExMatch, dateDernierScan);
+				this.dernierResultat = traitementFichiersSaveTo(scanDir, regExMatch, dateDernierScan);
 			}
 			else{
 				// Save To d'un répertoire
-				traitementRepertoireSaveTo(scanDir, this.dateDernierScan);
+				this.dernierResultat = traitementRepertoireSaveTo(scanDir, this.dateDernierScan);
 			}
 
 		}
 		else{
 			LOGGER.error("[{}] Erreur lors du scan de {}. Ce n'est pas un répertoire", index, FileSystems.getDefault().getPath(scanDir).toAbsolutePath());
+			this.dernierResultat = false;
 		}
 		// Mise à jour
 		this.dateDernierScan = Calendar.getInstance();
@@ -128,8 +135,9 @@ public class SaveToTaskRunnable implements Runnable {
 	 * @param regExMatch regex des fichiers
 	 * @param dateDernierScan date du dernier scann
 	 */
-	private void traitementFichiersSaveTo(String scanDir, String regExMatch, Calendar dateDernierScan){
+	private boolean traitementFichiersSaveTo(String scanDir, String regExMatch, Calendar dateDernierScan){
 
+		boolean resultatGlobal = true;
 		try{
 			DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
 			for (Path fichier : downloadDirectoryPath) {
@@ -144,7 +152,7 @@ public class SaveToTaskRunnable implements Runnable {
 							outputPattern = fichier.getFileName().toString();
 						}
 						boolean resultat = copyFichierTo(fichier, 
-								AutomationUtils.replaceDatePatterns(outputPattern), 
+								AutomationUtils.replacePatterns(fichier.getFileName().toString(), outputPattern), 
 								repertoireDestinataire);		
 						if(resultat){
 							LOGGER.info("[{}] Copie réalisée vers {}", index, repertoireDestinataire);
@@ -163,6 +171,7 @@ public class SaveToTaskRunnable implements Runnable {
 							// Et notification de l'erreur
 							sendNotificationMessage("Erreur lors de la copie de ",fichier.getFileName().toString(), " vers ", repertoireDestinataire);
 						}
+						resultatGlobal &= resultat;
 					}
 					else{
 						LOGGER.debug("[{}] Le fichier {} n'a pas été modifié", index, fichier.getFileName().toString());
@@ -171,7 +180,9 @@ public class SaveToTaskRunnable implements Runnable {
 			}
 		} catch (IOException e) {
 			LOGGER.error("[{}] Erreur lors du scan de {}", index, FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
+			resultatGlobal = false;
 		}
+		return resultatGlobal;
 	}
 
 	/**
@@ -179,24 +190,50 @@ public class SaveToTaskRunnable implements Runnable {
 	 * @param scanDir scan dir
 	 * @param dateDernierScan date du dernier scan
 	 */
-	private void traitementRepertoireSaveTo(String scanDir, Calendar dateDernierScan){
+	private boolean traitementRepertoireSaveTo(String scanDir, Calendar dateDernierScan){
 		LOGGER.debug("[{}] Copie du répertoire complet", index);
-		int nbFichiersCopies = copyDirTo(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire).get();
 
+		List<String> fichiersEnErreur = new ArrayList<String>();
+
+		int nbFichiersCopies = copyDirTo(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire, fichiersEnErreur).get();
+		boolean resultat = true;
 		if(nbFichiersCopies > 0){
 			LOGGER.info("[{}] Copie réalisée vers BoxCrytor : {} fichiers copiés", index, nbFichiersCopies);
-			sendNotificationMessage("Copie du répertoire ", scanDir, " vers BoxCryptor : ", ""+nbFichiersCopies, " fichiers copiés");
+			sendNotificationMessage("Copie du répertoire ", scanDir, " vers BoxCryptor : ", ""+nbFichiersCopies, " fichiers copiés", getMessageFichiersEnErreur(fichiersEnErreur));
 		}
 		else if(nbFichiersCopies < 0){
 			LOGGER.error("[{}] Erreur lors de la copie de [{}] vers BoxCrytor [{}]", index, scanDir, repertoireDestinataire);
 			// Et notification de l'erreur
 			sendNotificationMessage("Erreur lors de la copie du répertoire ", scanDir, " vers ", repertoireDestinataire);
+			resultat = false;
 		}
 		else{
-			LOGGER.debug("[{}] Aucun fichier copié", index);
+			if(!fichiersEnErreur.isEmpty()){
+				sendNotificationMessage("Copie du répertoire ", scanDir, " vers BoxCryptor : ", "0", " fichiers copiés", getMessageFichiersEnErreur(fichiersEnErreur));
+			}
+			else{
+				LOGGER.debug("[{}] Aucun fichier copié", index);
+			}
 		}
+		return resultat;
 	}
 
+	/**
+	 * Erreur lors de la copie
+	 * @param fichiersEnErreur
+	 * @return le message à notifer
+	 */
+	private String getMessageFichiersEnErreur(List<String> fichiersEnErreur){
+		// Gestion des erreurs
+		StringBuilder errors = new StringBuilder();
+		if(!fichiersEnErreur.isEmpty()){
+			for (String error : fichiersEnErreur) {
+				LOGGER.warn("[{}] > Erreur lors de la copie du {}", index, error);
+				errors.append("\n").append("> Erreur lors de la copie du ").append(error);
+			}
+		}
+		return errors.toString();
+	}
 
 	/**
 	 * Envoi d'un email de notification
@@ -208,7 +245,7 @@ public class SaveToTaskRunnable implements Runnable {
 			for (String part : message) {
 				msg.append(part);
 			}
-			LOGGER.debug("Envoi du message Copie vers BoxCryptor");
+			LOGGER.debug("Envoi du message Copie vers BoxCryptor : [{}]", msg.toString());
 			service.sendNotificationMessage(MessageTypeEnum.EMAIL, "Copie vers BoxCryptor", msg.toString());
 		}
 	}
@@ -221,7 +258,7 @@ public class SaveToTaskRunnable implements Runnable {
 	 * @param outFileName pattern de sortie
 	 * @param directoryCible répertoire cible
 	 */
-	protected AtomicInteger copyDirTo(Path fichierSource, String directoryCible){
+	protected AtomicInteger copyDirTo(Path fichierSource, String directoryCible, List<String> fichiersEnErreur){
 
 		AtomicInteger nbFichiersCopies = new AtomicInteger(0);
 		try {
@@ -229,7 +266,7 @@ public class SaveToTaskRunnable implements Runnable {
 			if(fichierCible != null && fichierSource != null){
 				LOGGER.debug("[{}]  > Copie du répertoire {} vers : {}", index, fichierSource, fichierCible);
 
-				Files.walkFileTree(fichierSource, new CopyDirVisitor(fichierSource, fichierCible, nbFichiersCopies, this.dateDernierScan));
+				Files.walkFileTree(fichierSource, new CopyDirVisitor(fichierSource, fichierCible, nbFichiersCopies, fichiersEnErreur, this.dateDernierScan));
 			}
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
@@ -286,5 +323,23 @@ public class SaveToTaskRunnable implements Runnable {
 	protected Calendar getDateDernierScan(){
 		return this.dateDernierScan;
 	}
+
+
+
+	/* (non-Javadoc)
+	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
+	 */
+	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Traitement n°"+this.index + " au " + (this.dateDernierScan != null ? sdf.format(this.dateDernierScan.getTime()) : "N/A"), 
+						this.dernierResultat,
+						this.dernierResultat ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING ));
+
+	}
+
 
 }

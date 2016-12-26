@@ -4,18 +4,17 @@
 	<parent>
 		<groupId>com.terrier.utilities.automation.features</groupId>
 		<artifactId>automationFeatures</artifactId>
-		<version>1.1.1</version>
+		<version>1.5.0</version>
 	</parent>
 	<artifactId>automation-boxcryptor-inventory</artifactId>
 	<name>[Features] Boxcryptor Inventory Generator</name>
-	<description>Génération des features de l'AutomationManager</description>
 	<packaging>feature</packaging>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.karaf.tooling</groupId>
 				<artifactId>karaf-maven-plugin</artifactId>
-				<version>4.0.3</version>
+				<version>${karaf.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<executions>
 					<execution>
@@ -41,4 +40,5 @@
 			<version>${automation.boxcryptor.inventory.version}</version>
 		</dependency>
 	</dependencies>
+	<description>Feature associée au module Boxcryptor Inventory Generator</description>
 </project>

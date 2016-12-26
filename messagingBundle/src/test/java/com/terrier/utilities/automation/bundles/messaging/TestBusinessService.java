@@ -5,6 +5,7 @@ package com.terrier.utilities.automation.bundles.messaging;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -22,8 +24,11 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
+import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigKeyEnums;
 
 /**
@@ -34,6 +39,7 @@ import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigK
 public class TestBusinessService {
 
 
+	private static final Logger LOGGER = LoggerFactory.getLogger( TestBusinessService.class );
 	private MessagingBusinessService service;
 
 
@@ -77,7 +83,7 @@ public class TestBusinessService {
 		service.sendNotificationEmail("test", "message de test2");
 		service.sendNotificationEmail("test2", "message de test3");
 
-		Map<String, List<String>> queue = service.getEmailsSendingQueue();
+		Map<String, ConcurrentLinkedQueue<String>> queue = service.getEmailsSendingQueue();
 		assertEquals(2, queue.keySet().size());
 		assertEquals(2, queue.get("test").size());
 		assertEquals(1, queue.get("test2").size());
@@ -85,6 +91,24 @@ public class TestBusinessService {
 	}
 
 
+	@Test
+	public void testSupervisionEventsEmail(){
+		
+		service.notifyUpdateDictionary();
+		// Send email
+		service.sendNotificationEmail("test", "message de test1");
+		service.sendNotificationEmail("test", "message de test2");
+		service.sendNotificationEmail("test2", "message de test3");
+
+		
+		List<StatutPropertyBundleObject> statuts = new ArrayList<StatutPropertyBundleObject>();
+		service.updateSupervisionEvents(statuts);
+		
+		assertNotNull(statuts);
+		assertTrue(statuts.size() > 0);
+		assertTrue((Boolean)statuts.get(0).getValue());
+		assertEquals(2, statuts.get(1).getValue());
+	}
 
 
 	/**
@@ -99,5 +123,43 @@ public class TestBusinessService {
 
 		ConcurrentLinkedQueue<String> queue = service.getSmsSendingQueue();
 		assertEquals(3, queue.size());
+	}
+
+
+	@Test
+	public void testSupervisionEventsSMS(){
+		
+		service.notifyUpdateDictionary();
+		// Send email
+		service.sendNotificationSMS("message de test1");
+		service.sendNotificationSMS("message de test2");
+		service.sendNotificationSMS("message de test3");
+
+		
+		List<StatutPropertyBundleObject> statuts = new ArrayList<StatutPropertyBundleObject>();
+		service.updateSupervisionEvents(statuts);
+		LOGGER.info("{}", statuts);
+		
+		assertNotNull(statuts);
+		assertTrue(statuts.size() > 0);
+		assertTrue((Boolean)statuts.get(3).getValue());
+		assertEquals(3, statuts.get(4).getValue());
+	}
+	
+
+	@Test
+	public void testSupervisionEventsInit(){
+		
+		service.notifyUpdateDictionary();
+		List<StatutPropertyBundleObject> statuts = new ArrayList<StatutPropertyBundleObject>();
+		service.updateSupervisionEvents(statuts);
+		
+		LOGGER.info("{}", statuts);
+		
+		assertNotNull(statuts);
+		assertTrue(statuts.size() > 0);
+		// Statut des threads
+		assertTrue((Boolean)statuts.get(3).getValue());
+		assertTrue((Boolean)statuts.get(0).getValue());
 	}
 }

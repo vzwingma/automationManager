@@ -5,6 +5,7 @@ package com.terrier.utilities.automation.bundles.save.to.business.runnable;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -105,19 +107,21 @@ public class TestSaveToTaskRunnable {
 				null, null));
 
 		Mockito.doNothing().when(spyTask).sendNotificationMessage(anyString());
-		when(spyTask.copyDirTo(any(Path.class), anyString())).thenCallRealMethod();
+		when(spyTask.copyDirTo(any(Path.class), anyString(), anyListOf(String.class))).thenCallRealMethod();
 		when(spyTask.getDateInitScan()).thenReturn(null);
+
 		LOGGER.info("*** 1er traitement ***");
 		// Premier traitement, la copie est réalisée
 		spyTask.run();
 
 		assertNotNull(spyTask.getDateDernierScan());
-		verify(spyTask, times(1)).sendNotificationMessage(anyString(),anyString(),anyString(),anyString(),anyString());
+		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),anyString(),anyString(),anyString());
 
 		// 2nd traitement, la copie n'est pas réalisée (toujours un seul appel)
 		LOGGER.info("*** 2ème traitement ***");
 		spyTask.run();
-		verify(spyTask, times(1)).sendNotificationMessage(anyString(),anyString(),anyString(),anyString(),anyString());
+		// Toujours qu'un seul appel
+		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),anyString(),anyString(),anyString());
 		
 		// 3nd traitement, la copie est réalisée car changement
 		LOGGER.info("*** 3ème traitement ***");
@@ -126,12 +130,28 @@ public class TestSaveToTaskRunnable {
 		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
 
 		spyTask.run();
-		verify(spyTask, times(2)).sendNotificationMessage(anyString(),anyString(),anyString(),anyString(),anyString());
+		verify(spyTask, times(1)).sendNotificationMessage(anyString(),eq("src/test/resources/download/directory"),anyString(),eq("1"), anyString(),eq(""));
 		
+		// 4nd traitement, la copie est réalisée car changement mais erreur lors de la copie
+		Files.delete(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
+		Thread.sleep(2000);
 		
-		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/d1.txt"));
+		Files.createFile(FileSystems.getDefault().getPath("src/test/resources/download/directory/d1.txt"));
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory/d2.txt"));
 		Files.delete(FileSystems.getDefault().getPath("src/test/resources/bc/subdirectory"));
+	}
+	
+	
+	@Ignore
+	public void testReel(){
+		SaveToTaskRunnable copyTask = new SaveToTaskRunnable(0, 
+				CommandeEnum.MOVE, 
+				"D:/Profiles/vzwingma/Downloads", 
+				"[A-Za-z]*.postman_collection.json", 
+				"X:/encrypted-sync/Postman", 
+				null, null);
+		
+		copyTask.run();
 	}
 
 }

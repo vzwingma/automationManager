@@ -1,4 +1,4 @@
-# Automation Manager
+# Automation Manager v${project.version}
 Gestionnaire de tâches automatisées
 
 [![Dependency Status](https://www.versioneye.com/user/projects/566f2ef71079970030000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2ef71079970030000001)
@@ -29,14 +29,25 @@ Gestionnaire de tâches automatisées
   *  Libraire de copie de fichier ou de répertoire
   *  [![Dependency Status](https://www.versioneye.com/user/projects/566f2f24107997003e000004/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f24107997003e000004)
 
-## Installation de features
+## Installation des features
+
+**Important : Dans le cas d'un upgrade de version, il est obligatoire de désinstaller les anciennes features, avant d'ajouter les nouvelles**
+
+### Désinstallation des features
+
+     feature:uninstall automation-supervision automation-messaging automation-boxcryptor-inventory automation-save-to
+     feature:repo-remove automationManagerFeature
 
 ### Ajout du repository de features
 
+#### à partir de GitHub
+
+     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v${project.version}/feature.xml
+     feature:install automation-manager
+     
+#### à partir de Maven
+
      feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/${project.version}/xml/features
-
-### Installation des features
-
      feature:install automation-supervision
      feature:install automation-messaging
      feature:install automation-boxcryptor-inventory

@@ -3,8 +3,6 @@ package com.terrier.utilities.automation.bundles.save.to.business;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +14,9 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
+import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.CommandeEnum;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.save.to.business.runnable.SaveToTaskRunnable;
@@ -34,7 +34,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	/**
 	 * Liste des tâches schedulées
 	 */
-	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<ScheduledFuture<?>>();
+	private List<SaveToTaskRunnable> listeScheduled = new ArrayList<SaveToTaskRunnable>();
 	/**
 	 * Threads pool
 	 */
@@ -43,6 +43,9 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	// Nombre de patterns écrits
 	protected int nbPatterns = 0;
 
+	// Durée d'attente avec le démarrage réel
+	protected Long startDelay = 10L;
+	
 	public static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.save.to";
 
 	
@@ -73,11 +76,11 @@ public class SaveToBusinessService extends AbstractAutomationService {
 
 		if(this.nbPatterns > 0){
 			// arrêt des tâches schedulées
-			for (Iterator<ScheduledFuture<?>> iterator = listeScheduled.iterator(); iterator.hasNext();) {
-				ScheduledFuture<?> scheduledFuture = (ScheduledFuture<?>) iterator.next();
-				scheduledFuture.cancel(true);
-				iterator.remove();
+			for (Iterator<Runnable> iterator = scheduledThreadPool.getQueue().iterator(); iterator.hasNext();) {
+				Runnable scheduledFuture = iterator.next();
+				scheduledThreadPool.remove(scheduledFuture);
 			}
+			this.listeScheduled.clear();
 
 			// Démarrage des treatments reprogrammées
 			for (int p = 0; p < nbPatterns; p++) {
@@ -107,8 +110,9 @@ public class SaveToBusinessService extends AbstractAutomationService {
 				getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p),
 				getKey(ConfigKeyEnums.FILES_PATTERN_OUT, p),
 				this);
-		LOGGER.info("[{}] Démarrage du scheduler : {} minutes", p ,periode);
-		this.listeScheduled.add(scheduledThreadPool.scheduleAtFixedRate(copyRunnable, 0L, periode, TimeUnit.MINUTES));	
+		LOGGER.info("[{}] Démarrage du scheduler dans {} minutes puis toutes les {} minutes", p, startDelay, periode);
+		this.listeScheduled.add(copyRunnable);
+		scheduledThreadPool.scheduleWithFixedDelay(copyRunnable, startDelay, periode, TimeUnit.MINUTES);
 	}
 
 
@@ -207,11 +211,29 @@ public class SaveToBusinessService extends AbstractAutomationService {
 
 
 	/* (non-Javadoc)
-	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.Map)
+	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
 	 */
 	@Override
-	public void updateSupervisionEvents(Map<String, Object> supervisionEvents) {
-		supervisionEvents.put("Activité du ScheduledThreadPool", !this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated());
-		supervisionEvents.put("Threads du pool utilisés", this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize());
+	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Activité de traitements périodiques", 
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Threads utilisés", 
+						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
+						this.scheduledThreadPool.getQueue().size() <= this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
+		
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Nombre de patterns de copie", 
+						this.nbPatterns,
+						this.nbPatterns > 0 ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
+		
+		for (SaveToTaskRunnable copie : this.listeScheduled) {
+			copie.updateSupervisionEvents(supervisionEvents);
+		}
 	}
 }
