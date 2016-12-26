@@ -84,14 +84,18 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 
 			ClientResponse response = webResource.post(ClientResponse.class, formData);
 			LOGGER.debug("[HTTP POST] Resultat : {}", response);
-			resultat = response != null && response.getStatus() == 200;
-			this.lastResponseCode = response.getStatus();
+			if(response != null){
+				this.lastResponseCode = response.getStatus();
+			}
+			else{
+				this.lastResponseCode = 500;
+			}
 		}
 		catch(Exception e){
 			LOGGER.error("> Resultat : Erreur lors de l'appel HTTP POST", e);
 			this.lastResponseCode = 500;
-			resultat = false;
 		}
+		resultat = this.lastResponseCode == 200;
 		return resultat;
 	}
 
@@ -111,7 +115,7 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 			for (String param : urlParams) {
 				urlComplete.append(param);
 			}
-			
+
 			WebResource.Builder webResource = clientHTTP.resource(urlComplete.toString()).type(MediaType.APPLICATION_FORM_URLENCODED);
 			ClientResponse response = webResource.get(ClientResponse.class);
 			LOGGER.debug("[HTTP GET] Resultat : {}", response);
