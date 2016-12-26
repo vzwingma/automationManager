@@ -9,10 +9,14 @@
 	<artifactId>messagingBundle</artifactId>
 	<version>${automation.messaging.version}</version>
 	<packaging>bundle</packaging>
-
-
 	<name>[Automation] Messaging Service</name>
 	<description>Service de messaging SMS ou Mail</description>
+
+	<properties>
+		<jersey.version></jersey.version>
+		<jersey.core.version>1.19.3</jersey.core.version>
+	</properties>
+
 
 	<dependencies>
 		<dependency>
