@@ -21,7 +21,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.utilities.automation.bundles.supervision.business.SupervisionBusinessService;
+import com.terrier.utilities.automation.bundles.supervision.business.BundleSupervisionBusinessService;
 import com.terrier.utilities.automation.bundles.supervision.business.SupervisionServlet;
 
 /**
@@ -39,7 +39,7 @@ public final class SupervisionActivator implements BundleActivator, ServiceTrack
 	// Tracker
 	private ServiceTracker<HttpService, HttpService> tracker;
 
-	@Inject SupervisionBusinessService service;
+	@Inject BundleSupervisionBusinessService service;
 	
 	
 	private final static String URL_STATUT_SUPERVISION = "/supervision/statut";

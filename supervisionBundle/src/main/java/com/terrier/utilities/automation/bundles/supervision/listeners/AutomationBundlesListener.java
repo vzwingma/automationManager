@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.model.StatutBundleTopicObject;
-import com.terrier.utilities.automation.bundles.supervision.business.SupervisionBusinessService;
+import com.terrier.utilities.automation.bundles.supervision.business.BundleSupervisionBusinessService;
 import com.terrier.utilities.automation.bundles.supervision.communs.OSGIStatusUtils;
 
 /**
@@ -42,14 +42,14 @@ public class AutomationBundlesListener implements BundleListener, ServiceListene
 	@Override
 	public void bundleChanged(BundleEvent event) {
 		LOGGER.info("BundleEvent :: {} {}", event.getOrigin(), OSGIStatusUtils.getBundleStatusEventLibelle(event.getType()));
-		StatutBundleTopicObject obj = SupervisionBusinessService.getStatutBundles().get(event.getOrigin().getBundleId());
+		StatutBundleTopicObject obj = BundleSupervisionBusinessService.getStatutBundles().get(event.getOrigin().getBundleId());
 		if(obj == null){
 			LOGGER.warn("Création du statutBundleTopicObject pour {}", event.getOrigin().getBundleId());
 			obj = new StatutBundleTopicObject(event.getBundle());
 		}
 		obj.setBundle(event.getOrigin());
 		if(event.getOrigin().getHeaders().get("Bundle-Name").contains("Automation")){
-			SupervisionBusinessService.getStatutBundles().put(event.getOrigin().getBundleId(), obj);
+			BundleSupervisionBusinessService.getStatutBundles().put(event.getOrigin().getBundleId(), obj);
 		}
 	}
 }
