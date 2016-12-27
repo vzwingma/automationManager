@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.osgi.framework.Bundle;
 
-import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
-
 /**
  * Object de statut transmis dans le topic
  * @author vzwingma
@@ -33,8 +31,6 @@ public class StatutBundleTopicObject {
 		this.bundle = bundle;
 	}
 
-	
-
 
 	/**
 	 * @param bundle the bundle to set
@@ -42,8 +38,6 @@ public class StatutBundleTopicObject {
 	public void setBundle(Bundle bundle) {
 		this.bundle = bundle;
 	}
-
-
 
 	/**
 	 * @return the bundle
@@ -60,41 +54,10 @@ public class StatutBundleTopicObject {
 		return properties;
 	}
 
-
-
 	/**
 	 * @return the miseAJour
 	 */
 	public Calendar getMiseAJour() {
 		return miseAJour;
-	}
-
-
-
-
-	/**
-	 * @param miseAJour the miseAJour to set
-	 */
-	public void setMiseAJour(Calendar miseAJour) {
-		this.miseAJour = miseAJour;
-	}
-
-
-
-
-	/**
-	 * @return the statut du bundle
-	 */
-	public StatutPropertyBundleEnum getStatutComponents() {
-		
-		StatutPropertyBundleEnum statutBundle = StatutPropertyBundleEnum.OK;
-		if(!this.properties.isEmpty()){
-			for (StatutPropertyBundleObject statutPropertyBundleObject : properties) {
-				if(statutPropertyBundleObject.getStatut().ordinal() > statutBundle.ordinal()){
-					statutBundle = statutPropertyBundleObject.getStatut();
-				}
-			}
-		}
-		return statutBundle;
 	}
 }
