@@ -18,8 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.terrier.utilities.automation.bundles.communs.model.StatutBundleTopicObject;
-import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
-import com.terrier.utilities.automation.bundles.supervision.communs.OSGIStatusUtils;
+import com.terrier.utilities.automation.bundles.supervision.communs.PresentationStatutModuleEnum;
+import com.terrier.utilities.automation.bundles.supervision.model.PresentationStatutObject;
+import com.terrier.utilities.automation.bundles.supervision.model.PresentationStatutObjectTranslator;
+import com.terrier.utilities.automation.bundles.supervision.model.PresentationStatutPropertyObject;
 
 
 /**
@@ -33,7 +35,7 @@ public class SupervisionServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -7218593433411480431L;
-	
+
 	private static final SimpleDateFormat DATE_MAJ_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 	/* (non-Javadoc)
@@ -53,7 +55,7 @@ public class SupervisionServlet extends HttpServlet {
 
 		// Création du footer		
 		footer(writer);
-		
+
 		writerPage.println(writer.toString());
 	}
 
@@ -62,8 +64,35 @@ public class SupervisionServlet extends HttpServlet {
 	 * @param writer
 	 */
 	private void header(final StringBuilder writer){
-		writer.append("<html><body align='center'>");
-		writer.append("<h1>Supervision des bundles de l'AutomationManager</h1>");
+		writer.append("<html>");
+		css(writer);
+		writer.append("<body align='center'>");
+		writer.append("<h1>Supervision de l'AutomationManager</h1>");
+	}
+
+	/**
+	 * CSS
+	 * @param writer
+	 */
+	private void css(final StringBuilder writer){
+		writer.append("<head><style>").append("\n");
+		writer.append("table.bundletab { border:1px solid grey; margin:10px; border-collapse:collapse; align:left; width:100%}").append("\n");
+		writer.append("tr.bundletitle { font-size:22px; font-weight:bold; background-color:#81BEF7; }").append("\n");
+		writer.append("tr.componentstitle { font-weight:bold; font-style:italic; font-size:18px }").append("\n");
+		writer.append("td { width:50% }").append("\n");
+		// Statut des process
+		writer.append("span.status_OK { color:green; }").append("\n");
+		writer.append("span.status_WARNING { color:orange; }").append("\n");
+		writer.append("span.status_ERROR { color:red; }").append("\n");
+		// Statut des bundles
+		writer.append("span.status_").append(PresentationStatutModuleEnum.INSTALLE).append(" { color:grey; }").append("\n");
+		writer.append("span.status_").append(PresentationStatutModuleEnum.DESINSTALLE).append(" { color:grey; }").append("\n");
+		writer.append("span.status_").append(PresentationStatutModuleEnum.INCONNU).append(" { color:grey; }").append("\n");
+		writer.append("span.status_").append(PresentationStatutModuleEnum.STOPPE).append(" { color:red; }").append("\n");
+		writer.append("span.status_").append(PresentationStatutModuleEnum.DEMARRE).append(" { color:green; }").append("\n");
+		writer.append("span.status_").append(PresentationStatutModuleEnum.DEMARRAGE).append(" { color:orange; }").append("\n");
+		writer.append("span.status_").append(PresentationStatutModuleEnum.ARRET).append(" { color:orange; }").append("\n");
+		writer.append("</style></head>");
 	}
 
 
@@ -72,22 +101,33 @@ public class SupervisionServlet extends HttpServlet {
 	 * @param writer
 	 */
 	private void statutPage(final StringBuilder writer){
-		Map<Long, StatutBundleTopicObject> supervision = SupervisionBusinessService.getStatutBundles();
+		// Groupe bundles
+		writer.append("<div style='width:650px'>");
+		Map<Long, StatutBundleTopicObject> supervision = BundleSupervisionBusinessService.getStatutBundles();
 		for (StatutBundleTopicObject bundleStatut : supervision.values()) {
-			writer.append("<table align='left' style='border:1px solid grey; margin:10px; border-collapse:collapse;'>");
-			writer.append("<tr colspan='2' style='font-size:22px; font-weight:bold; background-color:#81BEF7'>");
-			writer.append("<td>[").append(bundleStatut.getBundle().getBundleId()).append("] ").append(bundleStatut.getBundle().getSymbolicName()).append(" ").append(bundleStatut.getBundle().getVersion()).append("</td>")
-				.append("<td>[<span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getBundle().getState())).append("'>").append(OSGIStatusUtils.getBundleStatusLibelle(bundleStatut.getBundle().getState())).append("</span>]</td>");
-			writer.append("</tr>");
-			writer.append("<tr><td>Heure de mise à jour</td><td>").append(DATE_MAJ_FORMAT.format(bundleStatut.getMiseAJour().getTime())).append("</td></tr>");
-			writer.append("<tr style='font-weight:bold; font-style:italic; font-size:18px'><td>Statut des composants du bundle</i></td><td>[<span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleStatut.getStatutComponents())).append("'>" ).append(bundleStatut.getStatutComponents()).append("</span>] </td></tr>"); 
-			writer.append("<tr><td></td></tr>");
-			for (StatutPropertyBundleObject bundleValue : bundleStatut.getProperties()) {
-				writer.append("<tr><td>- ").append(bundleValue.getLibelle()).append("</td>")
-						.append("<td><span style='color:").append(OSGIStatusUtils.getBundleStatusStyleColor(bundleValue.getStatut())).append("'>" ).append(bundleValue.getValue()).append("</span></td></tr>");	
-			}
-			writer.append("</table>");
+			statutComponent(writer, PresentationStatutObjectTranslator.translateFrom(bundleStatut));
 		}
+		writer.append("</div>");
+	}
+
+	/**
+	 * @param writer writer
+	 * @param bundlePresentationStatut  statut component
+	 */
+	public void statutComponent(final StringBuilder writer, PresentationStatutObject bundlePresentationStatut){
+		writer.append("<table  class='bundletab'>");
+		writer.append("<tr colspan='2' class='bundletitle'>");
+		writer.append("<td>").append(bundlePresentationStatut.getNomModule()).append("</td>")
+		.append("<td>[<span class=status_'").append(bundlePresentationStatut.getEtatModule()).append("'>").append(bundlePresentationStatut.getEtatModule()).append("</span>]</td>");
+		writer.append("</tr>");
+		writer.append("<tr><td>Heure de mise à jour</td><td>").append(bundlePresentationStatut.getDateMiseAJour() != null ? DATE_MAJ_FORMAT.format(bundlePresentationStatut.getDateMiseAJour().getTime()) : "???").append("</td></tr>");
+		writer.append("<tr class='componentstitle'><td>Statut des composants</i></td><td>[<span class='status_").append(bundlePresentationStatut.getStatutComponents()).append("'>" ).append(bundlePresentationStatut.getStatutComponents()).append("</span>] </td></tr>"); 
+		writer.append("<tr><td></td></tr>");
+		for (PresentationStatutPropertyObject bundleValue : bundlePresentationStatut.getListStatutPropertyObject()) {
+			writer.append("<tr><td>- ").append(bundleValue.getNom()).append("</td>")
+			.append("<td><span class='status_").append(bundleValue.getEtat()).append("'>" ).append(bundleValue.getValeur()).append("</span></td></tr>");	
+		}
+		writer.append("</table>");
 	}
 
 	/**

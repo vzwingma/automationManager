@@ -56,7 +56,7 @@ public class TestSupervisionBusinessService {
         Event event = AutomationEventPublisher.createEvent(EventsTopicNameEnum.SUPERVISION_EVENTS, properties);
         assertNotNull(event);
         
-        SupervisionBusinessService hander = spy(new SupervisionBusinessService());
+        BundleSupervisionBusinessService hander = spy(new BundleSupervisionBusinessService());
         hander.handleEvent(event);
         
         verify(hander, times(1)).logStatut(any(StatutBundleTopicObject.class));

@@ -4,8 +4,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.ServiceEvent;
 
-import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
-
 public class OSGIStatusUtils {
 
 	
@@ -69,67 +67,24 @@ public class OSGIStatusUtils {
 	 * @param status statut
 	 * @return le libelle du status du service
 	 */
-	public static String getBundleStatusLibelle(int status){
+	public static PresentationStatutModuleEnum getBundleStatusLibelle(int status){
 		
 		switch (status) {
 		case Bundle.INSTALLED:
-			return "INSTALLED";
+			return PresentationStatutModuleEnum.INSTALLE;
 		case Bundle.RESOLVED:
-			return "STOPPED";
+			return PresentationStatutModuleEnum.STOPPE;
 		case Bundle.ACTIVE:
-			return "STARTED";
+			return PresentationStatutModuleEnum.DEMARRE;
 		case Bundle.STARTING:
-			return "STARTING";
+			return PresentationStatutModuleEnum.DEMARRAGE;
 		case Bundle.STOPPING:
-			return "STOPPING";
+			return PresentationStatutModuleEnum.ARRET;
 		case Bundle.UNINSTALLED:
-			return "UNINSTALLED";
+			return PresentationStatutModuleEnum.DESINSTALLE;
 		default:
-			return null;
+			return PresentationStatutModuleEnum.INCONNU;
 		}
 	}
-	/**
-	 * @param status statut
-	 * @return le libelle du status du service
-	 */
-	public static String getBundleStatusStyleColor(int status){
-		
-		switch (status) {
-		case Bundle.INSTALLED:
-			return "grey";
-		case Bundle.RESOLVED:
-			return "red";
-		case Bundle.ACTIVE:
-			return "green";
-		case Bundle.STARTING:
-			return "orange";
-		case Bundle.STOPPING:
-			return "orange";
-		case Bundle.UNINSTALLED:
-			return "grey";
-		default:
-			return null;
-		}
-	}
-	
-	
 
-
-	/**
-	 * @param status statut
-	 * @return le libelle du status du service
-	 */
-	public static String getBundleStatusStyleColor(StatutPropertyBundleEnum status){
-		
-		switch (status.ordinal()) {
-		case StatutPropertyBundleEnum.ORD_OK:
-			return "green";
-		case StatutPropertyBundleEnum.ORD_WARNING:
-			return "orange";
-		case StatutPropertyBundleEnum.ORD_ERROR:
-			return "red";
-		default:
-			return null;
-		}
-	}
 }
