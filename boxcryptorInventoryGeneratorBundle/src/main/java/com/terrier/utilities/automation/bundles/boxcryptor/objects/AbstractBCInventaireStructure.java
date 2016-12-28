@@ -46,20 +46,20 @@ public abstract class AbstractBCInventaireStructure {
 	 * @return clé pour un répertoire
 	 */
 	public String getCleMap(String nomFichierClair){
-		return getHashMD5(nomFichierClair);
+		return getHashSHA256(nomFichierClair);
 	}
 
 
 	/**
 	 * @param nameFileOrDirectory
-	 * @return Hash MD5
+	 * @return Hash SHA 256
 	 */
-	private String getHashMD5(final String nameFileOrDirectory){
+	private String getHashSHA256(final String nameFileOrDirectory){
 		try {
 			if(nameFileOrDirectory != null){
-				MessageDigest md5 = MessageDigest.getInstance("MD5");
-				md5.update(nameFileOrDirectory.getBytes(), 0, nameFileOrDirectory.length());
-				String signature = new BigInteger(1,md5.digest()).toString(16);
+				MessageDigest hash = MessageDigest.getInstance("SHA-256");
+				hash.update(nameFileOrDirectory.getBytes(), 0, nameFileOrDirectory.length());
+				String signature = new BigInteger(1,hash.digest()).toString(16);
 				return signature;
 			}
 			return null;
@@ -70,6 +70,7 @@ public abstract class AbstractBCInventaireStructure {
 			return null;
 		}
 	}
+
 
 	/**
 	 * @return the nomFichierChiffre

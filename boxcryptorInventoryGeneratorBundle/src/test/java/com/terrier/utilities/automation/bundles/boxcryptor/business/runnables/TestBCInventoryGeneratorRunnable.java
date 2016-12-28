@@ -82,9 +82,9 @@ public class TestBCInventoryGeneratorRunnable {
 		assertEquals("bc", inventaire.get_NomFichierChiffre());
 		assertEquals("clear", inventaire.get_NomFichierClair());
 		assertEquals(1, inventaire.getMapInventaireFichiers().size());
-		assertEquals("d1.txt", inventaire.getMapInventaireFichiers().get("95a0bca6b6a307c7c59d23a1e997b652").get_NomFichierClair());
+		assertEquals("d1.txt", inventaire.getMapInventaireFichiers().get("a3659ab46c89c840217d619179d6c138f0e9b63d8b75ada9ef52ced858813e13").get_NomFichierClair());
 		assertEquals(1, inventaire.getMapInventaireSousRepertoires().size());
-		assertEquals("subdir", inventaire.getMapInventaireSousRepertoires().get("86ae37b338459868804e9697025ba4c2").get_NomFichierClair());
+		assertEquals("subdir", inventaire.getMapInventaireSousRepertoires().get("bdf6c15545b679e2500a451b7ff7c30b8784658e2a553d4913adb4651c0a78d3").get_NomFichierClair());
 
 
 		Long dateMiseAJour = inventaire.getDateModificationDernierInventaire();
