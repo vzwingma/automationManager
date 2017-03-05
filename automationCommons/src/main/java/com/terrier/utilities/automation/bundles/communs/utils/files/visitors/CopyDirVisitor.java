@@ -54,7 +54,7 @@ public class CopyDirVisitor extends SimpleFileVisitor<Path> {
 				Files.createDirectory(targetPath);
 			}
 			catch(Exception e){
-				StringBuilder b = new StringBuilder("répertoire [").append(targetPath).append("]");
+				StringBuilder b = new StringBuilder("répertoire [").append(targetPath).append("] : ").append(e.getMessage());
 				LOGGER.error("Erreur lors de la copie du {}", b.toString());
 				this.fichierErreur.add(b.toString());
 			}
@@ -74,7 +74,7 @@ public class CopyDirVisitor extends SimpleFileVisitor<Path> {
 			}
 		}
 		catch (Exception e) {
-			StringBuilder b = new StringBuilder("fichier [").append(file).append("]");
+			StringBuilder b = new StringBuilder("fichier [").append(file).append("] : ").append(e.getMessage());
 			LOGGER.error("Erreur lors de la copie du {}", b.toString());
 			this.fichierErreur.add(b.toString());
 		}
