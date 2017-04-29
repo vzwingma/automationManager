@@ -68,7 +68,7 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 		if(getService().getSmsSendingQueue().size() > 0){
 
 			List<String> messages = new ArrayList<>();
-			while(getService().getSmsSendingQueue().size() > 0){
+			while(getService().getSmsSendingQueue().size() > 0 && messages.size() < 5){
 				messages.add(getService().getSmsSendingQueue().poll());
 			}
 			LOGGER.debug("Envoi des {} messages par SMS", messages.size());

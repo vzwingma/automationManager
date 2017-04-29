@@ -118,7 +118,7 @@ public class SupervisionServlet extends HttpServlet {
 		writer.append("<table  class='bundletab'>");
 		writer.append("<tr colspan='2' class='bundletitle'>");
 		writer.append("<td>").append(bundlePresentationStatut.getNomModule()).append("</td>")
-		.append("<td>[<span class=status_'").append(bundlePresentationStatut.getEtatModule()).append("'>").append(bundlePresentationStatut.getEtatModule()).append("</span>]</td>");
+		.append("<td>[<span class='status_").append(bundlePresentationStatut.getEtatModule()).append("'>").append(bundlePresentationStatut.getEtatModule()).append("</span>]</td>");
 		writer.append("</tr>");
 		writer.append("<tr><td>Heure de mise à jour</td><td>").append(bundlePresentationStatut.getDateMiseAJour() != null ? DATE_MAJ_FORMAT.format(bundlePresentationStatut.getDateMiseAJour().getTime()) : "???").append("</td></tr>");
 		writer.append("<tr class='componentstitle'><td>Statut des composants</i></td><td>[<span class='status_").append(bundlePresentationStatut.getStatutComponents()).append("'>" ).append(bundlePresentationStatut.getStatutComponents()).append("</span>] </td></tr>"); 

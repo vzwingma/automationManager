@@ -221,7 +221,12 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 */
 	public void sendNotificationSMS(String message){
 		LOGGER.info("Ajout du message [{}] dans la liste des envois de SMS", message);
-		smsSendingQueue.add(message);
+		if(!smsSendingQueue.contains(message)){
+			smsSendingQueue.add(message);
+		}
+		else{
+			LOGGER.info("Le message [{}] existe déjà dans la file. Pas d'ajout supplémentaire");
+		}
 	}
 
 

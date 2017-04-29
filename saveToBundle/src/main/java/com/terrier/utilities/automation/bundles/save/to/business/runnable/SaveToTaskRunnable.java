@@ -227,11 +227,14 @@ public class SaveToTaskRunnable implements Runnable {
 		// Gestion des erreurs
 		StringBuilder errors = new StringBuilder();
 		if(!fichiersEnErreur.isEmpty()){
+			errors.append("<ul>");
 			for (String error : fichiersEnErreur) {
 				LOGGER.warn("[{}] > Erreur lors de la copie du {}", index, error);
-				errors.append("\n").append("> Erreur lors de la copie du ").append(error);
+				errors.append("<li>").append("Erreur lors de la copie du ").append(error).append("</li>");
 			}
+			errors.append("</ul>");
 		}
+		
 		return errors.toString();
 	}
 
