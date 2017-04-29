@@ -4,17 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.terrier.utilities.automation.bundles</groupId>
 	<artifactId>AutomationManager</artifactId>
-	<version>1.5.0</version>
+	<version>1.5.1</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<automation.commons.version>1.2.1</automation.commons.version>
 		<automation.save.to.version>1.1.2</automation.save.to.version>
 		<automation.boxcryptor.inventory.version>2.0.0</automation.boxcryptor.inventory.version>
-		<automation.messaging.version>1.2.0</automation.messaging.version>
+		<automation.messaging.version>1.2.1</automation.messaging.version>
 		<automation.supervision.version>1.3.0</automation.supervision.version>
 		<karaf.maven.plugin.version>4.0.5</karaf.maven.plugin.version>
-		<blueprint.maven.plugin.version>1.5.0</blueprint.maven.plugin.version>
+		<blueprint.maven.plugin.version>1.6.0</blueprint.maven.plugin.version>
 	</properties>
 
 	<modules>
@@ -111,7 +111,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.21</version>
+			<version>1.7.25</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
