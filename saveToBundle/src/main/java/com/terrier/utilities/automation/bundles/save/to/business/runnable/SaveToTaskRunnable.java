@@ -145,8 +145,10 @@ public class SaveToTaskRunnable implements Runnable {
 				if(fichier.getFileName().toString().matches(regExMatch)){
 					LOGGER.trace("{} > match avec {}", fichier.getFileName().toString(), regExMatch);
 					// Vérification vis à vis de la date de modification
-
-					if(dateDernierScan == null || Files.getLastModifiedTime(fichier).toMillis() > dateDernierScan.getTimeInMillis()){
+					// Ou si Move (#12)
+					if(dateDernierScan == null 
+							|| Files.getLastModifiedTime(fichier).toMillis() > dateDernierScan.getTimeInMillis()
+							|| CommandeEnum.MOVE.equals(commande)){
 						String outputPattern = patternSortie;
 						if(patternSortie == null || patternSortie.isEmpty()){
 							outputPattern = fichier.getFileName().toString();

@@ -1,4 +1,4 @@
-# Automation Manager v1.5.1
+# Automation Manager v1.5.2
 Gestionnaire de tâches automatisées
 
 [![Dependency Status](https://www.versioneye.com/user/projects/566f2ef71079970030000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2ef71079970030000001)
@@ -25,7 +25,7 @@ Gestionnaire de tâches automatisées
   *  Générateur d'inventaire pour BoxCryptor
   * [![Dependency Status](https://www.versioneye.com/user/projects/5675bcf1107997003e000859/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5675bcf1107997003e000859)
 
-#### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.1.2
+#### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.1.3
   *  Libraire de copie de fichier ou de répertoire
   *  [![Dependency Status](https://www.versioneye.com/user/projects/566f2f24107997003e000004/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f24107997003e000004)
 
@@ -42,12 +42,12 @@ Gestionnaire de tâches automatisées
 
 #### à partir de GitHub
 
-     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.5.1/feature.xml
+     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.5.2/feature.xml
      feature:install automation-manager
      
 #### à partir de Maven
 
-     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.5.1/xml/features
+     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.5.2/xml/features
      feature:install automation-supervision
      feature:install automation-messaging
      feature:install automation-boxcryptor-inventory
