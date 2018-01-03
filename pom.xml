@@ -79,11 +79,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>com.versioneye</groupId>
-				<artifactId>versioneye-maven-plugin</artifactId>
-				<version>3.11.4</version>
-			</plugin>
 		</plugins>
 	</build>
 
