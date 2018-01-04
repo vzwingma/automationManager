@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.terrier.utilities.automation.bundles</groupId>
 		<artifactId>AutomationManager</artifactId>
-		<version>1.5.1</version>
+		<version>1.5.2</version>
 	</parent>
 	<artifactId>messagingBundle</artifactId>
 	<version>${automation.messaging.version}</version>
@@ -13,8 +13,8 @@
 	<description>Service de messaging SMS ou Mail</description>
 
 	<properties>
-		<jersey.version>1.19.3</jersey.version>
-		<jersey.core.version>1.19.3</jersey.core.version>
+		<jersey.version>1.19.4</jersey.version>
+		<jersey.core.version>1.19.4</jersey.core.version>
 	</properties>
 
 
