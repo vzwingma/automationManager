@@ -92,12 +92,10 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 		List<Future<BCInventaireRepertoire>> listeExecSousRepertoires = new ArrayList<Future<BCInventaireRepertoire>>();
 
 		// Parcours du répertoire non chiffré
-		try {
-			DirectoryStream<Path> dsNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), new DirectoryFilter());
-			DirectoryStream<Path> dsChiffre;
+		try (DirectoryStream<Path> dsNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), new DirectoryFilter());) {
 			for (Path sousRepertoireNonChiffre : dsNonChiffre) {
-				try{
-					dsChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new DirectoryFilter());
+				try(DirectoryStream<Path> dsChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new DirectoryFilter());){
+
 					for (Path sousRepertoireChiffre : dsChiffre) {
 
 						if(Files.getLastModifiedTime(sousRepertoireChiffre).toMillis() == Files.getLastModifiedTime(sousRepertoireNonChiffre).toMillis()){
@@ -119,38 +117,43 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 			}
 
 
-			DirectoryStream<Path> dsfNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), new FileFilter());
-			DirectoryStream<Path> dsfChiffre;
-			for (Path fichierNonChiffre : dsfNonChiffre) {
-				try{
-					dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new FileFilter());
-					for (Path fichierChiffre : dsfChiffre) {
+			try(DirectoryStream<Path> dsfNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), new FileFilter());){
 
-						if(fichierChiffre.toFile().exists() && Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
-							inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
-							LOGGER.trace("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
-									index, 
-									this.nomTraitementParent,
-									BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
-									fichierNonChiffre.getFileName().toString()); 
-							// Mise à jour de la date, ssi différent du fichier d'inventaire
-							if(!fichierNonChiffre.getFileName().toString().equals(BCUtils.INVENTORY_FILENAME) 
-									&& 
-									(inventaireR.getDateModificationDernierInventaire() == null
-									|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire())){
-								LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", 
+				for (Path fichierNonChiffre : dsfNonChiffre) {
+					try(DirectoryStream<Path> dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new FileFilter());){
+
+						for (Path fichierChiffre : dsfChiffre) {
+
+							if(fichierChiffre.toFile().exists() && Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
+								inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
+								LOGGER.trace("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
 										index, 
-										this.nomTraitementParent, 
-										BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
-								inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
+										this.nomTraitementParent,
+										BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
+										fichierNonChiffre.getFileName().toString()); 
+								// Mise à jour de la date, ssi différent du fichier d'inventaire
+								if(!fichierNonChiffre.getFileName().toString().equals(BCUtils.INVENTORY_FILENAME) 
+										&& 
+										(inventaireR.getDateModificationDernierInventaire() == null
+										|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire())){
+									LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", 
+											index, 
+											this.nomTraitementParent, 
+											BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
+									inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
+								}
 							}
 						}
 					}
-				}
-				catch(Exception e){
-					LOGGER.warn("[{}] - THREAD [{}] Le fichier {} est introuvable. Passage au fichier suivant", index, this.nomTraitementParent, fichierNonChiffre.getFileName());
+					catch(Exception e){
+						LOGGER.warn("[{}] - THREAD [{}] Le fichier {} est introuvable. Passage au fichier suivant", index, this.nomTraitementParent, fichierNonChiffre.getFileName());
+					}
 				}
 			}
+			catch (Exception e) {
+				LOGGER.info("Erreur lors du traitement du répertoire [{}]", absRepertoireNonChiffre, e);
+			}
+
 		} catch (Exception e) {
 			LOGGER.info("Erreur lors du traitement du répertoire [{}]", absRepertoireNonChiffre, e);
 		}

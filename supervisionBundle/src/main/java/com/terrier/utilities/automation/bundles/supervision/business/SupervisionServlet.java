@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.omg.CORBA.ExceptionList;
+
 import com.terrier.utilities.automation.bundles.communs.model.StatutBundleTopicObject;
 import com.terrier.utilities.automation.bundles.supervision.communs.PresentationStatutModuleEnum;
 import com.terrier.utilities.automation.bundles.supervision.model.PresentationStatutObject;
@@ -36,27 +38,41 @@ public class SupervisionServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -7218593433411480431L;
 
-	private static final SimpleDateFormat DATE_MAJ_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private final SimpleDateFormat DATE_MAJ_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+	
+	private static final String SPAN_STATUS = "span.status_";
+	private static final String COLORSTYLE_GREY = " { color:grey; }";
+	
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
+	@Override
 	protected void doGet(final HttpServletRequest request,
 			final HttpServletResponse response) throws ServletException,
 	IOException {
 		response.setContentType("text/html");
+		try{
+			final PrintWriter writerPage = response.getWriter();
+			final StringBuilder writer = new StringBuilder();
+			// Création de l'entête
+			header(writer);
 
-		final PrintWriter writerPage = response.getWriter();
-		final StringBuilder writer = new StringBuilder();
-		// Création de l'entête
-		header(writer);
+			statutPage(writer);
 
-		statutPage(writer);
+			// Création du footer		
+			footer(writer);
 
-		// Création du footer		
-		footer(writer);
-
-		writerPage.println(writer.toString());
+			writerPage.println(writer.toString());
+		}
+		catch(Exception e){
+			try{
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
+			catch(Exception e1){
+				// Rien a faire
+			}
+		}
 	}
 
 	/**
@@ -81,17 +97,17 @@ public class SupervisionServlet extends HttpServlet {
 		writer.append("tr.componentstitle { font-weight:bold; font-style:italic; font-size:18px }").append("\n");
 		writer.append("td { width:50% }").append("\n");
 		// Statut des process
-		writer.append("span.status_OK { color:green; }").append("\n");
-		writer.append("span.status_WARNING { color:orange; }").append("\n");
-		writer.append("span.status_ERROR { color:red; }").append("\n");
+		writer.append(SPAN_STATUS).append("OK { color:green; }").append("\n");
+		writer.append(SPAN_STATUS).append("WARNING { color:orange; }").append("\n");
+		writer.append(SPAN_STATUS).append("ERROR { color:red; }").append("\n");
 		// Statut des bundles
-		writer.append("span.status_").append(PresentationStatutModuleEnum.INSTALLE).append(" { color:grey; }").append("\n");
-		writer.append("span.status_").append(PresentationStatutModuleEnum.DESINSTALLE).append(" { color:grey; }").append("\n");
-		writer.append("span.status_").append(PresentationStatutModuleEnum.INCONNU).append(" { color:grey; }").append("\n");
-		writer.append("span.status_").append(PresentationStatutModuleEnum.STOPPE).append(" { color:red; }").append("\n");
-		writer.append("span.status_").append(PresentationStatutModuleEnum.DEMARRE).append(" { color:green; }").append("\n");
-		writer.append("span.status_").append(PresentationStatutModuleEnum.DEMARRAGE).append(" { color:orange; }").append("\n");
-		writer.append("span.status_").append(PresentationStatutModuleEnum.ARRET).append(" { color:orange; }").append("\n");
+		writer.append(SPAN_STATUS).append(PresentationStatutModuleEnum.INSTALLE).append(COLORSTYLE_GREY).append("\n");
+		writer.append(SPAN_STATUS).append(PresentationStatutModuleEnum.DESINSTALLE).append(COLORSTYLE_GREY).append("\n");
+		writer.append(SPAN_STATUS).append(PresentationStatutModuleEnum.INCONNU).append(COLORSTYLE_GREY).append("\n");
+		writer.append(SPAN_STATUS).append(PresentationStatutModuleEnum.STOPPE).append(" { color:red; }").append("\n");
+		writer.append(SPAN_STATUS).append(PresentationStatutModuleEnum.DEMARRE).append(" { color:green; }").append("\n");
+		writer.append(SPAN_STATUS).append(PresentationStatutModuleEnum.DEMARRAGE).append(" { color:orange; }").append("\n");
+		writer.append(SPAN_STATUS).append(PresentationStatutModuleEnum.ARRET).append(" { color:orange; }").append("\n");
 		writer.append("</style></head>");
 	}
 

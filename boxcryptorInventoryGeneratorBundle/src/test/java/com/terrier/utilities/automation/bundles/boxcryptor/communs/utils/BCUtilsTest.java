@@ -28,7 +28,7 @@ import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireR
  * @author vzwingma
  *
  */
-public class TestBCUtils {
+public class BCUtilsTest {
 
 	@BeforeClass
 	public static void init(){

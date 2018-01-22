@@ -5,6 +5,8 @@ Gestionnaire de tâches automatisées
 <a href='https://travis-ci.org/vzwingma/automationManager'><img src='https://api.travis-ci.org/vzwingma/automationManager.svg?branch=master' alt='Build Status' /></a>
 <a href='https://github.com/vzwingma/automationManager/issues'><img src='http://githubbadges.herokuapp.com/vzwingma/automationManager/issues?style=square' alt='Issues number' /></a>
 <a href="https://scan.coverity.com/projects/vzwingma-automationmanager"><img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/7397.svg"/></a>
+<a href="https://sonarcloud.io/dashboard?id=com.terrier.utilities.automation.bundles%3AAutomationManager"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/badges/gate?key=com.terrier.utilities.automation.bundles:AutomationManager"/></a>
+
 
 ## Modules OSGi
 

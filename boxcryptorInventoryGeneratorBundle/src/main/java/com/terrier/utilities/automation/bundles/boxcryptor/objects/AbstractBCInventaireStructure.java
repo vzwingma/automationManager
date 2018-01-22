@@ -65,8 +65,7 @@ public abstract class AbstractBCInventaireStructure {
 			return null;
 
 		} catch (final NoSuchAlgorithmException e) {
-			LOGGER.error("Erreur lors du calcul du hash");
-			e.printStackTrace();
+			LOGGER.error("Erreur lors du calcul du hash", e);
 			return null;
 		}
 	}
