@@ -50,7 +50,7 @@ public class SaveToTaskRunnable implements Runnable {
 
 	private boolean dernierResultat = true;
 
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	// Service
 	private SaveToBusinessService service;
 
@@ -82,8 +82,8 @@ public class SaveToTaskRunnable implements Runnable {
 		if(this.dateDernierScan == null){
 			this.dateDernierScan = getDateInitScan();
 		}
-
-		LOGGER.info("[{}] Scan du répertoire  : {}. Date de dernier scan : {}", index, scanDir, this.dateDernierScan != null ? sdf.format(this.dateDernierScan.getTime()) : "jamais");
+		String libelleDernierScan = this.dateDernierScan != null ? sdf.format(this.dateDernierScan.getTime()) : "jamais";
+		LOGGER.info("[{}] Scan du répertoire  : {}. Date de dernier scan : {}", index, scanDir, libelleDernierScan);
 		if(Files.isDirectory(FileSystems.getDefault().getPath(scanDir))){
 
 			String regExMatch = patternEntree;
@@ -138,8 +138,7 @@ public class SaveToTaskRunnable implements Runnable {
 	private boolean traitementFichiersSaveTo(String scanDir, String regExMatch, Calendar dateDernierScan){
 
 		boolean resultatGlobal = true;
-		try{
-			DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));
+		try (DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));){
 			for (Path fichier : downloadDirectoryPath) {
 				LOGGER.debug("[{}] Traitement du fichier : {}", index, fichier.getFileName().toString());
 				if(fichier.getFileName().toString().matches(regExMatch)){

@@ -38,7 +38,7 @@ public class BCUtils {
 	// Regex to split search values
 	protected static final String SPLIT_REGEX = "[ _-]";
 
-	private static final SimpleDateFormat FORMAT_DATE_JJMMAAAA_HHSS = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRENCH);
+	
 	/**
 	 * Print delay from startTraitementCal
 	 * @param treatementName  name of treatment
@@ -61,7 +61,8 @@ public class BCUtils {
 
 		File inventoryFile = new File(repertoire.getAbsolutePath(), BCUtils.INVENTORY_FILENAME);
 		if(!inventoryFile.exists()){
-			inventoryFile.createNewFile();
+			boolean create = inventoryFile.createNewFile();
+			LOGGER.info("Création du fichier {} : {}", inventoryFile.getName(), create);
 		}
 
 		FileWriter inventoryWriter = new FileWriter(inventoryFile);
@@ -131,13 +132,14 @@ public class BCUtils {
 	 * @return libellé
 	 */
 	public static String getLibelleDateUTCFromMillis(Long date){
+
 		if(date == null){
 			return "null";
 		}
 		else{
 			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 			c.setTimeInMillis(date);
-			return FORMAT_DATE_JJMMAAAA_HHSS.format(c.getTime());
+			return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRENCH).format(c.getTime());
 		}
 	}
 }
