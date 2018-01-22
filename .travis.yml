@@ -23,5 +23,5 @@ addons:
     #   https://scan.coverity.com/faq#frequency
     branch_pattern: coverity_scan
 install: 
-  - mvn clean install sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organisation=$SONAR_ORG
+  - mvn clean install sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organisation=$SONAR_ORG -Dsonar.projectKey=automationManager
 after_script: cat /home/travis/build/vzwingma/automationManager/cov-int/scm_log.txt
