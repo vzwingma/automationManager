@@ -8,8 +8,6 @@ env:
     # COVERITY_SCAN_TOKEN
     # ** specific to your project **
     - secure: "QSrXdH+URjP26x/+5ULJVxQNCBs0oHs5cS8vnfVYg/fcQ9akZYo/UIFs4cRhJ/bK54QHF0tFTcguK5yIMNH3jeSiTwyC+E23dxy74hgulLjk/sn8sEj5aFbmelUnD3uq8mQ4SIKsfgy6fBAqutYLCmIlFHTBQUeIqMv+wG9ArZAvzCoVUZ+4TxTARpiP/pd/LHDkMmbsFDcgDvvAt6VbbuyzpuXWfuCNzBABcfG6Ro3jvpJfbcn7SD+Y7a6vslQ1OaDC4lstd7IKNRFNY0MkupfgNPAEvk+KBsxrl5KRcpvihFzIwu0FH8dUt8BEi+UVV2bep4nA8B0XLPTPJJsUCEIldfAc6vfwhD5zz/RrLRK/dbi/jq5eVRvgNq2CpODj5ARFg47F1SSsx1+c1P/PyeUtYvP/diBFbCq8miMKYa2/pJrDL7VD2QCQOlTJSARDxcZgiq/h31VQmiFxe5cBJ6EXze3QzgX3lVhlgnRzI7OMivVNdqfPHYvUZwQzeV5CeLYJPI47comecLQ4m3PpOadL9kYvRQnd4mrq9iUH8yPBllqIpYomBC8JCVv+/4FQGwBHwGUUt9q+XMvZS/rnz9HSupOSrUU5Ocjj2pb6j1w4MeJ2RVYi5xhO1deTXE0q+FOFeoAS15Y2iZYL/j3/YwD2mOTMex7+bZ4oe8mqROs="
-install: 
-  - mvn clean install sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organisation=$SONAR_ORG
 addons:
   coverity_scan:
     # GitHub project metadata
@@ -25,5 +23,5 @@ addons:
     #   https://scan.coverity.com/faq#frequency
     branch_pattern: coverity_scan
 install: 
-  - mvn clean install	
+  - mvn clean install sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organisation=$SONAR_ORG
 after_script: cat /home/travis/build/vzwingma/automationManager/cov-int/scm_log.txt
