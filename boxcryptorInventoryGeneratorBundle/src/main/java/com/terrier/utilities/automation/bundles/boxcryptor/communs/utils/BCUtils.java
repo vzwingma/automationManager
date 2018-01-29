@@ -136,7 +136,7 @@ public class BCUtils {
 	public static String getLibelleDateUTCFromMillis(Long date){
 
 		if(date == null){
-			return "null";
+			return "---";
 		}
 		else{
 			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
