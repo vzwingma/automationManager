@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.terrier.utilities.automation.bundles</groupId>
 		<artifactId>AutomationManager</artifactId>
-		<version>1.5.2</version>
+		<version>1.5.3</version>
 	</parent>
 	<artifactId>automationCommons</artifactId>
 	<name>[Automation] Commons</name>
