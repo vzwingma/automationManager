@@ -116,6 +116,77 @@ public class TestEmailAPI {
 	}
 
 
+	
+	/**
+	 * Test d'envoi
+	 */
+	@Test
+	public void testEnvoiMailNoSpam(){
+		// Préparation
+		MessagingBusinessService service = new MessagingBusinessService();
+		addToQueue(service.getEmailsSendingQueue(), "test", "message de test1");
+		addToQueue(service.getEmailsSendingQueue(), "test", "message de test2");
+		addToQueue(service.getEmailsSendingQueue(), "test2", "message de test3");
+
+
+		SendEmailTaskRunnable runnable = spy(
+				new SendEmailTaskRunnable(
+						"123", 
+						"https://api.mailgun.net/v3/", 
+						"sandboxc.mailgun.org", 
+						"/messages",
+						"toto@world.com", 
+						service));
+
+		when(runnable.getClient()).thenReturn(mockClient);
+		doCallRealMethod().when(mockClient).addFilter(any());
+		WebResource mockWebResource = mock(WebResource.class);
+		when(mockClient.resource(anyString())).thenReturn(mockWebResource);
+		WebResource.Builder mockWebResourceBuilder = mock(WebResource.Builder.class);
+		when(mockWebResource.type(eq(MediaType.APPLICATION_FORM_URLENCODED))).thenReturn(mockWebResourceBuilder);
+		// Envoi OK
+		when(mockWebResourceBuilder.post(eq(ClientResponse.class), any())).thenReturn(
+				new ClientResponse(200, null, null, null));
+		assertEquals(0, service.getSmsSendingQueue().size());
+
+		// Run
+		runnable.run();
+
+		//verify : Création du client 1 fois
+		verify(mockClient, times(2)).addFilter(any(ClientFilter.class));
+		verify(mockClient, times(2)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
+		//  envoi de test 
+		assertEquals(0, service.getEmailsSendingQueue().keySet().size());
+		assertNull(service.getEmailsSendingQueue().get("test"));
+
+		// Retour des mêmes messages
+		addToQueue(service.getEmailsSendingQueue(), "test", "message de test1");
+		addToQueue(service.getEmailsSendingQueue(), "test", "message de test2");
+		addToQueue(service.getEmailsSendingQueue(), "test2", "message de test3");
+		
+		runnable.run();
+		// Pas de nouvel envoi
+		verify(mockClient, times(2)).addFilter(any(ClientFilter.class));
+		verify(mockClient, times(2)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
+		// Et la liste est vide
+		assertNull(service.getEmailsSendingQueue().get("test"));
+
+		
+		
+		// Retour des mêmes messages
+		addToQueue(service.getEmailsSendingQueue(), "test", "message de test1");
+		addToQueue(service.getEmailsSendingQueue(), "test", "message de test3");
+		addToQueue(service.getEmailsSendingQueue(), "test2", "message de test4");
+		
+		runnable.run();
+		// nouvel envoi
+		verify(mockClient, times(4)).addFilter(any(ClientFilter.class));
+		verify(mockClient, times(4)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
+		// Et la liste est vide
+		assertNull(service.getEmailsSendingQueue().get("test"));
+
+	}
+
 
 	/**
 	 * Test d'envoi
