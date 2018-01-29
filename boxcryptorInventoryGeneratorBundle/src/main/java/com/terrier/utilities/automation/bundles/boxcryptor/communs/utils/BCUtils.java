@@ -27,6 +27,8 @@ import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireR
 public class BCUtils {
 
 
+	// Constructeur Utilitaires
+	private BCUtils(){}
 	/**
 	 * Logger
 	 */
@@ -84,8 +86,8 @@ public class BCUtils {
 			if(repertoire != null){
 				// This will output the full path where the file will be written to...
 				Path inventoryFile = FileSystems.getDefault().getPath(repertoire, BCUtils.INVENTORY_FILENAME);
-				if(Files.exists(inventoryFile)){
-					LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.toAbsolutePath().toString());
+				if(inventoryFile != null && inventoryFile.toFile().exists()){
+					LOGGER.info("Chargement de l'inventaire depuis {}", inventoryFile.toAbsolutePath());
 					String content = new String(Files.readAllBytes(inventoryFile));
 					LOGGER.debug("Contenu : \n{}", content);
 					return yml.loadAs(content, BCInventaireRepertoire.class);

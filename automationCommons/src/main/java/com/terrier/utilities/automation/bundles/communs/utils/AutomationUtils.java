@@ -20,7 +20,8 @@ import com.terrier.utilities.automation.bundles.communs.utils.replace.ReplaceDat
  */
 public class AutomationUtils {
 
-
+	// Constructeur priv� pour utilitaire
+	private AutomationUtils(){}
 	
 	/**
 	 * Liste des patterns de remplacement
@@ -41,7 +42,7 @@ public class AutomationUtils {
 		}
 		
 		for (IReplacePattern iReplacePattern : listePatterns) {
-			LOGGER.info("Application du pattern {} : {}", iReplacePattern.getClass().getSimpleName(), iReplacePattern.description());
+			LOGGER.info("Application du pattern {} : {}", iReplacePattern.getClass().getSimpleName(), iReplacePattern);
 			source = iReplacePattern.replace(source, pattern);
 		}
 		return source;

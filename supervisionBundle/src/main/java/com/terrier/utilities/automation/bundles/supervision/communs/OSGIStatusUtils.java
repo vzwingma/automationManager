@@ -4,10 +4,15 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.ServiceEvent;
 
+/**
+ * Utilitaire sur les statuts
+ * @author PVZN02821
+ *
+ */
 public class OSGIStatusUtils {
 
-	
-	
+	// Constructeur privé
+	private OSGIStatusUtils(){}
 	/**
 	 * @param status
 	 * @return le libelle du status du service

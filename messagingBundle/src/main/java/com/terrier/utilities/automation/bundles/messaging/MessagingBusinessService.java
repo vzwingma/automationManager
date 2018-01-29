@@ -63,6 +63,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 
 	private static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.messaging";
 
+	private static final String ANONYMOUS = "**********";
+	
 	/**
 	 * Liste de messages à envoyer
 	 */
@@ -157,13 +159,13 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		LOGGER.info("[EMAIL] > URL du service	: {}", getConfig(MessagingConfigKeyEnums.EMAIL_URL));
 		LOGGER.info("[EMAIL] > Domaine du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
 		LOGGER.info("[EMAIL] > Nom du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
-		LOGGER.info("[EMAIL] > Clé du service : {}", (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? "**********" : null));
+		LOGGER.info("[EMAIL] > Clé du service : {}", (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? ANONYMOUS : null));
 		LOGGER.info("[EMAIL] > Destinataires : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
 		LOGGER.info("[ SMS ] > URL du service : {}", getConfig(MessagingConfigKeyEnums.SMS_URL));
-		LOGGER.info("[ SMS ] > User du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_USER) != null ? "**********" : null));
-		LOGGER.info("[ SMS ] > Mot de passe du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_PASS) != null ? "**********" : null));
+		LOGGER.info("[ SMS ] > User du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_USER) != null ? ANONYMOUS : null));
+		LOGGER.info("[ SMS ] > Mot de passe du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_PASS) != null ? ANONYMOUS : null));
 
-		boolean configValid = true;
+		boolean configValide = true;
 		try{
 			Long periodeEnvoiMail = Long.parseLong(getConfig(MessagingConfigKeyEnums.SEND_PERIODE_ENVOI));
 			LOGGER.info(" > Période d'envoi	: {} minutes", periodeEnvoiMail);
@@ -171,22 +173,22 @@ public class MessagingBusinessService extends AbstractAutomationService {
 				this.periodeEnvoiMessages = periodeEnvoiMail;
 			}
 			else{
-				configValid = false;
+				configValide = false;
 				LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", periodeEnvoiMail);
 			}
 
 		}
 		catch(NumberFormatException e){
 			LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", getConfig(MessagingConfigKeyEnums.SEND_PERIODE_ENVOI));
-			configValid = false;
+			configValide = false;
 		}
 
 
 
 		for (MessagingConfigKeyEnums configKey : MessagingConfigKeyEnums.values()) {
-			configValid &= getConfig(configKey) != null;	
+			configValide &= getConfig(configKey) != null;	
 		}
-		if(!configValid){
+		if(!configValide){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
 			sendNotificationMessage(MessageTypeEnum.SMS, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
 			sendNotificationMessage(MessageTypeEnum.EMAIL, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
@@ -194,7 +196,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		else{
 			LOGGER.info("La configuration est correcte.");
 		}
-		return configValid;
+		return configValide;
 	}
 
 
@@ -320,6 +322,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 * Arrêt de la surveillance
 	 */
 	@PreDestroy
+	@Override
 	public void stopSupervision(){
 		LOGGER.warn("Arrêt de la supervision");
 		this.scheduledThreadPool.shutdown();

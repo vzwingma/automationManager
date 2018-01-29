@@ -11,9 +11,6 @@ package com.terrier.utilities.automation.bundles.communs.utils.replace;
 public interface IReplacePattern {
 
 	
-	public static final String PATTERN_IN = "\\{";
-	public static final String PATTERN_OUT = "\\}";
-	
 	/**
 	 * @param chaineSource
 	 * @return chaine transformée par le pattern
@@ -24,5 +21,5 @@ public interface IReplacePattern {
 	/**
 	 * @return la description du pattern
 	 */
-	String description();
+	String toString();
 }

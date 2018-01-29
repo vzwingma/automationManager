@@ -48,7 +48,7 @@ public class CopyDirVisitor extends SimpleFileVisitor<Path> {
 	@Override
 	public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
 		Path targetPath = toPath.resolve(fromPath.relativize(dir));
-		if(!Files.exists(targetPath)){
+		if(targetPath != null && !targetPath.toFile().exists()){
 			try{
 				this.nbFichiersCopies.incrementAndGet();
 				Files.createDirectory(targetPath);
