@@ -1,4 +1,4 @@
-# Automation Manager v1.5.3
+# Automation Manager v1.5.4
 Gestionnaire de tâches automatisées
 
 <a href='https://travis-ci.org/vzwingma/automationManager'><img src='https://api.travis-ci.org/vzwingma/automationManager.svg?branch=master' alt='Build Status' /></a>
@@ -46,12 +46,12 @@ Gestionnaire de tâches automatisées
 
 #### à partir de GitHub
 
-     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.5.3/feature.xml
+     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.5.4/feature.xml
      feature:install automation-manager
      
 #### à partir de Maven
 
-     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.5.3/xml/features
+     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.5.4/xml/features
      feature:install automation-supervision
      feature:install automation-messaging
      feature:install automation-boxcryptor-inventory
