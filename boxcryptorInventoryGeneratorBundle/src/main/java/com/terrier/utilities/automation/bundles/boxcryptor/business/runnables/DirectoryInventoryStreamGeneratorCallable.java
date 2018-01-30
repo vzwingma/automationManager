@@ -80,6 +80,10 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 	@Override
 	public BCInventaireRepertoire call() throws Exception {
 
+		// Définition des filters
+		Filter<Path> directoryFilter = ((entry) -> entry.toFile().isDirectory() );
+		Filter<Path> fileFilter = ((entry) -> !entry.toFile().isDirectory() );
+		
 		Calendar startTraitement = Calendar.getInstance();
 		LOGGER.debug("[{}] - INIT THREAD [{}] date=[{}] > {} ms", 
 				this.index, 
@@ -91,70 +95,19 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 		List<Future<BCInventaireRepertoire>> listeExecSousRepertoires = new ArrayList<Future<BCInventaireRepertoire>>();
 
 		// Parcours du répertoire non chiffré
-		Filter<Path> directoryFilter = ((entry) -> { return entry.toFile().isDirectory(); });
 		
 		try (DirectoryStream<Path> dsNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), directoryFilter);) {
 			for (Path sousRepertoireNonChiffre : dsNonChiffre) {
-				try(DirectoryStream<Path> dsChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), directoryFilter);){
-
-					for (Path sousRepertoireChiffre : dsChiffre) {
-
-						if(Files.getLastModifiedTime(sousRepertoireChiffre).toMillis() == Files.getLastModifiedTime(sousRepertoireNonChiffre).toMillis()){
-							listeExecSousRepertoires.add(
-									this.executorPool.submit(
-											new DirectoryInventoryStreamGeneratorCallable(
-													this.index,
-													this.executorPool,
-													this.nomTraitementParent + "|" + sousRepertoireNonChiffre.getFileName().toString(), 
-													this.inventaireR.getBCInventaireSousRepertoire(sousRepertoireChiffre, sousRepertoireNonChiffre),
-													sousRepertoireChiffre.toFile().getAbsolutePath(), sousRepertoireNonChiffre.toFile().getAbsolutePath()))
-									);						
-						}
-					}
-				}
-				catch(Exception e){
-					LOGGER.warn("[{}] - THREAD [{}] Le répertoire {} est introuvable. Passage au répertoire suivant", index, this.nomTraitementParent, sousRepertoireNonChiffre);
-				}
+				traitementSousRepertoiresNonChiffre(sousRepertoireNonChiffre, directoryFilter, listeExecSousRepertoires);
 			}
 
-			Filter<Path> fileFilter = ((entry) -> { return !entry.toFile().isDirectory(); });
-
-			try(DirectoryStream<Path> dsfNonChiffre = Files.newDirectoryStream(
-					FileSystems.getDefault().getPath(absRepertoireNonChiffre), fileFilter) ){
-
+			try(DirectoryStream<Path> dsfNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), fileFilter) ){
 				for (Path fichierNonChiffre : dsfNonChiffre) {
-					try(DirectoryStream<Path> dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), fileFilter)){
-
-						for (Path fichierChiffre : dsfChiffre) {
-
-							if(fichierChiffre.toFile().exists() && Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
-								inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
-								LOGGER.trace("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
-										index, 
-										this.nomTraitementParent,
-										BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
-										fichierNonChiffre.getFileName()); 
-								// Mise à jour de la date, ssi différent du fichier d'inventaire
-								if(!fichierNonChiffre.getFileName().toString().equals(BCUtils.INVENTORY_FILENAME) 
-										&& 
-										(inventaireR.getDateModificationDernierInventaire() == null
-										|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire())){
-									LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", 
-											index, 
-											this.nomTraitementParent, 
-											BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
-									inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
-								}
-							}
-						}
-					}
-					catch(Exception e){
-						LOGGER.warn("[{}] - THREAD [{}] Le fichier {} est introuvable. Passage au fichier suivant", index, this.nomTraitementParent, fichierNonChiffre.getFileName());
-					}
+					traitementFichierNonChiffre(fichierNonChiffre, fileFilter);
 				}
 			}
 			catch (Exception e) {
-				LOGGER.info("Erreur lors du traitement du répertoire [{}]", absRepertoireNonChiffre, e);
+				LOGGER.info("Erreur lors du traitement des fichiers du répertoire [{}]", absRepertoireNonChiffre, e);
 			}
 
 		} catch (Exception e) {
@@ -189,4 +142,71 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 
 		return inventaireR;
 	}
+	
+	/**
+	 * traitementSousRepertoiresNonChiffre
+	 * @param sousRepertoireNonChiffre sous répertoire non chiffré
+	 * @param directoryFilter directory filter
+	 * @param listeExecSousRepertoires liste de sous répertoires
+	 */
+	private void traitementSousRepertoiresNonChiffre(Path sousRepertoireNonChiffre, Filter<Path> directoryFilter, List<Future<BCInventaireRepertoire>> listeExecSousRepertoires){
+		try(DirectoryStream<Path> dsChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), directoryFilter);){
+
+			for (Path sousRepertoireChiffre : dsChiffre) {
+
+				if(Files.getLastModifiedTime(sousRepertoireChiffre).toMillis() == Files.getLastModifiedTime(sousRepertoireNonChiffre).toMillis()){
+					listeExecSousRepertoires.add(
+							this.executorPool.submit(
+									new DirectoryInventoryStreamGeneratorCallable(
+											this.index,
+											this.executorPool,
+											this.nomTraitementParent + "|" + sousRepertoireNonChiffre.getFileName().toString(), 
+											this.inventaireR.getBCInventaireSousRepertoire(sousRepertoireChiffre, sousRepertoireNonChiffre),
+											sousRepertoireChiffre.toFile().getAbsolutePath(), sousRepertoireNonChiffre.toFile().getAbsolutePath()))
+							);						
+				}
+			}
+		}
+		catch(Exception e){
+			LOGGER.warn("[{}] - THREAD [{}] Le répertoire {} est introuvable. Passage au répertoire suivant", index, this.nomTraitementParent, sousRepertoireNonChiffre);
+		}
+	}
+	
+	
+	/**
+	 * traitementFichierNonChiffre
+	 * @param fichierNonChiffre fichier non chiffré
+	 * @param fileFilter file filter
+	 */
+	private void traitementFichierNonChiffre(Path fichierNonChiffre, Filter<Path> fileFilter){
+		try(DirectoryStream<Path> dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), fileFilter)){
+
+			for (Path fichierChiffre : dsfChiffre) {
+
+				if(fichierChiffre.toFile().exists() && Files.getLastModifiedTime(fichierChiffre).toMillis() == Files.getLastModifiedTime(fichierNonChiffre).toMillis()){
+					inventaireR.addFichier(new BCInventaireFichier(fichierChiffre.getFileName().toString(), fichierNonChiffre.getFileName().toString()));
+					LOGGER.trace("[{}] - THREAD [{}] date=[{}] > fichier [{}]", 
+							index, 
+							this.nomTraitementParent,
+							BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
+							fichierNonChiffre.getFileName()); 
+					// Mise à jour de la date, ssi différent du fichier d'inventaire
+					if(!fichierNonChiffre.getFileName().toString().equals(BCUtils.INVENTORY_FILENAME) 
+							&& 
+							(inventaireR.getDateModificationDernierInventaire() == null
+							|| Files.getLastModifiedTime(fichierChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire())){
+						LOGGER.debug("[{}] - THREAD [{}] date mise à jour =[{}]", 
+								index, 
+								this.nomTraitementParent, 
+								BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()));
+						inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(fichierChiffre).toMillis());
+					}
+				}
+			}
+		}
+		catch(Exception e){
+			LOGGER.warn("[{}] - THREAD [{}] Le fichier {} est introuvable. Passage au fichier suivant", index, this.nomTraitementParent, fichierNonChiffre.getFileName());
+		}
+	}
+	
 }
