@@ -9,7 +9,7 @@ install:
   - ./feature_github_generation.sh
   - cd ../../../    
 script: 
-  - mvn clean install sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG 
+  - mvn clean install sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=automationManager
 deploy:
   provider: releases
   api_key:

@@ -1,35 +1,37 @@
 # Automation Manager v1.5.3
 Gestionnaire de tâches automatisées
 
-[![Dependency Status](https://www.versioneye.com/user/projects/566f2ef71079970030000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2ef71079970030000001)
 <a href='https://travis-ci.org/vzwingma/automationManager'><img src='https://api.travis-ci.org/vzwingma/automationManager.svg?branch=master' alt='Build Status' /></a>
 <a href='https://github.com/vzwingma/automationManager/issues'><img src='http://githubbadges.herokuapp.com/vzwingma/automationManager/issues?style=square' alt='Issues number' /></a>
+
+[![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=pom.xml)
+[![Dependency Status](https://beta.gemnasium.com/badges/github.com/vzwingma/automationManager.svg)](https://beta.gemnasium.com/projects/github.com/vzwingma/automationManager)
+
 <a href="https://scan.coverity.com/projects/vzwingma-automationmanager"><img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/7397.svg"/></a>
-<a href="https://sonarcloud.io/dashboard?id=com.terrier.utilities.automation.bundles%3AAutomationManager"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/badges/gate?key=com.terrier.utilities.automation.bundles:AutomationManager"/></a>
+<a href="https://sonarcloud.io/dashboard?id=com.terrier.utilities.automation.bundles%3AAutomationManager"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/badges/gate?key=automationManager"/></a>
 
 
 ## Modules OSGi
 
 #### automationCommons v1.2.1
   *  Librairie commune
-  * [![Dependency Status](https://www.versioneye.com/user/projects/566f2f0c107997003e000001/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f0c107997003e000001)
+  *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=automationCommons%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=automationCommons%2Fpom.xml)
 
 #### [supervisionBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Supervision) v1.3.0
   *  Libraire de supervision des bundles de l'AutomationManager
-  *  [![Dependency Status](https://www.versioneye.com/user/projects/5675bcf2107997002d0008e4/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5675bcf2107997002d0008e4)
+  *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=supervisionBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=supervisionBundle%2Fpom.xml)
 
 #### [messagingBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Messaging) v1.2.2 
   *  Librairie d'envoi de mail et de SMS
-  * [![Dependency Status](https://www.versioneye.com/user/projects/566f2f1b1079970030000014/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f1b1079970030000014)
-    
+  *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=messagingBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=messagingBundle%2Fpom.xml)
 
 #### [boxcryptorInventoryBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v2.0.0
   *  Générateur d'inventaire pour BoxCryptor
-  * [![Dependency Status](https://www.versioneye.com/user/projects/5675bcf1107997003e000859/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5675bcf1107997003e000859)
+  *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=boxcryptorInventoryGeneratorBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=boxcryptorInventoryGeneratorBundle%2Fpom.xml)
 
 #### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.1.3
   *  Libraire de copie de fichier ou de répertoire
-  *  [![Dependency Status](https://www.versioneye.com/user/projects/566f2f24107997003e000004/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566f2f24107997003e000004)
+  *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=saveToBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=saveToBundle%2Fpom.xml)
 
 ## Installation des features
 
