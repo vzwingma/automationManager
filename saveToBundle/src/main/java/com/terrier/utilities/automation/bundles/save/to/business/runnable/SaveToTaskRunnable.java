@@ -84,7 +84,7 @@ public class SaveToTaskRunnable implements Runnable {
 		}
 		String libelleDernierScan = this.dateDernierScan != null ? sdf.format(this.dateDernierScan.getTime()) : "jamais";
 		LOGGER.info("[{}] Scan du répertoire  : {}. Date de dernier scan : {}", index, scanDir, libelleDernierScan);
-		if(Files.isDirectory(FileSystems.getDefault().getPath(scanDir))){
+		if(FileSystems.getDefault().getPath(scanDir).toFile().exists()){
 
 			String regExMatch = patternEntree;
 			LOGGER.debug("[{}] > Matcher : {}", index, regExMatch);
@@ -94,7 +94,7 @@ public class SaveToTaskRunnable implements Runnable {
 			}
 			else{
 				// Save To d'un répertoire
-				this.dernierResultat = traitementRepertoireSaveTo(scanDir, this.dateDernierScan);
+				this.dernierResultat = traitementRepertoireSaveTo(scanDir);
 			}
 
 		}
@@ -113,7 +113,7 @@ public class SaveToTaskRunnable implements Runnable {
 	protected Calendar getDateInitScan(){
 		// Vérification du répertoire de destination :
 		Path pathRepertoireDest = FileSystems.getDefault().getPath(this.repertoireDestinataire);
-		if(Files.exists(pathRepertoireDest)){
+		if(pathRepertoireDest.toFile().exists()){
 			try {
 				Calendar cal = Calendar.getInstance();
 				cal.setTimeInMillis(Files.getLastModifiedTime(pathRepertoireDest).toMillis());
@@ -140,9 +140,9 @@ public class SaveToTaskRunnable implements Runnable {
 		boolean resultatGlobal = true;
 		try (DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));){
 			for (Path fichier : downloadDirectoryPath) {
-				LOGGER.debug("[{}] Traitement du fichier : {}", index, fichier.getFileName().toString());
+				LOGGER.debug("[{}] Traitement du fichier : {}", index, fichier.getFileName());
 				if(fichier.getFileName().toString().matches(regExMatch)){
-					LOGGER.trace("{} > match avec {}", fichier.getFileName().toString(), regExMatch);
+					LOGGER.trace("{} > match avec {}", fichier.getFileName(), regExMatch);
 					// Vérification vis à vis de la date de modification
 					// Ou si Move (#12)
 					if(dateDernierScan == null 
@@ -175,12 +175,12 @@ public class SaveToTaskRunnable implements Runnable {
 						resultatGlobal &= resultat;
 					}
 					else{
-						LOGGER.debug("[{}] Le fichier {} n'a pas été modifié", index, fichier.getFileName().toString());
+						LOGGER.debug("[{}] Le fichier {} n'a pas été modifié", index, fichier.getFileName());
 					}
 				}
 			}
 		} catch (IOException e) {
-			LOGGER.error("[{}] Erreur lors du scan de {}", index, FileSystems.getDefault().getPath(scanDir).toAbsolutePath().toString(), e);
+			LOGGER.error("[{}] Erreur lors du scan de {}", index, FileSystems.getDefault().getPath(scanDir).toAbsolutePath(), e);
 			resultatGlobal = false;
 		}
 		return resultatGlobal;
@@ -191,7 +191,7 @@ public class SaveToTaskRunnable implements Runnable {
 	 * @param scanDir scan dir
 	 * @param dateDernierScan date du dernier scan
 	 */
-	private boolean traitementRepertoireSaveTo(String scanDir, Calendar dateDernierScan){
+	private boolean traitementRepertoireSaveTo(String scanDir){
 		LOGGER.debug("[{}] Copie du répertoire complet", index);
 
 		List<String> fichiersEnErreur = new ArrayList<String>();
@@ -249,7 +249,7 @@ public class SaveToTaskRunnable implements Runnable {
 			for (String part : message) {
 				msg.append(part);
 			}
-			LOGGER.debug("Envoi du message Copie vers BoxCryptor : [{}]", msg.toString());
+			LOGGER.debug("Envoi du message Copie vers BoxCryptor : [{}]", msg);
 			service.sendNotificationMessage(MessageTypeEnum.EMAIL, "Copie vers BoxCryptor", msg.toString());
 		}
 	}
@@ -295,11 +295,11 @@ public class SaveToTaskRunnable implements Runnable {
 			Path fichierCible = FileSystems.getDefault().getPath(directoryCible + "/" +outFileName);
 			LOGGER.debug("[{}]  > Copie {} vers {}",  index, fichierSource, fichierCible);
 
-			if(!Files.exists(FileSystems.getDefault().getPath(directoryCible))){
+			if(!FileSystems.getDefault().getPath(directoryCible).toFile().exists()){
 				LOGGER.info("[{}] Création du répertoire", index);
 				Files.createDirectories(FileSystems.getDefault().getPath(directoryCible));
 			}
-			if (fichierCible != null && !fichierCible.toString().contains("null") && !Files.exists(fichierCible)) {
+			if (fichierCible != null && !fichierCible.toString().contains("null") && !fichierCible.toFile().exists()) {
 				LOGGER.debug("[{}] Création du fichier {}", index, fichierCible);
 				Files.createFile(fichierCible);
 			}
@@ -334,12 +334,9 @@ public class SaveToTaskRunnable implements Runnable {
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
 	 */
 	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
-						"Traitement n°"+this.index + " au " + (this.dateDernierScan != null ? sdf.format(this.dateDernierScan.getTime()) : "N/A"), 
+						"Traitement n°"+this.index + " au " + (this.dateDernierScan != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(this.dateDernierScan.getTime()) : "N/A"), 
 						this.dernierResultat,
 						this.dernierResultat ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING ));
 

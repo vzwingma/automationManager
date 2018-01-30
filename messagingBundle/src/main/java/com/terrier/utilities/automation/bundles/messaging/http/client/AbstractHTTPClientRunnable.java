@@ -1,12 +1,19 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.messaging.runnable;
+package com.terrier.utilities.automation.bundles.messaging.http.client;
 
 
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
@@ -15,8 +22,12 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.ClientFilter;
+import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
@@ -36,16 +47,34 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	// Service Métier
 	private MessagingBusinessService service;
 
+	private HostnameVerifier allHostsValid = (String hostname, SSLSession session) -> { return true; };
 
 
 	/**
 	 * Créé un client HTTP 
 	 * (dans une méthode séparée pour pouvoir être mocké facilement)
 	 * @return client HTTP
+	 * @throws NoSuchAlgorithmException 
 	 */
-	protected Client getClient() {
+	public Client getClient() {
+
+		ClientConfig config = new DefaultClientConfig();
+		try {
+			TrustManager[] trustAllCerts = new TrustManager[] { new NoTrustManager() };
+			// Install the all-trusting trust manager
+			SSLContext sslcontext = SSLContext.getInstance("TLS");
+			sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
+			HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+
+			javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+			config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(allHostsValid, sslcontext));
+
+		} catch (NoSuchAlgorithmException | KeyManagementException e1) {
+			LOGGER.error("Erreur lors de la configuration SSL du client HTTP");
+		}
 		try{
-			return Client.create();
+			return Client.create(config);
 		}
 		catch(Exception e){
 			this.service.sendNotificationEmail("Erreur envoi ", "Erreur lors de la création du Client HTTP " + e.getMessage());
@@ -168,14 +197,25 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 		this.service = service;
 	}
 
-
-
-
-
 	/**
 	 * @return the service
 	 */
 	public MessagingBusinessService getService() {
 		return service;
+	}
+	
+	/**
+	 * @param code
+	 * @return code Statut correspondant
+	 */
+	public static StatutPropertyBundleEnum getCode(int code){
+		switch (code) {
+		case 200:
+			return StatutPropertyBundleEnum.OK;
+		case 0:
+			return StatutPropertyBundleEnum.WARNING;
+		default:
+			return StatutPropertyBundleEnum.ERROR;
+		}
 	}
 }

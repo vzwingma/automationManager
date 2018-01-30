@@ -19,7 +19,8 @@ import com.terrier.utilities.automation.bundles.supervision.communs.Presentation
  */
 public class PresentationStatutObjectTranslator {
 
-
+	// Constructeur privé
+	private PresentationStatutObjectTranslator(){}
 	/**
 	 * @param bundleObject
 	 * @return translation en objet de présentation

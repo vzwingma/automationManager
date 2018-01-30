@@ -4,6 +4,7 @@
 package com.terrier.utilities.automation.bundles.boxcryptor.business.runnables;
 
 import java.nio.file.DirectoryStream;
+import java.nio.file.DirectoryStream.Filter;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,8 +18,6 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.utilities.automation.bundles.boxcryptor.communs.filters.DirectoryFilter;
-import com.terrier.utilities.automation.bundles.boxcryptor.communs.filters.FileFilter;
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireFichier;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
@@ -92,9 +91,11 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 		List<Future<BCInventaireRepertoire>> listeExecSousRepertoires = new ArrayList<Future<BCInventaireRepertoire>>();
 
 		// Parcours du répertoire non chiffré
-		try (DirectoryStream<Path> dsNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), new DirectoryFilter());) {
+		Filter<Path> directoryFilter = ((entry) -> { return entry.toFile().isDirectory(); });
+		
+		try (DirectoryStream<Path> dsNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), directoryFilter);) {
 			for (Path sousRepertoireNonChiffre : dsNonChiffre) {
-				try(DirectoryStream<Path> dsChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new DirectoryFilter());){
+				try(DirectoryStream<Path> dsChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), directoryFilter);){
 
 					for (Path sousRepertoireChiffre : dsChiffre) {
 
@@ -116,11 +117,13 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 				}
 			}
 
+			Filter<Path> fileFilter = ((entry) -> { return !entry.toFile().isDirectory(); });
 
-			try(DirectoryStream<Path> dsfNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), new FileFilter());){
+			try(DirectoryStream<Path> dsfNonChiffre = Files.newDirectoryStream(
+					FileSystems.getDefault().getPath(absRepertoireNonChiffre), fileFilter) ){
 
 				for (Path fichierNonChiffre : dsfNonChiffre) {
-					try(DirectoryStream<Path> dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), new FileFilter());){
+					try(DirectoryStream<Path> dsfChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), fileFilter)){
 
 						for (Path fichierChiffre : dsfChiffre) {
 
@@ -130,7 +133,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 										index, 
 										this.nomTraitementParent,
 										BCUtils.getLibelleDateUTCFromMillis(Files.getLastModifiedTime(fichierChiffre).toMillis()),
-										fichierNonChiffre.getFileName().toString()); 
+										fichierNonChiffre.getFileName()); 
 								// Mise à jour de la date, ssi différent du fichier d'inventaire
 								if(!fichierNonChiffre.getFileName().toString().equals(BCUtils.INVENTORY_FILENAME) 
 										&& 

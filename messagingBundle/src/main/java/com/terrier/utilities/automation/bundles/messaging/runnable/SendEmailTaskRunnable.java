@@ -3,6 +3,7 @@
  */
 package com.terrier.utilities.automation.bundles.messaging.runnable;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -16,6 +17,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
+import com.terrier.utilities.automation.bundles.messaging.http.client.AbstractHTTPClientRunnable;
 
 /**
  * Tâche d'envoi des mails
@@ -37,6 +39,7 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	private String apiService;
 	private String listeDestinataires;
 	
+	private List<List<String>> sentMessages = new ArrayList<List<String>>();
 	
 	/**
 	 * Constructeur de la tâche d'envoi
@@ -78,20 +81,26 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 			if(groupeMessages.getValue() != null && !groupeMessages.getValue().isEmpty()){
 				MultivaluedMapImpl formData = getFormData(groupeMessages.getKey(), groupeMessages.getValue());
 				LOGGER.debug("Envoi du mail : {}", formData.get("subject"));
-				boolean resultat = callHTTPPost(getClient(new HTTPBasicAuthFilter("api", this.apiKey)), this.apiURL + this.apiDomain + this.apiService, formData);
-				if(resultat){
-					LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi", groupeMessages.getKey());
+				
+				if(sentMessages.contains(formData.get("html"))){
+					LOGGER.warn("Le message a déjà été envoyé. Pas d'envoi");
 					gmIterator.remove();
 				}
 				else{
-					getService().sendNotificationSMS("Erreur lors de l'envoi du mail, les messages de ["+groupeMessages.getKey()+"] n'ont pas été envoyé.");
-					LOGGER.error("Erreur lors de l'envoi, les messages de [{}] sont reprogrammés pour la prochaine échéance", groupeMessages.getKey());
-					// si erreur, on utilise l'autre canal pour envoyer le message d'erreur
-					
+					boolean resultat = callHTTPPost(getClient(new HTTPBasicAuthFilter("api", this.apiKey)), this.apiURL + this.apiDomain + this.apiService, formData);
+					if(resultat){
+						LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi", groupeMessages.getKey());
+						sentMessages.add(formData.get("html"));
+						gmIterator.remove();
+					}
+					else{
+						getService().sendNotificationSMS("Erreur lors de l'envoi du mail, les messages de ["+groupeMessages.getKey()+"] n'ont pas été envoyé.");
+						LOGGER.error("Erreur lors de l'envoi, les messages de [{}] sont reprogrammés pour la prochaine échéance", groupeMessages.getKey());
+						// si erreur, on utilise l'autre canal pour envoyer le message d'erreur
+					}
+					allResponses &= resultat;
 				}
-				allResponses &= resultat;
 			}
-
 		}
 		return allResponses;
 	}
@@ -132,11 +141,8 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Dernier d'appel du service " + this.apiURL, 
-						this.getLastResponseCode() == 0 ? "?" : this.getLastResponseCode(),
-						this.getLastResponseCode() == 200 ?
-								StatutPropertyBundleEnum.OK : 
-									this.getLastResponseCode() == 0 ? StatutPropertyBundleEnum.WARNING : StatutPropertyBundleEnum.ERROR));
+						this.getLastResponseCode() == 0 ? "?" : this.getLastResponseCode(), getCode(this.getLastResponseCode())));
 	}
 	
-	
+
 }

@@ -26,7 +26,7 @@ public class ReplaceDatePattern implements IReplacePattern {
 	@Override
 	public String replace(String chaineSource, String pattern) {
 
-		Pattern p = Pattern.compile(".*"+PATTERN_IN+"{2} *(.*) *"+PATTERN_OUT+"{2}.*");
+		Pattern p = Pattern.compile(".*"+ReplacePatternBlockEnum.IN.getValue()+"{2} *(.*) *"+ReplacePatternBlockEnum.OUT.getValue()+"{2}.*");
 		Matcher m = p.matcher(pattern);
 		if(m.find()){
 			String patternDate = m.group(1);
@@ -34,7 +34,7 @@ public class ReplaceDatePattern implements IReplacePattern {
 				SimpleDateFormat sdf = new SimpleDateFormat(patternDate);
 
 				String date = sdf.format(Calendar.getInstance().getTime());
-				chaineSource = pattern.replaceAll(PATTERN_IN + PATTERN_IN + patternDate + PATTERN_OUT + PATTERN_OUT, date);
+				chaineSource = pattern.replaceAll(ReplacePatternBlockEnum.IN.getValue() + ReplacePatternBlockEnum.IN.getValue() + patternDate + ReplacePatternBlockEnum.OUT.getValue() + ReplacePatternBlockEnum.OUT.getValue(), date);
 			}
 			catch(IllegalArgumentException e){
 				LOGGER.warn("Le pattern {} n'est pas un format de date", m.group(1));
@@ -47,7 +47,7 @@ public class ReplaceDatePattern implements IReplacePattern {
 	 * @see com.terrier.utilities.automation.bundles.communs.utils.replace.IReplacePattern#description()
 	 */
 	@Override
-	public String description() {
+	public String toString() {
 		return "Le pattern est de la forme {{yyyyMMdd}} avec à l'intérieur un format de date {@link SimpleDateFormat}";
 	}
 

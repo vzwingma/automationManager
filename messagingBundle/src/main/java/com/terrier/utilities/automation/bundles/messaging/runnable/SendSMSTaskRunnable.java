@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
+import com.terrier.utilities.automation.bundles.messaging.http.client.AbstractHTTPClientRunnable;
 
 /**
  * Tâche d'envoi des mails
@@ -33,6 +34,8 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 	private String password;
 	private String apiURL;
 
+	private List<String> sentMessages = new ArrayList<>();
+	
 	/**
 	 * Constructeur de la tâche d'envoi
 	 * @param messagesSendingQueue
@@ -71,18 +74,26 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 			while(getService().getSmsSendingQueue().size() > 0 && messages.size() < 5){
 				messages.add(getService().getSmsSendingQueue().poll());
 			}
+			String messageSMS =  getFormData(messages);
+			
 			LOGGER.debug("Envoi des {} messages par SMS", messages.size());
-			resultat = callHTTPGet(getClient(), this.apiURL, "user=" + this.user + "&pass=" + this.password + "&msg=",  getFormData(messages));
-
-			if(resultat){
-				LOGGER.debug("Suppression des messages SMS de la liste d'envoi");
+			if(sentMessages.contains(messageSMS)){
+				LOGGER.warn("Le message a déjà été envoyé. Pas d'envoi");
+				resultat = true;
 			}
 			else{
-				for (String msg : messages) {
-					getService().sendNotificationSMS(msg);
+				resultat = callHTTPGet(getClient(), this.apiURL, "user=" + this.user + "&pass=" + this.password + "&msg=", messageSMS);
+				if(resultat){
+					LOGGER.debug("Suppression des messages SMS de la liste d'envoi");
+					sentMessages.add(messageSMS);
 				}
-				LOGGER.error("Erreur lors de l'envoi, les messages sont reprogrammés pour la prochaine échéance");
-				getService().sendNotificationEmail("Erreur envoi de SMS", "Erreur lors de l'envoi du SMS ");
+				else{
+					LOGGER.error("Erreur lors de l'envoi, les messages sont reprogrammés pour la prochaine échéance");
+					for (String msg : messages) {
+						getService().sendNotificationSMS(msg);
+					}
+					getService().sendNotificationEmail("Erreur envoi de SMS", "Erreur lors de l'envoi du SMS ");
+				}
 			}
 		}
 		return resultat;
@@ -125,9 +136,7 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 				new StatutPropertyBundleObject(
 						"Dernier d'appel du service " + this.apiURL, 
 						this.getLastResponseCode() == 0 ? "?" : this.getLastResponseCode(),
-						this.getLastResponseCode() == 200 ?
-								StatutPropertyBundleEnum.OK : 
-									this.getLastResponseCode() == 0 ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR));
+						getCode(this.getLastResponseCode())));
 	}
 
 }

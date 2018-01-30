@@ -52,7 +52,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	private Yaml yaml;
 
 	/**
-	 * Liste des tâches schedulées
+	 * Liste des tÃ¢ches schedulées
 	 */
 	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<ScheduledFuture<?>>();
 
@@ -71,7 +71,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	public void startService() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		super.registerToConfig(CONFIG_PID);
 		// Encoding en UTF-8
-		// Forcage en UTF-8 pour les caractères chinois utilisés par BC
+		// Forcage en UTF-8 pour les caractÃ¨res chinois utilisés par BC
 		System.setProperty("file.encoding","UTF-8");
 		Field charset = Charset.class.getDeclaredField("defaultCharset");
 		charset.setAccessible(true);
@@ -85,7 +85,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	private void initYAML(){
 		if(FrameworkUtil.getBundle(this.getClass()) != null){
 			BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-			LOGGER.warn("Chargement de YAML à partir du classloader du bundle", bundleContext);
+			LOGGER.warn("Chargement de YAML Ã  partir du classloader du bundle", bundleContext);
 			this.yaml = new Yaml(new CustomClassLoaderConstructor(bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader()));
 		}
 		else{
@@ -107,7 +107,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		LOGGER.info(" > Nombre de pattern : {}", nbPatterns);
 		this.nbInventaires = nbPatterns;
 
-		// arrêt des tâches schedulées
+		// arrÃªt des tÃ¢ches schedulées
 		for (Iterator<ScheduledFuture<?>> iterator = listeScheduled.iterator(); iterator.hasNext();) {
 			ScheduledFuture<?> scheduledFuture = (ScheduledFuture<?>) iterator.next();
 			scheduledFuture.cancel(true);
@@ -158,7 +158,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 			period = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
 		}
 		catch(NumberFormatException e){
-
+			LOGGER.error("[{}] > Erreur : la période {} est incorrecte", p, getKey(ConfigKeyEnums.PERIOD_SCAN, p));
 		}
 		configValid = period != null
 				&& getKey(ConfigKeyEnums.SOURCE_DIRECTORY, p) != null

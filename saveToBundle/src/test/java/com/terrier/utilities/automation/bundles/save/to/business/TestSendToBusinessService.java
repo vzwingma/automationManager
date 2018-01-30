@@ -101,7 +101,7 @@ public class TestSendToBusinessService {
 	@Test
 	public void testCopieCloud() throws IOException, InterruptedException{
 		assertNotNull(service);
-		service.nbPatterns = 3;
+		service.nombrePatterns = 3;
 		// Scan
 		assertTrue(service.validateConfig(1));
 		service.startTreatment(1);
