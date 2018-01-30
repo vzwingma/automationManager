@@ -159,11 +159,11 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		LOGGER.info("[EMAIL] > URL du service	: {}", getConfig(MessagingConfigKeyEnums.EMAIL_URL));
 		LOGGER.info("[EMAIL] > Domaine du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
 		LOGGER.info("[EMAIL] > Nom du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
-		LOGGER.info("[EMAIL] > Clé du service : {}", (getConfig(MessagingConfigKeyEnums.EMAIL_KEY) != null ? ANONYMOUS : null));
+		LOGGER.info("[EMAIL] > Clé du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_KEY, true));
 		LOGGER.info("[EMAIL] > Destinataires : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
 		LOGGER.info("[ SMS ] > URL du service : {}", getConfig(MessagingConfigKeyEnums.SMS_URL));
-		LOGGER.info("[ SMS ] > User du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_USER) != null ? ANONYMOUS : null));
-		LOGGER.info("[ SMS ] > Mot de passe du service : {}", (getConfig(MessagingConfigKeyEnums.SMS_PASS) != null ? ANONYMOUS : null));
+		LOGGER.info("[ SMS ] > User du service : {}", getConfig(MessagingConfigKeyEnums.SMS_USER, true));
+		LOGGER.info("[ SMS ] > Mot de passe du service : {}", getConfig(MessagingConfigKeyEnums.SMS_PASS, true));
 
 		boolean configValide = true;
 		try{
@@ -262,6 +262,19 @@ public class MessagingBusinessService extends AbstractAutomationService {
 
 
 
+	/**
+	 * @param key clé
+	 * @return valeur dans la config correspondante
+	 */
+	protected String getConfig(MessagingConfigKeyEnums key, boolean anonymous){
+		String value = getConfig(key);
+		if(value != null && anonymous){
+			return ANONYMOUS;
+		}
+		else{
+			return value;
+		}
+	}
 	/**
 	 * @param key clé
 	 * @return valeur dans la config correspondante
