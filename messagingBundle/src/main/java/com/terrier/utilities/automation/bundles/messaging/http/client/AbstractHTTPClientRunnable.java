@@ -21,6 +21,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,9 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 
 	private HostnameVerifier allHostsValid = (String hostname, SSLSession session) -> true ;
 
+	public Client getClient(){
+		return getClient(null);
+	}
 
 	/**
 	 * Créé un client HTTP 
@@ -53,9 +58,13 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	 * @return client HTTP
 	 * @throws NoSuchAlgorithmException 
 	 */
-	public Client getClient() {
+	public Client getClient(HttpAuthenticationFeature feature) {
 
-
+		ClientConfig clientConfig = new ClientConfig();
+		if(feature != null){
+			clientConfig.register(feature);
+		}
+		
 		try {
 			// Install the all-trusting trust manager
 			SSLContext sslcontext = SSLContext.getInstance("TLS");
@@ -63,14 +72,16 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 			sslcontext.init(null,  new TrustManager[] { new NoTrustManager() }, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
 			HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-			return ClientBuilder.newBuilder().sslContext(sslcontext)
+			return ClientBuilder.newBuilder()
+					.sslContext(sslcontext)
 					.hostnameVerifier(allHostsValid)
+					.withConfig(clientConfig)
 					.build();
 		}
 		catch(Exception e){
 			this.service.sendNotificationEmail("Erreur envoi ", "Erreur lors de la création du Client HTTP " + e.getMessage());
 			this.service.sendNotificationSMS( "Erreur lors de la création du Client HTTP " + e.getMessage());
-			return null;
+			return ClientBuilder.newClient(clientConfig);
 		}
 	}
 

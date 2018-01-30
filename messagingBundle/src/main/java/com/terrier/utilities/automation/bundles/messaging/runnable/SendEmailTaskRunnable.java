@@ -13,6 +13,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,8 +91,11 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 					gmIterator.remove();
 				}
 				else{
-					// new HTTPBasicAuthFilter("api", this.apiKey)
-					Invocation.Builder invocation = getInvocation(getClient(), this.apiURL + this.apiDomain, this.apiService, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
+					HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder()
+						    .nonPreemptive()
+						    .credentials("api", this.apiKey)
+						    .build();
+					Invocation.Builder invocation = getInvocation(getClient(feature), this.apiURL + this.apiDomain, this.apiService, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
 					boolean resultat = callHTTPPost(invocation , formData);
 					if(resultat){
 						LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi", groupeMessages.getKey());
