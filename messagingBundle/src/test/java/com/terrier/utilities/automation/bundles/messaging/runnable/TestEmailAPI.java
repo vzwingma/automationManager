@@ -9,8 +9,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -20,23 +18,21 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.ClientFilter;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
@@ -85,24 +81,21 @@ public class TestEmailAPI {
 						service));
 
 		when(runnable.getClient()).thenReturn(mockClient);
-		doCallRealMethod().when(mockClient).addFilter(any());
-		WebResource mockWebResource = mock(WebResource.class);
-		when(mockClient.resource(anyString())).thenReturn(mockWebResource);
-		WebResource.Builder mockWebResourceBuilder = mock(WebResource.Builder.class);
-		when(mockWebResource.type(eq(MediaType.APPLICATION_FORM_URLENCODED))).thenReturn(mockWebResourceBuilder);
+
+		Invocation.Builder mockWebResourceBuilder = mock(Invocation.Builder.class);
+		when(runnable.getInvocation(any(Client.class), anyString(), anyString(), any(MediaType.class))).thenReturn(mockWebResourceBuilder);
 		// Erreur lors du premier appel (envoi de test2)
-		when(mockWebResourceBuilder.post(eq(ClientResponse.class), any())).thenReturn(
-				new ClientResponse(500, null, null, null), 
-				new ClientResponse(200, null, null, null),
-				new ClientResponse(200, null, null, null));
+		when(mockWebResourceBuilder.post(any())).thenReturn(
+				Response.serverError().build(), 
+				Response.ok().build(), 
+				Response.ok().build());
 		assertEquals(0, service.getSmsSendingQueue().size());
 
 		// Run
 		runnable.run();
 
 		//verify : Création du client 1 fois
-		verify(mockClient, times(2)).addFilter(any(ClientFilter.class));
-		verify(mockClient, times(2)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
+		verify(mockWebResourceBuilder, times(2)).post(any(Entity.class));
 		// Mais envoi de test par contre, test2 reste
 		assertEquals(1, service.getEmailsSendingQueue().keySet().size());
 		assertEquals(1, service.getEmailsSendingQueue().get("test2").size());
@@ -139,22 +132,18 @@ public class TestEmailAPI {
 						service));
 
 		when(runnable.getClient()).thenReturn(mockClient);
-		doCallRealMethod().when(mockClient).addFilter(any());
-		WebResource mockWebResource = mock(WebResource.class);
-		when(mockClient.resource(anyString())).thenReturn(mockWebResource);
-		WebResource.Builder mockWebResourceBuilder = mock(WebResource.Builder.class);
-		when(mockWebResource.type(eq(MediaType.APPLICATION_FORM_URLENCODED))).thenReturn(mockWebResourceBuilder);
-		// Envoi OK
-		when(mockWebResourceBuilder.post(eq(ClientResponse.class), any())).thenReturn(
-				new ClientResponse(200, null, null, null));
+
+		Invocation.Builder mockWebResourceBuilder = mock(Invocation.Builder.class);
+		when(runnable.getInvocation(any(Client.class), anyString(), anyString(), any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+		// Erreur lors du premier appel (envoi de test2)
+		when(mockWebResourceBuilder.post(any())).thenReturn(
+				Response.ok().build());
 		assertEquals(0, service.getSmsSendingQueue().size());
 
 		// Run
 		runnable.run();
 
-		//verify : Création du client 1 fois
-		verify(mockClient, times(2)).addFilter(any(ClientFilter.class));
-		verify(mockClient, times(2)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
+		verify(mockWebResourceBuilder, times(2)).post(any(Entity.class));
 		//  envoi de test 
 		assertEquals(0, service.getEmailsSendingQueue().keySet().size());
 		assertNull(service.getEmailsSendingQueue().get("test"));
@@ -166,8 +155,7 @@ public class TestEmailAPI {
 		
 		runnable.run();
 		// Pas de nouvel envoi
-		verify(mockClient, times(2)).addFilter(any(ClientFilter.class));
-		verify(mockClient, times(2)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
+		verify(mockWebResourceBuilder, times(2)).post(any(Entity.class));
 		// Et la liste est vide
 		assertNull(service.getEmailsSendingQueue().get("test"));
 
@@ -180,8 +168,7 @@ public class TestEmailAPI {
 		
 		runnable.run();
 		// nouvel envoi
-		verify(mockClient, times(4)).addFilter(any(ClientFilter.class));
-		verify(mockClient, times(4)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
+		verify(mockWebResourceBuilder, times(4)).post(any(Entity.class));
 		// Et la liste est vide
 		assertNull(service.getEmailsSendingQueue().get("test"));
 
@@ -207,27 +194,16 @@ public class TestEmailAPI {
 						service));
 
 		when(runnable.getClient()).thenReturn(mockClient);
-		doCallRealMethod().when(mockClient).addFilter(any());
-		WebResource mockWebResource = mock(WebResource.class);
-		when(mockClient.resource(anyString())).thenReturn(mockWebResource);
-		WebResource.Builder mockWebResourceBuilder = mock(WebResource.Builder.class);
-		when(mockWebResource.type(eq(MediaType.APPLICATION_FORM_URLENCODED))).thenReturn(mockWebResourceBuilder);
-		// Erreur lors du premier appel
-		when(mockWebResourceBuilder.post(eq(ClientResponse.class), any(MultivaluedMapImpl.class))).thenThrow(new UniformInterfaceException("Erreur lors de l'envoi", new ClientResponse(500, null, new InputStream() {
 
-			@Override
-			public int read() throws IOException {
-				return -1;
-			}
-		}, null)));
+		Invocation.Builder mockWebResourceBuilder = mock(Invocation.Builder.class);
+		when(runnable.getInvocation(any(Client.class), anyString(), anyString(), any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+		// Erreur lors du premier appel (envoi de test2)
+		when(mockWebResourceBuilder.post(any())).thenThrow(new ResponseProcessingException(Response.serverError().build(), "Erreur lors de l'envoi"));
 		assertEquals(0, service.getSmsSendingQueue().size());
 
 		// Run
 		runnable.run();
 
-		//verify : Création du client 1 fois
-		verify(mockClient, times(1)).addFilter(any(ClientFilter.class));
-		verify(mockClient, times(1)).resource(eq("https://api.mailgun.net/v3/sandboxc.mailgun.org/messages"));
 		// Mais envoi de test par contre, test2 reste
 		assertEquals(1, service.getEmailsSendingQueue().keySet().size());
 		assertNotNull(service.getEmailsSendingQueue().get("test"));
