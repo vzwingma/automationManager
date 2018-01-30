@@ -27,6 +27,7 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
@@ -196,14 +197,25 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 		this.service = service;
 	}
 
-
-
-
-
 	/**
 	 * @return the service
 	 */
 	public MessagingBusinessService getService() {
 		return service;
+	}
+	
+	/**
+	 * @param code
+	 * @return code Statut correspondant
+	 */
+	public static StatutPropertyBundleEnum getCode(int code){
+		switch (code) {
+		case 200:
+			return StatutPropertyBundleEnum.OK;
+		case 0:
+			return StatutPropertyBundleEnum.WARNING;
+		default:
+			return StatutPropertyBundleEnum.ERROR;
+		}
 	}
 }

@@ -9,7 +9,7 @@ install:
   - ./feature_github_generation.sh
   - cd ../../../    
 script: 
-  - mvn clean install
+  - mvn clean install sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=automationManager
 deploy:
   provider: releases
   api_key:
@@ -17,7 +17,7 @@ deploy:
   file:
     - feature.xml
     - automationCommons/target/automationCommons-1.2.1.jar
-    - messagingBundle/target/messagingBundle-1.2.1.jar
+    - messagingBundle/target/messagingBundle-1.2.2.jar
     - boxcryptorInventoryGeneratorBundle/target/boxcryptorInventoryGeneratorBundle-2.0.0.jar
     - saveToBundle/target/saveToBundle-1.1.3.jar
     - supervisionBundle/target/supervisionBundle-1.3.0.jar

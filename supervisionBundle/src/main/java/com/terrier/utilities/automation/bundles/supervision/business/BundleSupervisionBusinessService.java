@@ -81,7 +81,9 @@ public class BundleSupervisionBusinessService extends AbstractAutomationService 
 		StatutBundleTopicObject statutBundleObject = (StatutBundleTopicObject)event.getProperty(StatutPropertyNameEnum.STATUS.getName());
 		long time = (long)event.getProperty(StatutPropertyNameEnum.TIME.getName());
 		statutBundleObject.getMiseAJour().setTimeInMillis(time);
-		LOGGER.info(logStatut(statutBundleObject));
+		
+		String statut = logStatut(statutBundleObject);
+		LOGGER.info("{}", statut);
 		// Ajout du bundle seulement s'il s'agit d'automation
 		if(statutBundleObject.getBundle().getHeaders().get("Bundle-Name").contains("Automation")){
 			MAP_SUPERVISION_BUNDLE.put(statutBundleObject.getBundle().getBundleId(), statutBundleObject);
@@ -122,5 +124,7 @@ public class BundleSupervisionBusinessService extends AbstractAutomationService 
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
 	 */
 	@Override
-	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) { }
+	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) { 
+		// Rien à faire ici
+	}
 }

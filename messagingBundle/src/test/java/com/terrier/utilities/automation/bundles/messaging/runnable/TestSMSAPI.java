@@ -104,6 +104,64 @@ public class TestSMSAPI {
 		assertEquals(0, service.getSmsSendingQueue().size());
 	}
 	
+	/**
+	 * Test d'envoi No Span
+	 */
+	@Test
+	public void testEnvoiSMSNoSpam(){
+		// Préparation
+		MessagingBusinessService service = new MessagingBusinessService();
+		service.getSmsSendingQueue().add("message de test1");
+		service.getSmsSendingQueue().add("message de test2");
+		service.getSmsSendingQueue().add("message de test3");
+
+		SendSMSTaskRunnable runnable = spy(
+				new SendSMSTaskRunnable(
+						"https://smsapi.free-mobile.fr/sendmsg?", 
+						"1", 
+						"2",
+						service));
+
+		when(runnable.getClient()).thenReturn(mockClient);
+		doCallRealMethod().when(mockClient).addFilter(any());
+		WebResource mockWebResource = mock(WebResource.class);
+		when(mockClient.resource(anyString())).thenReturn(mockWebResource);
+		WebResource.Builder mockWebResourceBuilder = mock(WebResource.Builder.class);
+		when(mockWebResource.type(eq(MediaType.APPLICATION_FORM_URLENCODED))).thenReturn(mockWebResourceBuilder);
+		// Envoi
+		when(mockWebResourceBuilder.get(eq(ClientResponse.class))).thenReturn(
+				new ClientResponse(200, null, null, null));
+
+		// Run
+		runnable.run();
+
+		//verify : Création du client 1 fois
+		verify(mockClient, times(1)).resource(eq("https://smsapi.free-mobile.fr/sendmsg?user=1&pass=2&msg=-+message+de+test1%0A-+message+de+test2%0A-+message+de+test3%0A"));
+
+		assertEquals(0, service.getSmsSendingQueue().size());
+		
+		// Réinjection des mêmes messages
+		service.getSmsSendingQueue().add("message de test1");
+		service.getSmsSendingQueue().add("message de test2");
+		service.getSmsSendingQueue().add("message de test3");
+		// Run
+		runnable.run();
+		// Pas de nouvel envoi
+		verify(mockClient, times(1)).resource(anyString());
+		assertEquals(0, service.getSmsSendingQueue().size());
+		
+		// Réinjection des presque mêmes messages
+		service.getSmsSendingQueue().add("message de test1");
+		service.getSmsSendingQueue().add("message de test2");
+		// Run
+		runnable.run();
+		// Cette fois tout est passé
+		verify(mockClient, times(2)).resource(anyString());
+		assertEquals(0, service.getSmsSendingQueue().size());
+
+		
+		
+	}
 	
 	/**
 	 * Test d'envoi

@@ -41,7 +41,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	private ScheduledThreadPoolExecutor scheduledThreadPool = new ScheduledThreadPoolExecutor(50);
 
 	// Nombre de patterns écrits
-	protected int nbPatterns = 0;
+	protected int nombrePatterns = 0;
 
 	// Durée d'attente avec le démarrage réel
 	protected Long startDelay = 10L;
@@ -72,9 +72,9 @@ public class SaveToBusinessService extends AbstractAutomationService {
 			nbPatterns++;
 		}
 		LOGGER.info(" > Nombre de pattern : {}", nbPatterns);
-		this.nbPatterns = nbPatterns;
+		this.nombrePatterns = nbPatterns;
 
-		if(this.nbPatterns > 0){
+		if(this.nombrePatterns > 0){
 			// arrêt des tâches schedulées
 			for (Iterator<Runnable> iterator = scheduledThreadPool.getQueue().iterator(); iterator.hasNext();) {
 				Runnable scheduledFuture = iterator.next();
@@ -145,9 +145,6 @@ public class SaveToBusinessService extends AbstractAutomationService {
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
 			sendNotificationMessage(MessageTypeEnum.SMS, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
 		}
-		else{
-
-		}
 		return configValid;
 	}
 
@@ -158,7 +155,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	 * @return the nbPatterns
 	 */
 	public int getNbPatterns() {
-		return nbPatterns;
+		return nombrePatterns;
 	}
 
 
@@ -229,8 +226,8 @@ public class SaveToBusinessService extends AbstractAutomationService {
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Nombre de patterns de copie", 
-						this.nbPatterns,
-						this.nbPatterns > 0 ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
+						this.nombrePatterns,
+						this.nombrePatterns > 0 ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 		
 		for (SaveToTaskRunnable copie : this.listeScheduled) {
 			copie.updateSupervisionEvents(supervisionEvents);

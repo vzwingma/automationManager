@@ -45,7 +45,7 @@ public class MessageEventHandler implements EventHandler {
 
 		Object typeMessageObject = event.getProperty(MessagePropertyNameEnum.TYPE_MESSAGE.name());
 
-		LOGGER.debug("Topic [{}][type={}] Réception du message [{}]", event.getTopic(), typeMessageObject, sb.toString());
+		LOGGER.debug("Topic [{}][type={}] Réception du message [{}]", event.getTopic(), typeMessageObject, sb);
 		if(typeMessageObject != null && typeMessageObject instanceof MessageTypeEnum){
 			MessageTypeEnum typeMessage = (MessageTypeEnum)typeMessageObject;
 			
