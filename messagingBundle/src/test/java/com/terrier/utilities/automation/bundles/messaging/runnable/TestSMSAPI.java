@@ -21,6 +21,7 @@ import java.util.Properties;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.ResponseProcessingException;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -74,7 +75,12 @@ public class TestSMSAPI {
 						service));
 
 		when(runnable.getClient()).thenReturn(mockClient);
+		WebTarget target = mock(WebTarget.class);
+		when(mockClient.target(anyString())).thenReturn(target);
+		when(target.path(null)).thenReturn(target);
 		Invocation.Builder mockWebResourceBuilder = mock(Invocation.Builder.class);
+		when(target.request(any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+
 		when(runnable.getInvocation(any(Client.class), anyString(), anyString(), any(MediaType.class))).thenReturn(mockWebResourceBuilder);
 		// Erreur lors du premier appel (envoi de test2)
 		when(mockWebResourceBuilder.get()).thenReturn(
@@ -118,7 +124,12 @@ public class TestSMSAPI {
 						service));
 
 		when(runnable.getClient()).thenReturn(mockClient);
+		WebTarget target = mock(WebTarget.class);
+		when(mockClient.target(anyString())).thenReturn(target);
+		when(target.path(null)).thenReturn(target);
 		Invocation.Builder mockWebResourceBuilder = mock(Invocation.Builder.class);
+		when(target.request(any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+
 		when(runnable.getInvocation(any(Client.class), anyString(), anyString(), any(MediaType.class))).thenReturn(mockWebResourceBuilder);
 		// Erreur lors du premier appel (envoi de test2)
 		when(mockWebResourceBuilder.get()).thenReturn(
@@ -174,7 +185,12 @@ public class TestSMSAPI {
 						service));
 
 		when(runnable.getClient()).thenReturn(mockClient);
+		WebTarget target = mock(WebTarget.class);
+		when(mockClient.target(anyString())).thenReturn(target);
+		when(target.path(null)).thenReturn(target);
 		Invocation.Builder mockWebResourceBuilder = mock(Invocation.Builder.class);
+		when(target.request(any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+
 		when(runnable.getInvocation(any(Client.class), anyString(), anyString(), any(MediaType.class))).thenReturn(mockWebResourceBuilder);
 		// Erreur lors du premier appel (envoi de test2)
 		when(mockWebResourceBuilder.get()).thenThrow(new ResponseProcessingException(Response.serverError().build(), "Erreur lors de l'envoi"));

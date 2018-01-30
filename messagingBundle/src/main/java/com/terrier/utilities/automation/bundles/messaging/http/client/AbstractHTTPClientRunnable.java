@@ -77,6 +77,9 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	
 	public Invocation.Builder getInvocation(Client clientHTTP, String url, String path, MediaType type){
 		if(clientHTTP != null){
+			System.err.println(clientHTTP);
+			System.err.println(clientHTTP.target(url));
+			System.err.println(clientHTTP.target(url).path(path));
 			return clientHTTP.target(url).path(path).request(type);
 		}
 		return null;
