@@ -21,7 +21,7 @@ deploy:
     - boxcryptorInventoryGeneratorBundle/target/boxcryptorInventoryGeneratorBundle-${automation.boxcryptor.inventory.version}.jar
     - saveToBundle/target/saveToBundle-${automation.save.to.version}.jar
     - supervisionBundle/target/supervisionBundle-${automation.supervision.version}.jar
-  skip_cleanup: true	
+  skip_cleanup: false	
   on:
     repo: vzwingma/automationManager
     tags: true
