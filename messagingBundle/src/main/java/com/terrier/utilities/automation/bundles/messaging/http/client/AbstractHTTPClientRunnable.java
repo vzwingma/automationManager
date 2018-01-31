@@ -9,10 +9,8 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.ws.rs.core.MediaType;
 
@@ -25,7 +23,6 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.ClientFilter;
-import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
@@ -47,8 +44,6 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	// Service Métier
 	private MessagingBusinessService service;
 
-	private HostnameVerifier allHostsValid = (String hostname, SSLSession session) -> { return true; };
-
 
 	/**
 	 * Créé un client HTTP 
@@ -60,16 +55,11 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 
 		ClientConfig config = new DefaultClientConfig();
 		try {
-			TrustManager[] trustAllCerts = new TrustManager[] { new NoTrustManager() };
+			TrustManager[] trustAllCerts = new TrustManager[] { new SendTrustManager() };
 			// Install the all-trusting trust manager
 			SSLContext sslcontext = SSLContext.getInstance("TLS");
 			sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
-			HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-
-			javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-			config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(allHostsValid, sslcontext));
-
 		} catch (NoSuchAlgorithmException | KeyManagementException e1) {
 			LOGGER.error("Erreur lors de la configuration SSL du client HTTP");
 		}
