@@ -8,15 +8,14 @@ package com.terrier.utilities.automation.bundles.messaging.http.client;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -46,8 +45,6 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	// Service Métier
 	private MessagingBusinessService service;
 
-	private HostnameVerifier allHostsValid = (String hostname, SSLSession session) -> true ;
-
 	public Client getClient(){
 		return getClient(null);
 	}
@@ -69,12 +66,10 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 			// Install the all-trusting trust manager
 			SSLContext sslcontext = SSLContext.getInstance("TLS");
 
-			sslcontext.init(null,  new TrustManager[] { new NoTrustManager() }, new java.security.SecureRandom());
+			sslcontext.init(null,  new TrustManager[] { new SendAPITrustManager() }, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
-			HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
 			return ClientBuilder.newBuilder()
 					.sslContext(sslcontext)
-					.hostnameVerifier(allHostsValid)
 					.withConfig(clientConfig)
 					.build();
 		}
@@ -86,12 +81,20 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	}
 
 	
+	/**
+	 * @param clientHTTP
+	 * @param url
+	 * @param path
+	 * @param type
+	 * @return
+	 */
 	public Invocation.Builder getInvocation(Client clientHTTP, String url, String path, MediaType type){
 		if(clientHTTP != null){
-			System.err.println(clientHTTP);
-			System.err.println(clientHTTP.target(url));
-			System.err.println(clientHTTP.target(url).path(path));
-			return clientHTTP.target(url).path(path).request(type);
+			WebTarget wt = clientHTTP.target(url);
+			if(path != null){
+				wt = wt.path(path);
+			}
+			return wt.request(type);
 		}
 		return null;
 	}
