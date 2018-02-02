@@ -9,11 +9,15 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
@@ -79,7 +83,7 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 
 			Entry<String, ConcurrentLinkedQueue<String>> groupeMessages = gmIterator.next();
 			if(groupeMessages.getValue() != null && !groupeMessages.getValue().isEmpty()){
-				MultivaluedMapImpl formData = getFormData(groupeMessages.getKey(), groupeMessages.getValue());
+				MultivaluedMap<String, String> formData = getFormData(groupeMessages.getKey(), groupeMessages.getValue());
 				LOGGER.debug("Envoi du mail : {}", formData.get("subject"));
 				
 				if(sentMessages.contains(formData.get("html"))){
@@ -87,7 +91,12 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 					gmIterator.remove();
 				}
 				else{
-					boolean resultat = callHTTPPost(getClient(new HTTPBasicAuthFilter("api", this.apiKey)), this.apiURL + this.apiDomain + this.apiService, formData);
+					HttpAuthenticationFeature feature = HttpAuthenticationFeature.basicBuilder()
+						    .nonPreemptive()
+						    .credentials("api", this.apiKey)
+						    .build();
+					Invocation.Builder invocation = getInvocation(getClient(feature), this.apiURL + this.apiDomain, this.apiService, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
+					boolean resultat = callHTTPPost(invocation , formData);
 					if(resultat){
 						LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi", groupeMessages.getKey());
 						sentMessages.add(formData.get("html"));
@@ -112,8 +121,8 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	 * @param message
 	 * @return formData pour l'email
 	 */
-	private MultivaluedMapImpl getFormData(String titre, ConcurrentLinkedQueue<String> messages) {
-		MultivaluedMapImpl formData = new MultivaluedMapImpl();
+	private MultivaluedMap<String, String> getFormData(String titre, ConcurrentLinkedQueue<String> messages) {
+		MultivaluedMap<String, String> formData = new MultivaluedStringMap();
 		formData.add("from", "Automation Messaging Service <postmaster@"+this.apiDomain+">");
 		formData.add("to", this.listeDestinataires);
 		formData.add("subject", titre);

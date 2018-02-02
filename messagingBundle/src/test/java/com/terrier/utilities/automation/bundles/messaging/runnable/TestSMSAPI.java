@@ -7,8 +7,6 @@ package com.terrier.utilities.automation.bundles.messaging.runnable;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -18,19 +16,19 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.ResponseProcessingException;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
@@ -77,21 +75,24 @@ public class TestSMSAPI {
 						service));
 
 		when(runnable.getClient()).thenReturn(mockClient);
-		doCallRealMethod().when(mockClient).addFilter(any());
-		WebResource mockWebResource = mock(WebResource.class);
-		when(mockClient.resource(anyString())).thenReturn(mockWebResource);
-		WebResource.Builder mockWebResourceBuilder = mock(WebResource.Builder.class);
-		when(mockWebResource.type(eq(MediaType.APPLICATION_FORM_URLENCODED))).thenReturn(mockWebResourceBuilder);
-		// Erreur lors du premier appel
-		when(mockWebResourceBuilder.get(eq(ClientResponse.class))).thenReturn(
-				new ClientResponse(500, null, null, null), 
-				new ClientResponse(200, null, null, null));
+		WebTarget target = mock(WebTarget.class);
+		when(mockClient.target(anyString())).thenReturn(target);
+		when(target.path(null)).thenReturn(target);
+		Invocation.Builder mockWebResourceBuilder = mock(Invocation.Builder.class);
+		when(target.request(any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+
+		when(runnable.getInvocation(any(Client.class), anyString(), anyString(), any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+		// Erreur lors du premier appel (envoi de test2)
+		when(mockWebResourceBuilder.get()).thenReturn(
+				Response.serverError().build(), 
+				Response.ok().build(), 
+				Response.ok().build());
 
 		// Run
 		runnable.run();
 
 		//verify : Création du client 1 fois
-		verify(mockClient, times(1)).resource(eq("https://smsapi.free-mobile.fr/sendmsg?user=1&pass=2&msg=-+message+de+test1%0A-+message+de+test2%0A-+message+de+test3%0A"));
+		verify(mockWebResourceBuilder, times(1)).get();
 
 		assertEquals(3, service.getSmsSendingQueue().size());
 		// Envoi d'un mail indiquant l'erreur d'envoi
@@ -123,20 +124,22 @@ public class TestSMSAPI {
 						service));
 
 		when(runnable.getClient()).thenReturn(mockClient);
-		doCallRealMethod().when(mockClient).addFilter(any());
-		WebResource mockWebResource = mock(WebResource.class);
-		when(mockClient.resource(anyString())).thenReturn(mockWebResource);
-		WebResource.Builder mockWebResourceBuilder = mock(WebResource.Builder.class);
-		when(mockWebResource.type(eq(MediaType.APPLICATION_FORM_URLENCODED))).thenReturn(mockWebResourceBuilder);
-		// Envoi
-		when(mockWebResourceBuilder.get(eq(ClientResponse.class))).thenReturn(
-				new ClientResponse(200, null, null, null));
+		WebTarget target = mock(WebTarget.class);
+		when(mockClient.target(anyString())).thenReturn(target);
+		when(target.path(null)).thenReturn(target);
+		Invocation.Builder mockWebResourceBuilder = mock(Invocation.Builder.class);
+		when(target.request(any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+
+		when(runnable.getInvocation(any(Client.class), anyString(), anyString(), any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+		// Erreur lors du premier appel (envoi de test2)
+		when(mockWebResourceBuilder.get()).thenReturn(
+				Response.ok().build());
 
 		// Run
 		runnable.run();
 
 		//verify : Création du client 1 fois
-		verify(mockClient, times(1)).resource(eq("https://smsapi.free-mobile.fr/sendmsg?user=1&pass=2&msg=-+message+de+test1%0A-+message+de+test2%0A-+message+de+test3%0A"));
+		verify(mockWebResourceBuilder, times(1)).get();
 
 		assertEquals(0, service.getSmsSendingQueue().size());
 		
@@ -147,7 +150,8 @@ public class TestSMSAPI {
 		// Run
 		runnable.run();
 		// Pas de nouvel envoi
-		verify(mockClient, times(1)).resource(anyString());
+		verify(mockWebResourceBuilder, times(1)).get();
+
 		assertEquals(0, service.getSmsSendingQueue().size());
 		
 		// Réinjection des presque mêmes messages
@@ -156,7 +160,8 @@ public class TestSMSAPI {
 		// Run
 		runnable.run();
 		// Cette fois tout est passé
-		verify(mockClient, times(2)).resource(anyString());
+		verify(mockWebResourceBuilder, times(2)).get();
+
 		assertEquals(0, service.getSmsSendingQueue().size());
 
 		
@@ -180,26 +185,22 @@ public class TestSMSAPI {
 						service));
 
 		when(runnable.getClient()).thenReturn(mockClient);
-		doCallRealMethod().when(mockClient).addFilter(any());
-		WebResource mockWebResource = mock(WebResource.class);
-		when(mockClient.resource(anyString())).thenReturn(mockWebResource);
-		WebResource.Builder mockWebResourceBuilder = mock(WebResource.Builder.class);
-		when(mockWebResource.type(eq(MediaType.APPLICATION_FORM_URLENCODED))).thenReturn(mockWebResourceBuilder);
-		// Erreur lors du premier appel
-		when(mockWebResourceBuilder.get(eq(ClientResponse.class))).thenThrow(new UniformInterfaceException("Erreur lors de l'envoi", new ClientResponse(500, null, new InputStream() {
-			
-			@Override
-			public int read() throws IOException {
-				return -1;
-			}
-		}, null)));
+		WebTarget target = mock(WebTarget.class);
+		when(mockClient.target(anyString())).thenReturn(target);
+		when(target.path(null)).thenReturn(target);
+		Invocation.Builder mockWebResourceBuilder = mock(Invocation.Builder.class);
+		when(target.request(any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+
+		when(runnable.getInvocation(any(Client.class), anyString(), anyString(), any(MediaType.class))).thenReturn(mockWebResourceBuilder);
+		// Erreur lors du premier appel (envoi de test2)
+		when(mockWebResourceBuilder.get()).thenThrow(new ResponseProcessingException(Response.serverError().build(), "Erreur lors de l'envoi"));
 
 		// Run
 		runnable.run();
 
 		//verify : Création du client 1 fois
-		verify(mockClient, times(1)).resource(eq("https://smsapi.free-mobile.fr/sendmsg?user=1&pass=2&msg=-+message+de+test1%0A"));
-
+		verify(mockWebResourceBuilder, times(1)).get();
+		
 		assertEquals(1, service.getSmsSendingQueue().size());
 		// Envoi d'un mail indiquant l'erreur d'envoi
 		assertEquals(1, service.getEmailsSendingQueue().size());

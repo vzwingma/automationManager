@@ -8,6 +8,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +85,11 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 				resultat = true;
 			}
 			else{
-				resultat = callHTTPGet(getClient(), this.apiURL, "user=" + this.user + "&pass=" + this.password + "&msg=", messageSMS);
+				StringBuilder urlComplete = new StringBuilder(this.apiURL);
+				urlComplete.append("user=").append(this.user).append("&pass=").append(this.password).append("&msg=").append(messageSMS);
+				
+				Invocation.Builder invocation = getInvocation(getClient(), urlComplete.toString(), null, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
+				resultat = callHTTPGet(invocation);
 				if(resultat){
 					LOGGER.debug("Suppression des messages SMS de la liste d'envoi");
 					sentMessages.add(messageSMS);

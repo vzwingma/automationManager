@@ -5,25 +5,26 @@ package com.terrier.utilities.automation.bundles.messaging.http.client;
 
 
 
-import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.client.filter.ClientFilter;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
@@ -45,46 +46,59 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	private MessagingBusinessService service;
 
 
+	public Client getClient(){
+		return getClient(null);
+	}
+
 	/**
 	 * Créé un client HTTP 
 	 * (dans une méthode séparée pour pouvoir être mocké facilement)
 	 * @return client HTTP
 	 * @throws NoSuchAlgorithmException 
 	 */
-	public Client getClient() {
+	public Client getClient(HttpAuthenticationFeature feature) {
 
-		ClientConfig config = new DefaultClientConfig();
+		ClientConfig clientConfig = new ClientConfig();
+		if(feature != null){
+			clientConfig.register(feature);
+		}
+		
 		try {
-			TrustManager[] trustAllCerts = new TrustManager[] { new SendTrustManager() };
 			// Install the all-trusting trust manager
 			SSLContext sslcontext = SSLContext.getInstance("TLS");
-			sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+			sslcontext.init(null,  new TrustManager[] { new SendAPITrustManager() }, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
-		} catch (NoSuchAlgorithmException | KeyManagementException e1) {
-			LOGGER.error("Erreur lors de la configuration SSL du client HTTP");
-		}
-		try{
-			return Client.create(config);
+			return ClientBuilder.newBuilder()
+					.sslContext(sslcontext)
+					.withConfig(clientConfig)
+					.build();
 		}
 		catch(Exception e){
 			this.service.sendNotificationEmail("Erreur envoi ", "Erreur lors de la création du Client HTTP " + e.getMessage());
 			this.service.sendNotificationSMS( "Erreur lors de la création du Client HTTP " + e.getMessage());
-			return null;
+			return ClientBuilder.newClient(clientConfig);
 		}
 	}
 
+	
 	/**
-	 * @param filter
-	 * @return client avec filtre
+	 * @param clientHTTP
+	 * @param url
+	 * @param path
+	 * @param type
+	 * @return
 	 */
-	protected Client getClient(ClientFilter filter){
-		Client client = getClient();
-		if(client != null){
-			client.addFilter(filter);
+	public Invocation.Builder getInvocation(Client clientHTTP, String url, String path, MediaType type){
+		if(clientHTTP != null){
+			WebTarget wt = clientHTTP.target(url);
+			if(path != null){
+				wt = wt.path(path);
+			}
+			return wt.request(type);
 		}
-		return client;
+		return null;
 	}
-
 
 	/**
 	 * Appel POST 
@@ -93,15 +107,11 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	 * @param formData data envoyées
 	 * @return
 	 */
-	public boolean callHTTPPost(Client clientHTTP, String url, MultivaluedMapImpl formData){
+	public boolean callHTTPPost(Invocation.Builder invocation, MultivaluedMap<String, String> formData){
 		boolean resultat;
-		LOGGER.debug("[HTTP POST] Appel de l'URI [{}]", url);
+		LOGGER.debug("[HTTP POST] Appel de l'URI [{}]", invocation);
 		try{
-			WebResource.Builder webResource =
-					clientHTTP.resource(url).type(MediaType.APPLICATION_FORM_URLENCODED);
-
-
-			ClientResponse response = webResource.post(ClientResponse.class, formData);
+			Response response = invocation.post(Entity.form(formData));
 			LOGGER.debug("[HTTP POST] Resultat : {}", response);
 			if(response != null){
 				this.lastResponseCode = response.getStatus();
@@ -126,17 +136,12 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	 * @param urlParams paramètres de l'URL (à part pour ne pas les tracer)
 	 * @return résultat de l'appel
 	 */
-	public boolean callHTTPGet(Client clientHTTP, String url, String... urlParams){
-		LOGGER.debug("[HTTP GET] Appel de l'URI [{}]", url);
+	public boolean callHTTPGet(Invocation.Builder invocation){
+		LOGGER.debug("[HTTP GET] Appel de l'URI [{}]", invocation);
 		boolean resultat;
 		try{
-			StringBuilder urlComplete = new StringBuilder(url);
-			for (String param : urlParams) {
-				urlComplete.append(param);
-			}
 
-			WebResource.Builder webResource = clientHTTP.resource(urlComplete.toString()).type(MediaType.APPLICATION_FORM_URLENCODED);
-			ClientResponse response = webResource.get(ClientResponse.class);
+			Response response = invocation.get();
 			LOGGER.debug("[HTTP GET] Resultat : {}", response);
 			this.lastResponseCode = response != null ? response.getStatus() : 0;
 			resultat = response != null && response.getStatus() == 200;
@@ -193,7 +198,7 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	public MessagingBusinessService getService() {
 		return service;
 	}
-	
+
 	/**
 	 * @param code
 	 * @return code Statut correspondant

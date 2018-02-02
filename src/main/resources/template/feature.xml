@@ -4,29 +4,40 @@
         <details>Feature associée au module Boxcryptor Inventory Generator</details>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/boxcryptorInventoryGeneratorBundle-${automation.boxcryptor.inventory.version}.jar</bundle>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/automationCommons-${automation.commons.version}.jar</bundle>
-        <bundle start-level="80">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
-        <bundle start-level="80">mvn:org.yaml/snakeyaml/1.17</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
+        <bundle>mvn:org.yaml/snakeyaml/1.19</bundle>
     </feature>
     <feature name="automation-supervision" description="Supervision" version="${project.version}">
         <details>Feature associée au module Supervision</details>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/supervisionBundle-${automation.supervision.version}.jar</bundle>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/automationCommons-${automation.commons.version}.jar</bundle>
-        <bundle start-level="80">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
+        <bundle>mvn:javax.servlet/javax.servlet-api/4.0.0</bundle>
     </feature>
     <feature name="automation-save-to" description="SaveTo" version="${project.version}">
          <details>Feature associée au module SaveTo</details>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/saveToBundle-${automation.save.to.version}.jar</bundle>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/automationCommons-${automation.commons.version}.jar</bundle>
-        <bundle start-level="80">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
     </feature>
     <feature name="automation-messaging" description="Messaging Service" version="${project.version}">
         <details>Feature associée au module Messaging Service</details>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/messagingBundle-${automation.messaging.version}.jar</bundle>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/automationCommons-${automation.commons.version}.jar</bundle>
-        <bundle start-level="80">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
-        <bundle start-level="80">mvn:com.sun.jersey/jersey-core/1.19.1</bundle>
-        <bundle start-level="80">mvn:javax.ws.rs/jsr311-api/1.1.1</bundle>
-        <bundle start-level="80">mvn:com.sun.jersey/jersey-client/1.19.1</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
+        <bundle>mvn:org.glassfish.jersey.core/jersey-common/2.26</bundle>
+        <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.1</bundle>
+        <bundle>mvn:javax.annotation/javax.annotation-api/1.2</bundle>
+        <bundle>mvn:org.glassfish.hk2.external/javax.inject/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2/osgi-resource-locator/1.0.1</bundle>
+        <bundle>mvn:org.glassfish.jersey.core/jersey-client/2.26</bundle>
+        <bundle>mvn:org.glassfish.jersey.inject/jersey-hk2/2.26</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-locator/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2.external/aopalliance-repackaged/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-api/2.5.0-b42</bundle>
+        <bundle>wrap:mvn:javax.inject/javax.inject/1</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-utils/2.5.0-b42</bundle>
+        <bundle>mvn:org.javassist/javassist/3.22.0-CR2</bundle>
     </feature>
     <feature name="automation-manager" description="Automation Manager Service" version="${project.version}">
         <details>Feature associée au module Messaging Service</details>
