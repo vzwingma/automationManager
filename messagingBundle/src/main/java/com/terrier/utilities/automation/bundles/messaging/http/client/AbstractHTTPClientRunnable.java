@@ -45,6 +45,7 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	// Service Métier
 	private MessagingBusinessService service;
 
+
 	public Client getClient(){
 		return getClient(null);
 	}
