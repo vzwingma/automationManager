@@ -8,7 +8,7 @@ Gestionnaire de tâches automatisées
 [![Dependency Status](https://beta.gemnasium.com/badges/github.com/vzwingma/automationManager.svg)](https://beta.gemnasium.com/projects/github.com/vzwingma/automationManager)
 
 <a href="https://scan.coverity.com/projects/vzwingma-automationmanager"><img alt="Coverity Scan Build Status" src="https://img.shields.io/coverity/scan/7397.svg"/></a>
-<a href="https://sonarcloud.io/dashboard?id=com.terrier.utilities.automation.bundles%3AAutomationManager"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/badges/gate?key=automationManager"/></a>
+<a href="https://sonarcloud.io/dashboard?id=automationManager"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/badges/gate?key=automationManager"/></a>
 
 
 ## Modules OSGi
