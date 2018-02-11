@@ -1,27 +1,29 @@
-# Travis Lint : https://lint.travis-ci.org
 # Config secure
 language: java
 jdk:
   - oraclejdk8
-env:
-  global:
-    # COVERITY_SCAN_TOKEN
-    # ** specific to your project **
-    - secure: "QSrXdH+URjP26x/+5ULJVxQNCBs0oHs5cS8vnfVYg/fcQ9akZYo/UIFs4cRhJ/bK54QHF0tFTcguK5yIMNH3jeSiTwyC+E23dxy74hgulLjk/sn8sEj5aFbmelUnD3uq8mQ4SIKsfgy6fBAqutYLCmIlFHTBQUeIqMv+wG9ArZAvzCoVUZ+4TxTARpiP/pd/LHDkMmbsFDcgDvvAt6VbbuyzpuXWfuCNzBABcfG6Ro3jvpJfbcn7SD+Y7a6vslQ1OaDC4lstd7IKNRFNY0MkupfgNPAEvk+KBsxrl5KRcpvihFzIwu0FH8dUt8BEi+UVV2bep4nA8B0XLPTPJJsUCEIldfAc6vfwhD5zz/RrLRK/dbi/jq5eVRvgNq2CpODj5ARFg47F1SSsx1+c1P/PyeUtYvP/diBFbCq8miMKYa2/pJrDL7VD2QCQOlTJSARDxcZgiq/h31VQmiFxe5cBJ6EXze3QzgX3lVhlgnRzI7OMivVNdqfPHYvUZwQzeV5CeLYJPI47comecLQ4m3PpOadL9kYvRQnd4mrq9iUH8yPBllqIpYomBC8JCVv+/4FQGwBHwGUUt9q+XMvZS/rnz9HSupOSrUU5Ocjj2pb6j1w4MeJ2RVYi5xhO1deTXE0q+FOFeoAS15Y2iZYL/j3/YwD2mOTMex7+bZ4oe8mqROs="
-addons:
-  coverity_scan:
-    # GitHub project metadata
-    project:
-      name: vzwingma/automationManager
-    # Where email notification of build analysis results will be sent
-    notification_email: vincent.zwingmann@gmail.com
-    build_command_prepend: mvn clean
-    # The command that will be added as an argument to "cov-build" to compile your project for analysis,
-    build_command: mvn compile
-    # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
-    # Take care in resource usage, and consider the build frequency allowances per
-    #   https://scan.coverity.com/faq#frequency
-    branch_pattern: coverity_scan
-install: 
+# Notification SLACK
+notifications:
+  slack: "uh4hBuP7WhJM6S6qvBUF8dWQ6rZrjD+dlSg+M9YW/Dc1qsOFoXhQRSmLBfShMN2rIRXW2AwWk3Qro8QBQpURd6fIC5oQ90XiSo2IUjWWCExFux8N68xA4R22eo/DmbDoIrPVThQg8mdmFPcBoOBH78Z8Elr05ui4xav2Kv2RozKq5+/1Try4QS5FYsA3TbYdmxPKWcfqiOG3oGV+EOaVu4/2Pm20ALPVeGJfcqwpDuHkKJgU2NDVhYJT6qpKpzZajD8VFqmwmom2DeTHiuDfdwSUu24GNLRQDuvzo4LOpbp1g5dJk5LZPIRdVZnzaQ3HQmEUTB2foiwmsDl7FKjYRjyeL4qVGdFQ70VoJhstwPko1cx1OgOFY0IMh3koIlO6YQSTWxsRKILUQyl/uGZV2+rsvDFFqmhMbVNsbK/IG72vFGBeoSlVvaQPz0ipf7ez5qGE3gvKTmmoq5IIijI2xctBS27NDtYzV6oRsIzW9ifnBavqEmJ2wRnW3aP2OYg5pMz07X1seC5CvvBtYmmaU3wde7JhEynzuSgfHC0U6dwHZ8o8ysU7ItqXk8ubB7vNsGn+Gwv9scSNVgbmQKO6fkKm5rL6esNEDKGpldnD0UjKdu+yLplwU2SdgEm5mr+whH+P0IRCOf9rPNzvTvewaruSxdVZ9+hli/b6PCZlrBA="  
+install:
+  - "echo Génération pour la branche : $TRAVIS_BRANCH" 
+  - cd src/main/resources
+  - ./feature_github_generation.sh
+  - cd ../../../    
+script: 
   - mvn clean install sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORG -Dsonar.projectKey=automationManager
-after_script: cat /home/travis/build/vzwingma/automationManager/cov-int/scm_log.txt
+deploy:
+  provider: releases
+  api_key:
+    secure: RWU7uEO6iHDEsVRTNg+aUns/8GNeUnzd7m2s1jDohakAyx/HYytstum2rODn1vTpTh4xjjTbeoAkC+hJmsfgTSwgV3r0AbSdzOwk8+WPitBO9ZxIL640MTcCT0bZWMcXAphkXOQMK1RntU42ib/0jMQ7+eBSdWPp4jRb5VzvXGrot9/K7oNwKpojGLXJxFokaAhX1H/22qjSH9jXzi/ahWRtolb6PEKY1YCnl0belmlYn//b6GXlkYkt+zn3YoTSvPnzt+1DFg/O9wWCyKdZ050YGbJUs9LUIsH+VL8tU2tDLVPyd+nsgEHTjof1BVyvR6kaaPLWn6rdUUdyPnAfNBP8JW+jfB1TuJEs64C7wOm1Et72VrWh+AnNEHrq7oPYBtHDXTtLrqVrsqtivNH2KQGUGTVLM8nggIC98VO+A/vsdvEHrXSN4FMfciqG6a43x8r1gXQMZVoAb6jlGV1RfN5XC4z7ucmsE65GV+pzdR/mZrK7/SeGHhP1DtpRo4ODLQLEV8vl+sfuC1VtyU9CWkH6kuUWBLAbk4mQGrgQQJ52tfS5kJlRUCyO3DmEu+/Xt6FocHPoc6dnUptILEl+FN4doy5Z8Vv+2ltKTwn5P5hzJq2uquECPV0EtUiqVtk6EXS9ZHricbB22lGtCLFMp0W65vvO0BLizI6Tz3HSxxA=
+  file:
+    - feature.xml
+    - automationCommons/target/automationCommons-1.2.1.jar
+    - messagingBundle/target/messagingBundle-1.2.2.jar
+    - boxcryptorInventoryGeneratorBundle/target/boxcryptorInventoryGeneratorBundle-2.0.0.jar
+    - saveToBundle/target/saveToBundle-1.1.3.jar
+    - supervisionBundle/target/supervisionBundle-1.3.0.jar
+  skip_cleanup: false    
+  on:
+    repo: vzwingma/automationManager
+    tags: true
