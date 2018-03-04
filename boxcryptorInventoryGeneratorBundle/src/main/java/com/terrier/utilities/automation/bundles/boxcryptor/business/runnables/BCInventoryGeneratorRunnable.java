@@ -89,13 +89,12 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 				threadsPool.shutdown();
 				BCUtils.printDelayFrom(this.index, "Generate Inventory", startTraitement);
 
+				LOGGER.info("[{}] Date DernierTraitement {} / Date modification dernier inventaire : {}", 
+						BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement), 
+						BCUtils.getLibelleDateUTCFromMillis(inventaireNew.getDateModificationDernierInventaire()));
 
 				// Ecriture de l'inventaire ssi il a changé
 				if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire() > this.dateDernierTraitement){
-					LOGGER.debug("[{}] Date DernierTraitement {} / Date modification dernier inventaire : {}", 
-							BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement), 
-							BCUtils.getLibelleDateUTCFromMillis(inventaireNew.getDateModificationDernierInventaire()));
-
 					BCUtils.dumpYMLInventory(this.yml, this.repertoireNonChiffre, inventaireNew);
 					BCUtils.printDelayFrom(this.index, "Dump Inventory", startTraitement);
 					LOGGER.info("[{}] Inventaire de {} généré", this.index, this.repertoireNonChiffre.getName());
