@@ -98,7 +98,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 				try(DirectoryStream<Path> dsChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireChiffre), directoryFilter);){
 
 					for (Path sousRepertoireChiffre : dsChiffre) {
-
+						// Recherche du sous répertoire associé par la date de création
 						if(Files.getLastModifiedTime(sousRepertoireChiffre).toMillis() == Files.getLastModifiedTime(sousRepertoireNonChiffre).toMillis()){
 							listeExecSousRepertoires.add(
 									this.executorPool.submit(
@@ -108,7 +108,12 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 													this.nomTraitementParent + "|" + sousRepertoireNonChiffre.getFileName().toString(), 
 													this.inventaireR.getBCInventaireSousRepertoire(sousRepertoireChiffre, sousRepertoireNonChiffre),
 													sousRepertoireChiffre.toFile().getAbsolutePath(), sousRepertoireNonChiffre.toFile().getAbsolutePath()))
-									);						
+									);
+							if(inventaireR.getDateModificationDernierInventaire() == null
+									|| Files.getLastModifiedTime(sousRepertoireChiffre).toMillis() > inventaireR.getDateModificationDernierInventaire()){
+								inventaireR.setDateModificationDernierInventaire(Files.getLastModifiedTime(sousRepertoireChiffre).toMillis());
+							}
+							
 						}
 					}
 				}

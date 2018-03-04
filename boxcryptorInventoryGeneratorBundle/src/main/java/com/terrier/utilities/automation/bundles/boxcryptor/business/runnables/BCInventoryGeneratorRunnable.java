@@ -90,6 +90,7 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 				BCUtils.printDelayFrom(this.index, "Generate Inventory", startTraitement);
 
 				LOGGER.info("[{}] Date DernierTraitement {} / Date modification dernier inventaire : {}", 
+						this.index, 
 						BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement), 
 						BCUtils.getLibelleDateUTCFromMillis(inventaireNew.getDateModificationDernierInventaire()));
 
