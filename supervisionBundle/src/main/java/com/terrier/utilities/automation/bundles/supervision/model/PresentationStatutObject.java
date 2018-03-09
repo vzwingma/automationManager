@@ -26,7 +26,7 @@ public class PresentationStatutObject {
 	// Date de mise à jour
 	private Calendar dateMiseAJour;
 
-	private List<PresentationStatutPropertyObject> listStatutPropertyObject = new ArrayList<PresentationStatutPropertyObject>();
+	private List<PresentationStatutPropertyObject> listStatutPropertyObject = new ArrayList<>();
 	/**
 	 * @return the nomGroupe
 	 */

@@ -43,7 +43,7 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	private String apiService;
 	private String listeDestinataires;
 	
-	private List<List<String>> sentMessages = new ArrayList<List<String>>();
+	private List<List<String>> sentMessages = new ArrayList<>();
 	
 	/**
 	 * Constructeur de la tâche d'envoi
@@ -62,7 +62,7 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	 * @see java.lang.Runnable#run()
 	 */
 	@Override
-	public void HTTPClientRun() {
+	public void httpClientRun() {
 		LOGGER.info("Envoi des emails : {} messages en attente", getService().getEmailsSendingQueue().size());
 		if(getService().getEmailsSendingQueue().size() > 0){
 			boolean resultat = sendAllMessages();

@@ -4,10 +4,9 @@
 package com.terrier.utilities.automation.bundles.communs.business;
 
 import java.util.Dictionary;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +38,7 @@ import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBund
 public abstract class AbstractAutomationService extends AutomationEventPublisher<MessagePropertyNameEnum> implements ManagedService, Runnable {
 
 
-	private final Logger LOGGER = LoggerFactory.getLogger( this.getClass() );
+	private final Logger logger = LoggerFactory.getLogger( this.getClass() );
 
 	// Dictionnaire
 	private Dictionary<String, String> dictionnaire;
@@ -72,12 +71,12 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 	 * @param configPID nom du fichier de configuration
 	 */
 	public void registerToConfig(String configPID){
-		LOGGER.info("Enregistrement de la surveillance du fichier de configuration : {}", configPID);
-		Hashtable<String, Object> properties = new Hashtable<String, Object>();
+		logger.info("Enregistrement de la surveillance du fichier de configuration : {}", configPID);
+		Hashtable<String, Object> properties = new Hashtable<>();
 		this.configPID = configPID;
 		properties.put(Constants.SERVICE_PID, this.configPID);
 		FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(ManagedService.class.getName(), this , properties);
-		LOGGER.info("Chargement du fichier de configuration /etc/{}.cfg", this.configPID);
+		logger.info("Chargement du fichier de configuration /etc/{}.cfg", this.configPID);
 	}
 
 
@@ -89,13 +88,13 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 	@Override
 	public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
 		if(properties != null){
-			LOGGER.info("Mise à jour du fichier de configuration {}", this.configPID);
+			logger.info("Mise à jour du fichier de configuration {}", this.configPID);
 			this.dictionnaire = (Dictionary<String, String>)properties;
 			notifyUpdateDictionary();
 			sendNotificationMessage(MessageTypeEnum.SMS, "Configuration", "Mise à jour du fichier de configuration /etc/"+ this.configPID +".cfg");
 		}
 		else{
-			LOGGER.error("Impossible de trouver le fichier de configuration");
+			logger.error("Impossible de trouver le fichier de configuration");
 		}
 	}
 
@@ -116,7 +115,7 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 
 		BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
 		// MessageProperties
-		Map<StatutPropertyNameEnum, Object> properties = new HashMap<>();
+		EnumMap<StatutPropertyNameEnum, Object> properties = new EnumMap<>(StatutPropertyNameEnum.class);
 
 
 		// Status
@@ -131,7 +130,7 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 		statutBundle.getProperties().add(statutThread);
 		updateSupervisionEvents(statutBundle.getProperties());
 
-		LOGGER.debug("Envoi des éléments de supervision : {}", statutBundle.getProperties());
+		logger.debug("Envoi des éléments de supervision : {}", statutBundle.getProperties());
 		properties.put(StatutPropertyNameEnum.STATUS, statutBundle);
 		properties.put(StatutPropertyNameEnum.TIME, System.currentTimeMillis());
 		// Publication
@@ -153,7 +152,7 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 	 */
 	public void sendNotificationMessage(MessageTypeEnum typeMessage, String titreMessage, String message)
 	{
-		HashMap<MessagePropertyNameEnum, Object> propertiesMessages = new HashMap<MessagePropertyNameEnum, Object>();
+		EnumMap<MessagePropertyNameEnum, Object> propertiesMessages = new EnumMap<>(MessagePropertyNameEnum.class);
 		propertiesMessages.put(MessagePropertyNameEnum.TITRE_MESSAGE, titreMessage);
 		propertiesMessages.put(MessagePropertyNameEnum.MESSAGE, message);
 		propertiesMessages.put(MessagePropertyNameEnum.TIME, System.currentTimeMillis());
@@ -180,13 +179,13 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 	 */
 	@PreDestroy
 	public void stopSupervision(){
-		LOGGER.warn("Arrêt de la supervision");
+		logger.warn("Arrêt de la supervision");
 		this.scheduledThreadPool.shutdown();
 		arretTasks();
 	}
 
 
 	public void arretTasks(){
-		LOGGER.debug("Arrêt des tâches lors du @PreDestroy");
+		logger.debug("Arrêt des tâches lors du @PreDestroy");
 	}
 }

@@ -54,9 +54,9 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 	 * @see java.lang.Runnable#run()
 	 */
 	@Override
-	public void HTTPClientRun() {
+	public void httpClientRun() {
 		LOGGER.info("Envoi des SMS : {} messages en attente", getService().getSmsSendingQueue().size());
-		if(getService().getSmsSendingQueue().size() > 0){
+		if(!getService().getSmsSendingQueue().isEmpty()){
 			boolean resultat = sendAllMessages();
 			LOGGER.info("> Résulat des envois : {}", resultat);
 		}
@@ -71,10 +71,10 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 		boolean resultat = false;
 		
 		// Envoi de tous les mails, groupé par titre :
-		if(getService().getSmsSendingQueue().size() > 0){
+		if(!getService().getSmsSendingQueue().isEmpty()){
 
 			List<String> messages = new ArrayList<>();
-			while(getService().getSmsSendingQueue().size() > 0 && messages.size() < 5){
+			while(!getService().getSmsSendingQueue().isEmpty() && messages.size() < 5){
 				messages.add(getService().getSmsSendingQueue().poll());
 			}
 			String messageSMS =  getFormData(messages);

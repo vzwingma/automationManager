@@ -54,7 +54,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	/**
 	 * Liste des tÃ¢ches schedulées
 	 */
-	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<ScheduledFuture<?>>();
+	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<>();
 
 
 	/**
@@ -68,10 +68,10 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#startService()
 	 */
 	@PostConstruct
-	public void startService() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+	public void startService() throws NoSuchFieldException, IllegalAccessException {
 		super.registerToConfig(CONFIG_PID);
 		// Encoding en UTF-8
-		// Forcage en UTF-8 pour les caractÃ¨res chinois utilisés par BC
+		// Forcage en UTF-8 pour les caractères chinois utilisés par BC
 		System.setProperty("file.encoding","UTF-8");
 		Field charset = Charset.class.getDeclaredField("defaultCharset");
 		charset.setAccessible(true);
@@ -85,7 +85,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	private void initYAML(){
 		if(FrameworkUtil.getBundle(this.getClass()) != null){
 			BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-			LOGGER.warn("Chargement de YAML Ã  partir du classloader du bundle", bundleContext);
+			LOGGER.warn("Chargement de YAML à partir du classloader du bundle [{}]", bundleContext);
 			this.yaml = new Yaml(new CustomClassLoaderConstructor(bundleContext.getBundle().adapt(BundleWiring.class).getClassLoader()));
 		}
 		else{
@@ -107,9 +107,9 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		LOGGER.info(" > Nombre de pattern : {}", nbPatterns);
 		this.nbInventaires = nbPatterns;
 
-		// arrÃªt des tÃ¢ches schedulées
+		// arret des taches schedulées
 		for (Iterator<ScheduledFuture<?>> iterator = listeScheduled.iterator(); iterator.hasNext();) {
-			ScheduledFuture<?> scheduledFuture = (ScheduledFuture<?>) iterator.next();
+			ScheduledFuture<?> scheduledFuture = iterator.next();
 			scheduledFuture.cancel(true);
 			iterator.remove();
 		}
@@ -239,7 +239,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 				new StatutPropertyBundleObject(
 						"Traitements programmés", 
 						this.listeScheduled.size(),
-						this.listeScheduled.size() > 0 ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
+						!this.listeScheduled.isEmpty() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Threads utilisés", 

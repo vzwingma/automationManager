@@ -43,7 +43,7 @@ public class BundleSupervisionBusinessService extends AbstractAutomationService 
 	@Inject private AutomationBundlesListener automationBundlesListener;
 
 
-	private static final Map<Long, StatutBundleTopicObject> MAP_SUPERVISION_BUNDLE = new HashMap<Long, StatutBundleTopicObject>();
+	private static final Map<Long, StatutBundleTopicObject> MAP_SUPERVISION_BUNDLE = new HashMap<>();
 
 	
 	/**
@@ -52,7 +52,7 @@ public class BundleSupervisionBusinessService extends AbstractAutomationService 
 	@PostConstruct
 	public void initService(){
 
-		Dictionary<String, String[]> props = new Hashtable<String, String[]>();
+		Dictionary<String, String[]> props = new Hashtable<>();
 		String[] listeTopics = new String[]{EventsTopicNameEnum.SUPERVISION_EVENTS.getTopicName()};
 		props.put(EventConstants.EVENT_TOPIC, listeTopics);
 		LOGGER.info("Enregistrement de l'eventHandler {} sur le topic : {}", this, EventsTopicNameEnum.SUPERVISION_EVENTS.getTopicName());
@@ -100,7 +100,7 @@ public class BundleSupervisionBusinessService extends AbstractAutomationService 
 		StringBuilder log = new StringBuilder("\n> Statut de ").append(statutBundle.getBundle().getSymbolicName()).append(" : ").append(OSGIStatusUtils.getBundleStatusLibelle(statutBundle.getBundle().getState())).append("\n");
 		Enumeration<String> keysHeaders = statutBundle.getBundle().getHeaders().keys();
 		while (keysHeaders.hasMoreElements()) {
-			String key = (String) keysHeaders.nextElement();
+			String key = keysHeaders.nextElement();
 			log.append("\n  ").append(key).append(":").append(statutBundle.getBundle().getHeaders().get(key));	
 		}
 		

@@ -29,12 +29,12 @@ public class BCInventaireRepertoire extends AbstractBCInventaireStructure {
 	/**
 	 * Fichier dans le répertoire
 	 */
-	private Map<String, BCInventaireFichier> mapInventaireFichiers = new HashMap<String, BCInventaireFichier>();
+	private Map<String, BCInventaireFichier> mapInventaireFichiers = new HashMap<>();
 	
 	/**
 	 * Sous répertoires dans le répertoire
 	 */
-	private Map<String, BCInventaireRepertoire> mapInventaireSousRepertoires = new HashMap<String, BCInventaireRepertoire>();
+	private Map<String, BCInventaireRepertoire> mapInventaireSousRepertoires = new HashMap<>();
 	
 	private long dateModificationDernierInventaire;
 

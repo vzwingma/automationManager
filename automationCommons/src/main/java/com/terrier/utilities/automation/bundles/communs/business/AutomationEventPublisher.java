@@ -67,7 +67,7 @@ public class AutomationEventPublisher<PT extends IAutomationTopicPropertyNamesEn
 	 * @return event event à envoyer. Null si erreur ou données incorrectes
 	 */
 	public static Event createEvent(EventsTopicNameEnum topic, Map<?  extends IAutomationTopicPropertyNamesEnum, Object> propertiesMessages){
-		Dictionary<String, Object> properties = new Hashtable<String, Object>();
+		Dictionary<String, Object> properties = new Hashtable<>();
 		// Transformation des properties messages en propertiestotopic
 		if(propertiesMessages != null && !propertiesMessages.isEmpty()){
 			for (Entry<?  extends IAutomationTopicPropertyNamesEnum, Object> property : propertiesMessages.entrySet()) {

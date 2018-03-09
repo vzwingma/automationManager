@@ -4,6 +4,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -53,11 +54,6 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	// Message Handler
 	@Inject private MessageEventHandler eventMessages;
 
-	/**
-	 * Flag de validation
-	 */
-	private boolean configValid;
-
 	// Période d'envoi
 	private Long periodeEnvoiMessages;
 
@@ -68,8 +64,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	/**
 	 * Liste de messages à envoyer
 	 */
-	private Map<String, ConcurrentLinkedQueue<String>> emailSendingQueue = new ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>();
-	private ConcurrentLinkedQueue<String> smsSendingQueue = new ConcurrentLinkedQueue<String>();
+	private Map<String, ConcurrentLinkedQueue<String>> emailSendingQueue = new ConcurrentHashMap<>();
+	private ConcurrentLinkedQueue<String> smsSendingQueue = new ConcurrentLinkedQueue<>();
 
 	/**
 	 * Initialisation
@@ -79,7 +75,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		registerToConfig(CONFIG_PID);
 
 		LOGGER.info("Enregistrement de l'eventHandler {} sur le topic : {}", eventMessages, EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName());
-		Dictionary<String, String[]> props = new Hashtable<String, String[]>();
+		Dictionary<String, String[]> props = new Hashtable<>();
 		props.put(EventConstants.EVENT_TOPIC, new String[]{EventsTopicNameEnum.NOTIFIFY_MESSAGE.getTopicName()});
 		FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(EventHandler.class.getName(), eventMessages , props);
 	}
@@ -92,7 +88,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	@Override
 	public void notifyUpdateDictionary() {
 		// Validation de la config
-		configValid = validateConfig();
+		boolean configValid = validateConfig();
 		// Si correct, reprogrammation de la tâche d'envoi
 		if(configValid){
 			scheduleSendingEmail();
@@ -227,7 +223,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 			smsSendingQueue.add(message);
 		}
 		else{
-			LOGGER.info("Le message [{}] existe déjà dans la file. Pas d'ajout supplémentaire");
+			LOGGER.info("Le message [{}] existe déjà dans la file. Pas d'ajout supplémentaire", message);
 		}
 	}
 
@@ -256,7 +252,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	/**
 	 * @return the smsSendingQueue
 	 */
-	public ConcurrentLinkedQueue<String> getSmsSendingQueue() {
+	public Queue<String> getSmsSendingQueue() {
 		return smsSendingQueue;
 	}
 

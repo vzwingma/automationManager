@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.junit.Before;
@@ -121,7 +122,7 @@ public class TestBusinessService {
 		service.sendNotificationSMS("message de test2");
 		service.sendNotificationSMS("message de test3");
 
-		ConcurrentLinkedQueue<String> queue = service.getSmsSendingQueue();
+		Queue<String> queue = service.getSmsSendingQueue();
 		assertEquals(3, queue.size());
 	}
 

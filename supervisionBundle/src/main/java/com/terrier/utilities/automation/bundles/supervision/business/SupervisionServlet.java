@@ -17,8 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.omg.CORBA.ExceptionList;
-
 import com.terrier.utilities.automation.bundles.communs.model.StatutBundleTopicObject;
 import com.terrier.utilities.automation.bundles.supervision.communs.PresentationStatutModuleEnum;
 import com.terrier.utilities.automation.bundles.supervision.model.PresentationStatutObject;
@@ -38,7 +36,7 @@ public class SupervisionServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -7218593433411480431L;
 
-	private final SimpleDateFormat DATE_MAJ_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	private final SimpleDateFormat dateMajFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 	
 	private static final String SPAN_STATUS = "span.status_";
@@ -136,7 +134,7 @@ public class SupervisionServlet extends HttpServlet {
 		writer.append("<td>").append(bundlePresentationStatut.getNomModule()).append("</td>")
 		.append("<td>[<span class='status_").append(bundlePresentationStatut.getEtatModule()).append("'>").append(bundlePresentationStatut.getEtatModule()).append("</span>]</td>");
 		writer.append("</tr>");
-		writer.append("<tr><td>Heure de mise à jour</td><td>").append(bundlePresentationStatut.getDateMiseAJour() != null ? DATE_MAJ_FORMAT.format(bundlePresentationStatut.getDateMiseAJour().getTime()) : "???").append("</td></tr>");
+		writer.append("<tr><td>Heure de mise à jour</td><td>").append(bundlePresentationStatut.getDateMiseAJour() != null ? dateMajFormat.format(bundlePresentationStatut.getDateMiseAJour().getTime()) : "???").append("</td></tr>");
 		writer.append("<tr class='componentstitle'><td>Statut des composants</i></td><td>[<span class='status_").append(bundlePresentationStatut.getStatutComponents()).append("'>" ).append(bundlePresentationStatut.getStatutComponents()).append("</span>] </td></tr>"); 
 		writer.append("<tr><td></td></tr>");
 		for (PresentationStatutPropertyObject bundleValue : bundlePresentationStatut.getListStatutPropertyObject()) {

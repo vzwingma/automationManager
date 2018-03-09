@@ -48,7 +48,7 @@ public class PresentationStatutObjectTranslator {
 	 * @return liste des properties en mode présentation
 	 */
 	public static List<PresentationStatutPropertyObject> translateFrom(List<StatutPropertyBundleObject> propertyObjects){
-		List<PresentationStatutPropertyObject> properties = new ArrayList<PresentationStatutPropertyObject>();
+		List<PresentationStatutPropertyObject> properties = new ArrayList<>();
 		if(propertyObjects != null && !propertyObjects.isEmpty() ){
 			for (StatutPropertyBundleObject propertyObject : propertyObjects) {
 				properties.add(translateFrom(propertyObject));
