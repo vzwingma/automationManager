@@ -1,4 +1,4 @@
-# Automation Manager v1.6.0
+# Automation Manager v1.6.1
 Gestionnaire de tâches automatisées
 
 <a href='https://travis-ci.org/vzwingma/automationManager'><img src='https://api.travis-ci.org/vzwingma/automationManager.svg?branch=master' alt='Build Status' /></a>
@@ -13,11 +13,11 @@ Gestionnaire de tâches automatisées
 
 ## Modules OSGi
 
-#### automationCommons v1.2.1
+#### automationCommons v1.2.2
   *  Librairie commune
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=automationCommons%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=automationCommons%2Fpom.xml)
 
-#### [supervisionBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Supervision) v1.3.0
+#### [supervisionBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Supervision) v1.3.1
   *  Libraire de supervision des bundles de l'AutomationManager
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=supervisionBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=supervisionBundle%2Fpom.xml)
 
@@ -25,11 +25,11 @@ Gestionnaire de tâches automatisées
   *  Librairie d'envoi de mail et de SMS
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=messagingBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=messagingBundle%2Fpom.xml)
 
-#### [boxcryptorInventoryBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v2.0.0
+#### [boxcryptorInventoryBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v2.0.1
   *  Générateur d'inventaire pour BoxCryptor
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=boxcryptorInventoryGeneratorBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=boxcryptorInventoryGeneratorBundle%2Fpom.xml)
 
-#### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.1.3
+#### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.1.4
   *  Libraire de copie de fichier ou de répertoire
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=saveToBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=saveToBundle%2Fpom.xml)
 
@@ -46,12 +46,12 @@ Gestionnaire de tâches automatisées
 
 #### à partir de GitHub
 
-     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.6.0/feature.xml
+     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.6.1/feature.xml
      feature:install automation-manager
      
 #### à partir de Maven
 
-     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.6.0/xml/features
+     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.6.1/xml/features
      feature:install automation-supervision
      feature:install automation-messaging
      feature:install automation-boxcryptor-inventory
