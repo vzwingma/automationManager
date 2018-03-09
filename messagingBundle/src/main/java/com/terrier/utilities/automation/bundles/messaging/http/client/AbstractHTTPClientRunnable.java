@@ -160,13 +160,13 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		HTTPClientRun();
+		httpClientRun();
 	}
 
 	/**
 	 * Méthode de traitement runnable
 	 */
-	public abstract void HTTPClientRun();
+	public abstract void httpClientRun();
 
 
 

@@ -27,13 +27,12 @@ public class SendAPITrustManager implements X509TrustManager {
 	@Override
 	public void checkClientTrusted(X509Certificate[] certificates, String arg1) throws CertificateException {		
 		// Trust all in CERTIFICATS_CN
-		if(!Arrays.asList(certificates)
+		if(Arrays.asList(certificates)
 				.stream()
-				.anyMatch(cert -> {
-					return Arrays.asList(CERTIFICATS_CN)
-							.stream()
-							.anyMatch(trusted -> cert.getSubjectX500Principal().getName().contains(trusted));
-		})){		
+				.noneMatch(cert -> Arrays.asList(CERTIFICATS_CN)
+									.stream()
+									.anyMatch(trusted -> cert.getSubjectX500Principal().getName().contains(trusted))
+		)){		
 			throw new CertificateException("Le certificat ne correspond pas à un élément de la liste");
 		}
 	}
@@ -45,13 +44,12 @@ public class SendAPITrustManager implements X509TrustManager {
 	public void checkServerTrusted(X509Certificate[] certificates, String arg1)
 			throws CertificateException { 
 		// Trust all in CERTIFICATS_CN
-		if(!Arrays.asList(certificates)
+		if(Arrays.asList(certificates)
 				.stream()
-				.anyMatch(cert -> {
-					return Arrays.asList(CERTIFICATS_CN)
-							.stream()
-							.anyMatch(trusted -> cert.getSubjectX500Principal().getName().contains(trusted));
-		})){		
+				.noneMatch(cert -> Arrays.asList(CERTIFICATS_CN)
+									.stream()
+									.anyMatch(trusted -> cert.getSubjectX500Principal().getName().contains(trusted))
+		)){		
 			throw new CertificateException("Le certificat ne correspond pas à un élément de la liste");
 		}
 	}

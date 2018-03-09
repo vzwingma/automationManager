@@ -42,7 +42,7 @@ public final class SupervisionActivator implements BundleActivator, ServiceTrack
 	@Inject BundleSupervisionBusinessService service;
 	
 	
-	private final static String URL_STATUT_SUPERVISION = "/supervision/statut";
+	private static final String URL_STATUT_SUPERVISION = "/supervision/statut";
 
 	/**
 	 * Called when the OSGi framework starts our bundle
@@ -66,7 +66,7 @@ public final class SupervisionActivator implements BundleActivator, ServiceTrack
 	 */
 	@Override
 	public HttpService addingService(ServiceReference<HttpService> reference) {
-		final HttpService httpService = (HttpService) bundleContext.getService(reference);
+		final HttpService httpService = bundleContext.getService(reference);
 		if (httpService != null) {
 			// create a default context to share between registrations
 			final HttpContext httpContext = httpService
@@ -79,9 +79,7 @@ public final class SupervisionActivator implements BundleActivator, ServiceTrack
 						new SupervisionServlet(), // registered
 						// servlet
 						initParams, httpContext);
-			} catch (ServletException e) {
-				LOGGER.error("Erreur lors de l'initialistion du service [{}]", URL_STATUT_SUPERVISION, e);
-			} catch (NamespaceException e) {
+			} catch (ServletException | NamespaceException e) {
 				LOGGER.error("Erreur lors de l'initialistion du service [{}]", URL_STATUT_SUPERVISION, e);
 			}
 		}

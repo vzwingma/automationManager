@@ -34,7 +34,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	/**
 	 * Liste des tâches schedulées
 	 */
-	private List<SaveToTaskRunnable> listeScheduled = new ArrayList<SaveToTaskRunnable>();
+	private List<SaveToTaskRunnable> listeScheduled = new ArrayList<>();
 	/**
 	 * Threads pool
 	 */

@@ -36,7 +36,6 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 	// Répertoire non chiffré
 	private File repertoireNonChiffre;
 
-	private Long dateDernierTraitement;
 	// Services
 	private BoxcryptorBusinessService service;
 	private Yaml yml;
@@ -66,10 +65,10 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 			BCInventaireRepertoire inventaire = loadFileInventory();
 			if(inventaire != null){
 
-				this.dateDernierTraitement = inventaire.getDateModificationDernierInventaire();
+				Long  dateDernierTraitement = inventaire.getDateModificationDernierInventaire();
 
-				if(this.dateDernierTraitement != null && this.dateDernierTraitement > 0){
-					LOGGER.info("[{}] Date du dernier inventaire [{}]", index, BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement));
+				if(dateDernierTraitement != null && dateDernierTraitement > 0){
+					LOGGER.info("[{}] Date du dernier inventaire [{}]", index, BCUtils.getLibelleDateUTCFromMillis(dateDernierTraitement));
 				}
 				else{
 					LOGGER.warn("[{}] Date du dernier inventaire [Jamais]", index);
@@ -91,11 +90,11 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 
 				LOGGER.info("[{}] Date DernierTraitement {} / Date modification dernier inventaire : {}", 
 						this.index, 
-						BCUtils.getLibelleDateUTCFromMillis(this.dateDernierTraitement), 
+						BCUtils.getLibelleDateUTCFromMillis(dateDernierTraitement), 
 						BCUtils.getLibelleDateUTCFromMillis(inventaireNew.getDateModificationDernierInventaire()));
 
 				// Ecriture de l'inventaire ssi il a changé
-				if(this.dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire() > this.dateDernierTraitement){
+				if(dateDernierTraitement == null || inventaireNew.getDateModificationDernierInventaire() > dateDernierTraitement){
 					BCUtils.dumpYMLInventory(this.yml, this.repertoireNonChiffre, inventaireNew);
 					BCUtils.printDelayFrom(this.index, "Dump Inventory", startTraitement);
 					LOGGER.info("[{}] Inventaire de {} généré", this.index, this.repertoireNonChiffre.getName());

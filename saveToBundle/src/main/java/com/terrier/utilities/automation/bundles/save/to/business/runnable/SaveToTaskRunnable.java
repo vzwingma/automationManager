@@ -117,14 +117,14 @@ public class SaveToTaskRunnable implements Runnable {
 			try {
 				Calendar cal = Calendar.getInstance();
 				cal.setTimeInMillis(Files.getLastModifiedTime(pathRepertoireDest).toMillis());
-				LOGGER.debug("[{}] Date de {} : {}", this.repertoireDestinataire, cal.getTime());
+				LOGGER.debug("[{}] Date de {} : {}", index, this.repertoireDestinataire, cal.getTime());
 				return cal;
 			} catch (IOException e) {
 				LOGGER.error("[{}] Erreur lors de la recherche de la date du dernier scan initial", index);
 			}
 		}
 		else{
-			LOGGER.warn("[{}] Le répertoire de destination n'existe pas", index, this.repertoireSource);	
+			LOGGER.warn("[{}] Le répertoire de destination [{}] n'existe pas", index, this.repertoireSource);	
 		}
 		return null;
 	}
@@ -194,7 +194,7 @@ public class SaveToTaskRunnable implements Runnable {
 	private boolean traitementRepertoireSaveTo(String scanDir){
 		LOGGER.debug("[{}] Copie du répertoire complet", index);
 
-		List<String> fichiersEnErreur = new ArrayList<String>();
+		List<String> fichiersEnErreur = new ArrayList<>();
 
 		int nbFichiersCopies = copyDirTo(FileSystems.getDefault().getPath(scanDir), repertoireDestinataire, fichiersEnErreur).get();
 		boolean resultat = true;

@@ -19,7 +19,7 @@ public class StatutBundleTopicObject {
 	// Bundle
 	private Bundle bundle;
 	// Properties
-	private List<StatutPropertyBundleObject> properties = new ArrayList<StatutPropertyBundleObject>();
+	private List<StatutPropertyBundleObject> properties = new ArrayList<>();
 	// Timestamp
 	private Calendar miseAJour = Calendar.getInstance();
 	

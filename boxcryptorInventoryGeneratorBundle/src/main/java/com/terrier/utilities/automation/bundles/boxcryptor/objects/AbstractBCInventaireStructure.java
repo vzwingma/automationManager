@@ -59,8 +59,7 @@ public abstract class AbstractBCInventaireStructure {
 			if(nameFileOrDirectory != null){
 				MessageDigest hash = MessageDigest.getInstance("SHA-256");
 				hash.update(nameFileOrDirectory.getBytes(), 0, nameFileOrDirectory.length());
-				String signature = new BigInteger(1,hash.digest()).toString(16);
-				return signature;
+				return new BigInteger(1,hash.digest()).toString(16);
 			}
 			return null;
 

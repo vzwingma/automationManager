@@ -88,10 +88,10 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 
 
 		// Premier parcours pour trouver les sous répertoires et lancer les tâches correspondantes
-		List<Future<BCInventaireRepertoire>> listeExecSousRepertoires = new ArrayList<Future<BCInventaireRepertoire>>();
+		List<Future<BCInventaireRepertoire>> listeExecSousRepertoires = new ArrayList<>();
 
 		// Parcours du répertoire non chiffré
-		Filter<Path> directoryFilter = ((entry) -> { return entry.toFile().isDirectory(); });
+		Filter<Path> directoryFilter = (entry -> entry.toFile().isDirectory());
 		
 		try (DirectoryStream<Path> dsNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), directoryFilter);) {
 			for (Path sousRepertoireNonChiffre : dsNonChiffre) {
@@ -122,7 +122,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 				}
 			}
 
-			Filter<Path> fileFilter = ((entry) -> { return !entry.toFile().isDirectory(); });
+			Filter<Path> fileFilter = (entry -> !entry.toFile().isDirectory());
 
 			try(DirectoryStream<Path> dsfNonChiffre = Files.newDirectoryStream(
 					FileSystems.getDefault().getPath(absRepertoireNonChiffre), fileFilter) ){
