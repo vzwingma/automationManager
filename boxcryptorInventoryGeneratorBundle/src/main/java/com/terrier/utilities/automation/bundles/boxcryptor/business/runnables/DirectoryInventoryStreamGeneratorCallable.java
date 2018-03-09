@@ -95,12 +95,10 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 		List<Future<BCInventaireRepertoire>> listeExecSousRepertoires = new ArrayList<>();
 
 		// Parcours du répertoire non chiffré
-		Filter<Path> directoryFilter = (entry -> entry.toFile().isDirectory());
 		try (DirectoryStream<Path> dsNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), directoryFilter);) {
 			for (Path sousRepertoireNonChiffre : dsNonChiffre) {
 				traitementSousRepertoiresNonChiffre(sousRepertoireNonChiffre, directoryFilter, listeExecSousRepertoires);
 			}
-			Filter<Path> fileFilter = (entry -> !entry.toFile().isDirectory());
 			try(DirectoryStream<Path> dsfNonChiffre = Files.newDirectoryStream(FileSystems.getDefault().getPath(absRepertoireNonChiffre), fileFilter) ){
 				for (Path fichierNonChiffre : dsfNonChiffre) {
 					traitementFichierNonChiffre(fichierNonChiffre, fileFilter);
