@@ -54,7 +54,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	/**
 	 * Liste des tÃ¢ches schedulées
 	 */
-	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<ScheduledFuture<?>>();
+	private List<ScheduledFuture<?>> listeScheduled = new ArrayList<>();
 
 
 	/**
