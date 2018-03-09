@@ -81,8 +81,8 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 	public BCInventaireRepertoire call() throws Exception {
 
 		// Définition des filters
-		Filter<Path> directoryFilter = ((entry) -> entry.toFile().isDirectory() );
-		Filter<Path> fileFilter = ((entry) -> !entry.toFile().isDirectory() );
+		Filter<Path> directoryFilter = entry -> entry.toFile().isDirectory();
+		Filter<Path> fileFilter = entry -> !entry.toFile().isDirectory();
 		
 		Calendar startTraitement = Calendar.getInstance();
 		LOGGER.debug("[{}] - INIT THREAD [{}] date=[{}] > {} ms", 

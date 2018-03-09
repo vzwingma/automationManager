@@ -30,7 +30,7 @@ public class AutomationEventPublisher<PT extends IAutomationTopicPropertyNamesEn
 
 
 
-	private final Logger LOGGER = LoggerFactory.getLogger( this.getClass() );
+	private final Logger logger = LoggerFactory.getLogger( this.getClass() );
 
 	private static final Logger LOG_COMMON = LoggerFactory.getLogger( AutomationEventPublisher.class );
 
@@ -45,17 +45,17 @@ public class AutomationEventPublisher<PT extends IAutomationTopicPropertyNamesEn
 		if (eventAdmin != null)  {
 			Event toTopicEvent = createEvent(topic, propertiesMessages);
 			if(toTopicEvent != null){
-				LOGGER.debug("Envoi du message sur le topic [{}]", topic.getTopicName());
+				logger.debug("Envoi du message sur le topic [{}]", topic.getTopicName());
 				try{
 					eventAdmin.sendEvent(toTopicEvent);
-					LOGGER.trace("Message envoyé sur le topic");
+					logger.trace("Message envoyé sur le topic");
 				}
 				catch(Exception e){
-					LOGGER.error("Erreur lors de l'envoi des status", e);
+					logger.error("Erreur lors de l'envoi des status", e);
 				}
 			}
 			else{
-				LOGGER.warn("Le message ne contient aucune propriété. Annulation de l'envoi sur le topic {}", topic.getTopicName());
+				logger.warn("Le message ne contient aucune propriété. Annulation de l'envoi sur le topic {}", topic.getTopicName());
 			}
 		}
 	}
@@ -101,15 +101,15 @@ public class AutomationEventPublisher<PT extends IAutomationTopicPropertyNamesEn
 				BundleContext context = bundle.getBundleContext();
 				ServiceReference<EventAdmin> ref = context.getServiceReference(EventAdmin.class);
 				EventAdmin eventAdmin = context.getService(ref);
-				LOGGER.debug("BundleContext {} / ServiceReference {} / EventAdmin {}", context, ref, eventAdmin);
+				logger.debug("BundleContext {} / ServiceReference {} / EventAdmin {}", context, ref, eventAdmin);
 				return eventAdmin;
 			}
 			catch(Exception e){
-				LOGGER.error("Erreur lors de la recherche de l'EventAdmin dans le bundleContext", e);
+				logger.error("Erreur lors de la recherche de l'EventAdmin dans le bundleContext", e);
 			}
 		}
 		else{
-			LOGGER.warn("Le bundle est introuvable. Dans le cadre de TU, cette méthode doit être mockée.");
+			logger.warn("Le bundle est introuvable. Dans le cadre de TU, cette méthode doit être mockée.");
 		}
 		return null;
 	}
