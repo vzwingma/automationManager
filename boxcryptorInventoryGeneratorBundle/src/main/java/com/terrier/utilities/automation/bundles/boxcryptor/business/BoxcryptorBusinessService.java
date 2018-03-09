@@ -239,7 +239,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 				new StatutPropertyBundleObject(
 						"Traitements programmés", 
 						this.listeScheduled.size(),
-						this.listeScheduled.isEmpty() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
+						!this.listeScheduled.isEmpty() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Threads utilisés", 
