@@ -45,6 +45,8 @@ public class MessageEventHandler implements EventHandler {
 		LOGGER.debug("Topic [{}] Réception du message [{}]", event.getTopic(), sb);
 		String titre = (String)event.getProperty(MessagePropertyNameEnum.TITRE_MESSAGE.name());
 		String message = (String)event.getProperty(MessagePropertyNameEnum.MESSAGE.name());
-		messagingService.sendNotificationSlack(titre, message);
+		if(messagingService != null){
+			messagingService.sendNotificationSlack(titre, message);
+		}
 	}
 }
