@@ -3,7 +3,6 @@
  */
 package com.terrier.utilities.automation.bundles.messaging.runnable;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -42,7 +41,7 @@ public class SendEmailTaskRunnable extends AbstractSendTaskRunnable  {
 	private String apiService;
 	private String listeDestinataires;
 	
-	private List<List<String>> sentMessages = new ArrayList<>();
+
 	
 	/**
 	 * Constructeur de la tâche d'envoi
@@ -85,7 +84,7 @@ public class SendEmailTaskRunnable extends AbstractSendTaskRunnable  {
 				MultivaluedMap<String, String> formData = getFormData(groupeMessages.getKey(), groupeMessages.getValue());
 				LOGGER.debug("Envoi du mail : {}", formData.get("subject"));
 				
-				if(sentMessages.contains(formData.get("html"))){
+				if(super.sentMessages.contains(formData.get("html"))){
 					LOGGER.warn("Le message a déjà été envoyé. Pas d'envoi");
 					gmIterator.remove();
 				}
@@ -151,6 +150,4 @@ public class SendEmailTaskRunnable extends AbstractSendTaskRunnable  {
 						"Dernier d'appel du service " + this.apiURL, 
 						this.getLastResponseCode() == 0 ? "?" : this.getLastResponseCode(), getCode(this.getLastResponseCode())));
 	}
-	
-
 }

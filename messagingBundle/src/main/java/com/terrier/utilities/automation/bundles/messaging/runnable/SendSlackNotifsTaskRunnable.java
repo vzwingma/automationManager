@@ -3,7 +3,6 @@
  */
 package com.terrier.utilities.automation.bundles.messaging.runnable;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -35,8 +34,7 @@ public class SendSlackNotifsTaskRunnable extends AbstractSendTaskRunnable  {
 	 */
 	private String apiKey;
 	private String apiURL;
-	
-	private List<String> sentMessages = new ArrayList<>();
+
 	
 	/**
 	 * Constructeur de la tâche d'envoi
@@ -136,6 +134,4 @@ public class SendSlackNotifsTaskRunnable extends AbstractSendTaskRunnable  {
 						"Dernier d'appel du service " + this.apiURL, 
 						this.getLastResponseCode() == 0 ? "?" : this.getLastResponseCode(), getCode(this.getLastResponseCode())));
 	}
-	
-
 }

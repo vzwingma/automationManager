@@ -3,6 +3,9 @@
  */
 package com.terrier.utilities.automation.bundles.messaging.runnable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 import com.terrier.utilities.automation.bundles.messaging.http.client.AbstractHTTPClient;
 
@@ -15,6 +18,8 @@ public abstract class AbstractSendTaskRunnable extends AbstractHTTPClient implem
 
 	// Service Métier
 	private MessagingBusinessService service;
+	
+	protected List<Object> sentMessages = new ArrayList<>();
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()

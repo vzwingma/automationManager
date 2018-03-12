@@ -30,13 +30,12 @@ public class SendSMSTaskRunnable extends AbstractSendTaskRunnable {
 	private static final Logger LOGGER = LoggerFactory.getLogger( SendSMSTaskRunnable.class );
 
 	/**
-	 * Liste 
+	 * Config 
 	 */
 	private String user;
 	private String password;
 	private String apiURL;
 
-	private List<String> sentMessages = new ArrayList<>();
 
 	/**
 	 * Constructeur de la tâche d'envoi
@@ -140,5 +139,4 @@ public class SendSMSTaskRunnable extends AbstractSendTaskRunnable {
 						this.getLastResponseCode() == 0 ? "?" : this.getLastResponseCode(),
 								getCode(this.getLastResponseCode())));
 	}
-
 }
