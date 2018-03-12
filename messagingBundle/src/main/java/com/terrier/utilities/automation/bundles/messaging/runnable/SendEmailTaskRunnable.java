@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -94,7 +95,7 @@ public class SendEmailTaskRunnable extends AbstractSendTaskRunnable  {
 						    .credentials("api", this.apiKey)
 						    .build();
 					Invocation.Builder invocation = getInvocation(getClient(feature), this.apiURL + this.apiDomain, this.apiService, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
-					boolean resultat = callHTTPPost(invocation , formData);
+					boolean resultat = callHTTPPost(invocation , Entity.form(formData));
 					if(resultat){
 						LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi", groupeMessages.getKey());
 						sentMessages.add(formData.get("html"));

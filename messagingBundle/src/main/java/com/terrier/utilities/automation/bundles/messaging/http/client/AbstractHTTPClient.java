@@ -73,7 +73,7 @@ public abstract class AbstractHTTPClient {
 					.build();
 		}
 		catch(Exception e){
-			LOGGER.error("Erreur envoi ", "Erreur lors de la création du Client HTTP " + e.getMessage());
+			LOGGER.error("Erreur envoi : Erreur lors de la création du Client HTTP {}", e.getMessage());
 			return ClientBuilder.newClient(clientConfig);
 		}
 	}
@@ -97,6 +97,8 @@ public abstract class AbstractHTTPClient {
 		return null;
 	}
 
+
+	
 	/**
 	 * Appel POST 
 	 * @param clientHTTP client utilisé
@@ -104,39 +106,12 @@ public abstract class AbstractHTTPClient {
 	 * @param formData data envoyées
 	 * @return
 	 */
-	public boolean callHTTPPost(Invocation.Builder invocation, MultivaluedMap<String, String> formData){
-		boolean resultat;
-		LOGGER.debug("[HTTP POST] Appel de l'URI [{}]", invocation);
-		try{
-			Response response = invocation.post(Entity.form(formData));
-			LOGGER.debug("[HTTP POST] Resultat : {}", response);
-			if(response != null){
-				this.lastResponseCode = response.getStatus();
-			}
-			else{
-				this.lastResponseCode = 500;
-			}
-		}
-		catch(Exception e){
-			LOGGER.error("> Resultat : Erreur lors de l'appel HTTP POST", e);
-			this.lastResponseCode = 500;
-		}
-		resultat = this.lastResponseCode == 200;
-		return resultat;
-	}
-	/**
-	 * Appel POST 
-	 * @param clientHTTP client utilisé
-	 * @param url url appelée
-	 * @param formData data envoyées
-	 * @return
-	 */
-	public boolean callHTTPJsonPost(Invocation.Builder invocation, String formData){
+	public boolean callHTTPPost(Invocation.Builder invocation, Entity<?> entityData){
 		boolean resultat;
 		LOGGER.debug("[HTTP POST] Appel de l'URI [{}]", invocation);
 		try{
 			invocation.header("Content-type", "application/json");
-			Response response = invocation.post(Entity.json(formData));
+			Response response = invocation.post(entityData);
 			LOGGER.debug("[HTTP POST] Resultat : {}", response);
 			if(response != null){
 				this.lastResponseCode = response.getStatus();
@@ -152,7 +127,8 @@ public abstract class AbstractHTTPClient {
 		resultat = this.lastResponseCode == 200;
 		return resultat;
 	}
-
+	
+	
 	/**
 	 * Appel HTTP GET
 	 * @param clientHTTP client HTTP

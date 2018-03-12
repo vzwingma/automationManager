@@ -13,11 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
+import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
-import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.save.to.business.enums.CommandeEnum;
-import com.terrier.utilities.automation.bundles.save.to.business.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.save.to.business.runnable.SaveToTaskRunnable;
 
 /**
@@ -100,7 +99,7 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	 * @param p
 	 */
 	protected void startTreatment(int p){
-		Long periode = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+		Long periode = Long.parseLong(getKey(ConfigKeyEnums.SAVE_TO_PERIOD_SCAN, p));
 		SaveToTaskRunnable copyRunnable = new SaveToTaskRunnable(
 				p,
 				CommandeEnum.valueOf(getKey(ConfigKeyEnums.COMMANDE, p)),
@@ -124,15 +123,15 @@ public class SaveToBusinessService extends AbstractAutomationService {
 
 		LOGGER.info("** [{}] **", p);
 		LOGGER.info("[{}] > Commande : {}", p, getKey(ConfigKeyEnums.COMMANDE, p));
-		LOGGER.info("[{}] > Période de scan : {} minutes", p, getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+		LOGGER.info("[{}] > Période de scan : {} minutes", p, getKey(ConfigKeyEnums.SAVE_TO_PERIOD_SCAN, p));
 		LOGGER.info("[{}] > Répertoire d'entrée : {}", p, getKey(ConfigKeyEnums.FILES_DIRECTORY_IN, p));
 		LOGGER.info("[{}] > Répertoire de sortie : {}", p, getKey(ConfigKeyEnums.FILES_DIRECTORY_OUT, p));
 		Long period = null;
 		try{
-			period = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+			period = Long.parseLong(getKey(ConfigKeyEnums.SAVE_TO_PERIOD_SCAN, p));
 		}
 		catch(NumberFormatException e){
-			LOGGER.error("[{}] > Erreur dans le format de la période {}", p, getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+			LOGGER.error("[{}] > Erreur dans le format de la période {}", p, getKey(ConfigKeyEnums.SAVE_TO_PERIOD_SCAN, p));
 		}
 		configValid = period != null
 				&& getKey(ConfigKeyEnums.COMMANDE, p) != null
@@ -156,44 +155,6 @@ public class SaveToBusinessService extends AbstractAutomationService {
 	public int getNbPatterns() {
 		return nombrePatterns;
 	}
-
-
-	/**
-	 * @param key clé
-	 * @return valeur dans la config correspondante
-	 */
-	protected String getKey(ConfigKeyEnums key){
-		try {
-			if(key != null){
-				return super.getConfig(key.getCodeKey());
-			}
-		} catch (KeyNotFoundException e) {
-			LOGGER.error("La clé {} est introuvable", key);
-		}
-		return null;
-	}
-
-	/**
-	 * @param key clé
-	 * @return valeur dans la config correspondante
-	 * @throws KeyNotFoundException
-	 */
-	protected String getKey(final ConfigKeyEnums key, int indice){
-		try {
-			String keyValue = key != null ? key.getCodeKey() : null;
-
-			if(keyValue != null){
-				if(indice >= 0){
-					keyValue += "." + indice;
-				}
-				return super.getConfig(keyValue);
-			}
-			return null;
-		} catch (KeyNotFoundException e) {
-			return null;
-		}
-	}
-
 
 
 	/**

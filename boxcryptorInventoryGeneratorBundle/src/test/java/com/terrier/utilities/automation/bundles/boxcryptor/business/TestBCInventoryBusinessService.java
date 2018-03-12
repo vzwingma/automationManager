@@ -23,7 +23,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.terrier.utilities.automation.bundles.boxcryptor.communs.enums.ConfigKeyEnums;
+import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 
 /**

@@ -21,6 +21,7 @@ import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessagePropertyNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
@@ -172,6 +173,45 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 		}
 	}
 
+	
+
+
+	/**
+	 * @param key clé
+	 * @return valeur dans la config correspondante
+	 */
+	public String getKey(ConfigKeyEnums key){
+		try {
+			if(key != null){
+				return getConfig(key.getCodeKey());
+			}
+		} catch (KeyNotFoundException e) {
+			logger.error("La clé {} est introuvable", key);
+		}
+		return null;
+	}
+
+	/**
+	 * @param key clé
+	 * @return valeur dans la config correspondante
+	 * @throws KeyNotFoundException
+	 */
+	public String getKey(final ConfigKeyEnums key, int indice){
+		try {
+			String keyValue = key != null ? key.getCodeKey() : null;
+
+			if(keyValue != null){
+				if(indice >= 0){
+					keyValue += "." + indice;
+				}
+				return getConfig(keyValue);
+			}
+			return null;
+		} catch (KeyNotFoundException e) {
+			return null;
+		}
+	}
+	
 	/**
 	 * Arrêt de la surveillance
 	 */

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 
@@ -80,7 +81,7 @@ public class SendSlackNotifsTaskRunnable extends AbstractSendTaskRunnable  {
 				}
 				else{
 					Invocation.Builder invocation = getInvocation(getClient(), this.apiURL, this.apiKey, MediaType.APPLICATION_JSON_TYPE);
-					boolean resultat = callHTTPJsonPost(invocation , formData);
+					boolean resultat = callHTTPPost(invocation , Entity.json(formData));
 					if(resultat){
 						LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi", groupeMessages.getKey());
 						sentMessages.add(formData);
