@@ -127,7 +127,7 @@ public class SendSlackNotifsTaskRunnable extends AbstractSendTaskRunnable  {
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
 						"Nombre de notifications en attente", 
-						this.getService().getEmailsSendingQueue().size(),
+						this.getService().getNotifsSendingQueue().size(),
 						StatutPropertyBundleEnum.OK));
 		
 		supervisionEvents.add(

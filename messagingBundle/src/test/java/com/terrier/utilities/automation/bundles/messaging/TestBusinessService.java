@@ -125,13 +125,14 @@ public class TestBusinessService {
 		Queue<String> queue = service.getSmsSendingQueue();
 		assertEquals(3, queue.size());
 	}
+	
 
 
 	@Test
 	public void testSupervisionEventsSMS(){
 		
 		service.notifyUpdateDictionary();
-		// Send email
+		// Send sms
 		service.sendNotificationSMS("message de test1");
 		service.sendNotificationSMS("message de test2");
 		service.sendNotificationSMS("message de test3");
@@ -145,6 +146,44 @@ public class TestBusinessService {
 		assertTrue(statuts.size() > 0);
 		assertTrue((Boolean)statuts.get(3).getValue());
 		assertEquals(3, statuts.get(4).getValue());
+	}
+	
+	/**
+	 * Test d'ajout de notfs
+	 */
+	@Test
+	public void testAjoutSlackToQueue(){
+		// Send email
+		service.sendNotificationSlack("test", "message de test1");
+		service.sendNotificationSlack("test", "message de test2");
+		service.sendNotificationSlack("test2", "message de test3");
+
+		Map<String, ConcurrentLinkedQueue<String>> queue = service.getNotifsSendingQueue();
+		assertEquals(2, queue.keySet().size());
+		assertEquals(2, queue.get("test").size());
+		assertEquals(1, queue.get("test2").size());
+
+	}
+
+
+	@Test
+	public void testSupervisionEventsNotifs(){
+		
+		service.notifyUpdateDictionary();
+		// Send sms
+		service.sendNotificationSlack("test", "message de test1");
+		service.sendNotificationSlack("test", "message de test2");
+		service.sendNotificationSlack("test2", "message de test3");
+
+		
+		List<StatutPropertyBundleObject> statuts = new ArrayList<StatutPropertyBundleObject>();
+		service.updateSupervisionEvents(statuts);
+		LOGGER.info("{}", statuts);
+		
+		assertNotNull(statuts);
+		assertTrue(statuts.size() > 0);
+		assertTrue((Boolean)statuts.get(3).getValue());
+		assertEquals(2, statuts.get(7).getValue());
 	}
 	
 
