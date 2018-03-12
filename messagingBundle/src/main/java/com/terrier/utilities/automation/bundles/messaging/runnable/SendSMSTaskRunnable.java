@@ -17,14 +17,13 @@ import org.slf4j.LoggerFactory;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
-import com.terrier.utilities.automation.bundles.messaging.http.client.AbstractHTTPClientRunnable;
 
 /**
  * Tâche d'envoi des mails
  * @author vzwingma
  *
  */
-public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
+public class SendSMSTaskRunnable extends AbstractSendTaskRunnable {
 
 
 
@@ -38,7 +37,7 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 	private String apiURL;
 
 	private List<String> sentMessages = new ArrayList<>();
-	
+
 	/**
 	 * Constructeur de la tâche d'envoi
 	 * @param messagesSendingQueue
@@ -54,7 +53,7 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 	 * @see java.lang.Runnable#run()
 	 */
 	@Override
-	public void httpClientRun() {
+	public void executeMessagesTask() {
 		LOGGER.info("Envoi des SMS : {} messages en attente", getService().getSmsSendingQueue().size());
 		if(!getService().getSmsSendingQueue().isEmpty()){
 			boolean resultat = sendAllMessages();
@@ -66,40 +65,36 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 	/**
 	 * @return résultat de l'envoi des messages
 	 */
-	public boolean sendAllMessages(){
+	private boolean sendAllMessages(){
 
 		boolean resultat = false;
-		
-		// Envoi de tous les mails, groupé par titre :
-		if(!getService().getSmsSendingQueue().isEmpty()){
 
-			List<String> messages = new ArrayList<>();
-			while(!getService().getSmsSendingQueue().isEmpty() && messages.size() < 5){
-				messages.add(getService().getSmsSendingQueue().poll());
-			}
-			String messageSMS =  getFormData(messages);
-			
-			LOGGER.debug("Envoi des {} messages par SMS", messages.size());
-			if(sentMessages.contains(messageSMS)){
-				LOGGER.warn("Le message a déjà été envoyé. Pas d'envoi");
-				resultat = true;
+		// Envoi de tous les messages
+		List<String> messages = new ArrayList<>();
+		while(!getService().getSmsSendingQueue().isEmpty() && messages.size() < 5){
+			messages.add(getService().getSmsSendingQueue().poll());
+		}
+		String messageSMS =  getFormData(messages);
+
+		LOGGER.debug("Envoi des {} messages par SMS", messages.size());
+		if(sentMessages.contains(messageSMS)){
+			LOGGER.warn("Le message a déjà été envoyé. Pas d'envoi");
+			resultat = true;
+		}
+		else{
+			StringBuilder urlComplete = new StringBuilder(this.apiURL);
+			urlComplete.append("user=").append(this.user).append("&pass=").append(this.password).append("&msg=").append(messageSMS);
+
+			Invocation.Builder invocation = getInvocation(getClient(), urlComplete.toString(), null, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
+			resultat = callHTTPGet(invocation);
+			if(resultat){
+				LOGGER.debug("Suppression des messages SMS de la liste d'envoi");
+				sentMessages.add(messageSMS);
 			}
 			else{
-				StringBuilder urlComplete = new StringBuilder(this.apiURL);
-				urlComplete.append("user=").append(this.user).append("&pass=").append(this.password).append("&msg=").append(messageSMS);
-				
-				Invocation.Builder invocation = getInvocation(getClient(), urlComplete.toString(), null, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
-				resultat = callHTTPGet(invocation);
-				if(resultat){
-					LOGGER.debug("Suppression des messages SMS de la liste d'envoi");
-					sentMessages.add(messageSMS);
-				}
-				else{
-					LOGGER.error("Erreur lors de l'envoi, les messages sont reprogrammés pour la prochaine échéance");
-					for (String msg : messages) {
-						getService().sendNotificationSMS(msg);
-					}
-					getService().sendNotificationEmail("Erreur envoi de SMS", "Erreur lors de l'envoi du SMS ");
+				LOGGER.error("Erreur lors de l'envoi, les messages sont reprogrammés pour la prochaine échéance");
+				for (String msg : messages) {
+					getService().sendNotificationSMS(msg);
 				}
 			}
 		}
@@ -127,7 +122,7 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 			return "Erreur%20encoding%20messages";
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.messaging.runnable.AbstractHTTPClientRunnable#updateSupervisionEvents(java.util.List)
 	 */
@@ -143,7 +138,7 @@ public class SendSMSTaskRunnable extends AbstractHTTPClientRunnable {
 				new StatutPropertyBundleObject(
 						"Dernier d'appel du service " + this.apiURL, 
 						this.getLastResponseCode() == 0 ? "?" : this.getLastResponseCode(),
-						getCode(this.getLastResponseCode())));
+								getCode(this.getLastResponseCode())));
 	}
 
 }

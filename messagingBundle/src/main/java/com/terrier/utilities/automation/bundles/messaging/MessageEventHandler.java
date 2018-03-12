@@ -53,7 +53,7 @@ public class MessageEventHandler implements EventHandler {
 			case EMAIL:
 				String titre = (String)event.getProperty(MessagePropertyNameEnum.TITRE_MESSAGE.name());
 				String message = (String)event.getProperty(MessagePropertyNameEnum.MESSAGE.name());
-				messagingService.sendNotificationEmail(titre, message);
+				messagingService.sendNotificationSlack(titre, message);
 				break;
 			case SMS:
 				String sms = (String)event.getProperty(MessagePropertyNameEnum.MESSAGE.name());

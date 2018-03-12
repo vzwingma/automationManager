@@ -21,14 +21,13 @@ import org.slf4j.LoggerFactory;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
-import com.terrier.utilities.automation.bundles.messaging.http.client.AbstractHTTPClientRunnable;
 
 /**
  * Tâche d'envoi des mails
  * @author vzwingma
  *
  */
-public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
+public class SendEmailTaskRunnable extends AbstractSendTaskRunnable  {
 
 
 
@@ -62,9 +61,9 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	 * @see java.lang.Runnable#run()
 	 */
 	@Override
-	public void httpClientRun() {
+	public void executeMessagesTask() {
 		LOGGER.info("Envoi des emails : {} messages en attente", getService().getEmailsSendingQueue().size());
-		if(getService().getEmailsSendingQueue().size() > 0){
+		if(! getService().getEmailsSendingQueue().isEmpty()){
 			boolean resultat = sendAllMessages();
 			LOGGER.info("> Résulat des envois : {}", resultat);
 		}
@@ -74,7 +73,7 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	/**
 	 * @return résultat de l'envoi des messages
 	 */
-	public boolean sendAllMessages(){
+	private boolean sendAllMessages(){
 
 		boolean allResponses = true;
 
@@ -103,9 +102,9 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 						gmIterator.remove();
 					}
 					else{
+						// si erreur, on utilise l'autre canal pour envoyer le message d'erreur
 						getService().sendNotificationSMS("Erreur lors de l'envoi du mail, les messages de ["+groupeMessages.getKey()+"] n'ont pas été envoyé.");
 						LOGGER.error("Erreur lors de l'envoi, les messages de [{}] sont reprogrammés pour la prochaine échéance", groupeMessages.getKey());
-						// si erreur, on utilise l'autre canal pour envoyer le message d'erreur
 					}
 					allResponses &= resultat;
 				}

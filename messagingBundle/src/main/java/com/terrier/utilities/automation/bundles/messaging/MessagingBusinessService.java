@@ -30,6 +30,7 @@ import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBund
 import com.terrier.utilities.automation.bundles.messaging.enums.MessagingConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.messaging.runnable.SendEmailTaskRunnable;
 import com.terrier.utilities.automation.bundles.messaging.runnable.SendSMSTaskRunnable;
+import com.terrier.utilities.automation.bundles.messaging.runnable.SendSlackNotifsTaskRunnable;
 
 /**
  * Classe de service de messaging
@@ -49,6 +50,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 * Liste des tâches schedulées
 	 */
 	private SendEmailTaskRunnable sendEmailScheduled;
+	private SendSlackNotifsTaskRunnable sendNotifsScheduled;
 	private SendSMSTaskRunnable sendSMSScheduled;
 
 	// Message Handler
@@ -65,6 +67,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 * Liste de messages à envoyer
 	 */
 	private Map<String, ConcurrentLinkedQueue<String>> emailSendingQueue = new ConcurrentHashMap<>();
+	private Map<String, ConcurrentLinkedQueue<String>> notifsSendingQueue = new ConcurrentHashMap<>();
 	private ConcurrentLinkedQueue<String> smsSendingQueue = new ConcurrentLinkedQueue<>();
 
 	/**
@@ -92,6 +95,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		// Si correct, reprogrammation de la tâche d'envoi
 		if(configValid){
 			scheduleSendingEmail();
+			scheduleSendingSlack();
 			scheduleSendingSMS();
 		}
 		else{
@@ -123,6 +127,25 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	}
 
 
+	/**
+	 * Envoi des emails
+	 */
+	private void scheduleSendingSlack(){
+		// arrêt des tâches schedulées
+		if(sendNotifsScheduled != null){
+			boolean cancel = scheduledThreadPool.getQueue().remove(sendNotifsScheduled);
+			this.sendNotifsScheduled = null;
+			LOGGER.warn("Arrêt de la tâche d'envoi des notifs Slack : {}", cancel);
+		}
+		sendNotifsScheduled = new SendSlackNotifsTaskRunnable(
+				getConfig(MessagingConfigKeyEnums.SLACK_URL),
+				getConfig(MessagingConfigKeyEnums.SLACK_KEY),
+				this
+				);
+		scheduledThreadPool.scheduleWithFixedDelay(sendNotifsScheduled, 1L, periodeEnvoiMessages, TimeUnit.MINUTES);
+
+		LOGGER.info("La tâche d'envoi des notifications Slack est programmée");
+	}
 	/**
 	 * Envoi des emails
 	 */
@@ -160,7 +183,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		LOGGER.info("[ SMS ] > URL du service : {}", getConfig(MessagingConfigKeyEnums.SMS_URL));
 		LOGGER.info("[ SMS ] > User du service : {}", getConfig(MessagingConfigKeyEnums.SMS_USER, true));
 		LOGGER.info("[ SMS ] > Mot de passe du service : {}", getConfig(MessagingConfigKeyEnums.SMS_PASS, true));
-
+		LOGGER.info("[SLACK] > URL du service : {}", getConfig(MessagingConfigKeyEnums.SLACK_URL));
+		LOGGER.info("[SLACK] > Clé du service : {}", getConfig(MessagingConfigKeyEnums.SLACK_KEY, true));
 		boolean configValide = true;
 		try{
 			Long periodeEnvoiMail = Long.parseLong(getConfig(MessagingConfigKeyEnums.SEND_PERIODE_ENVOI));
@@ -180,14 +204,11 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		}
 
 
-
 		for (MessagingConfigKeyEnums configKey : MessagingConfigKeyEnums.values()) {
 			configValide &= getConfig(configKey) != null;	
 		}
 		if(!configValide){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
-			sendNotificationMessage(MessageTypeEnum.SMS, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
-			sendNotificationMessage(MessageTypeEnum.EMAIL, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
 		}
 		else{
 			LOGGER.info("La configuration est correcte.");
@@ -210,7 +231,18 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		messagesToSend.add(message);
 		emailSendingQueue.put(titre, messagesToSend);
 	}
-
+	/**
+	 * 
+	 * @param titre titre du mail
+	 * @param message message du mail
+	 * @return le résulat de l'envoi
+	 */
+	public void sendNotificationSlack(String titre, String message){
+		LOGGER.info("Ajout du message [{}] dans la liste [{}] des notifs Slack", message, titre);
+		ConcurrentLinkedQueue<String> messagesToSend = notifsSendingQueue.getOrDefault(titre, new ConcurrentLinkedQueue<String>());
+		messagesToSend.add(message);
+		notifsSendingQueue.put(titre, messagesToSend);
+	}
 
 	/**
 	 * 
@@ -256,6 +288,13 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		return smsSendingQueue;
 	}
 
+
+	/**
+	 * @return the notifsSendingQueue
+	 */
+	public final Map<String, ConcurrentLinkedQueue<String>> getNotifsSendingQueue() {
+		return notifsSendingQueue;
+	}
 
 
 	/**
@@ -313,6 +352,17 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		if(this.sendSMSScheduled != null){
 			this.sendSMSScheduled.updateSupervisionEvents(supervisionEvents);
 		}
+		
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Statut de l'envoi de notification Slack", 
+						this.sendNotifsScheduled != null,
+						this.sendNotifsScheduled != null ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+
+		// Statut des notifs
+		if(sendNotifsScheduled != null){
+			this.sendNotifsScheduled.updateSupervisionEvents(supervisionEvents);
+		}
 
 		supervisionEvents.add(
 				new StatutPropertyBundleObject(
@@ -337,5 +387,8 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		this.scheduledThreadPool.shutdown();
 		arretTasks();
 	}
+
+
+
 
 }

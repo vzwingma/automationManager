@@ -27,23 +27,21 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
-import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
 
 /**
  * Classe d'un client HTTP
  * @author vzwingma
  *
  */
-public abstract class AbstractHTTPClientRunnable implements Runnable {
+public abstract class AbstractHTTPClient {
 
 
-	private static final Logger LOGGER = LoggerFactory.getLogger( AbstractHTTPClientRunnable.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( AbstractHTTPClient.class );
 
 	// Résultat du dernier appel HTTP
 	private int lastResponseCode;
 
-	// Service Métier
-	private MessagingBusinessService service;
+
 
 
 	public Client getClient(){
@@ -75,8 +73,7 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 					.build();
 		}
 		catch(Exception e){
-			this.service.sendNotificationEmail("Erreur envoi ", "Erreur lors de la création du Client HTTP " + e.getMessage());
-			this.service.sendNotificationSMS( "Erreur lors de la création du Client HTTP " + e.getMessage());
+			LOGGER.error("Erreur envoi ", "Erreur lors de la création du Client HTTP " + e.getMessage());
 			return ClientBuilder.newClient(clientConfig);
 		}
 	}
@@ -127,7 +124,34 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 		resultat = this.lastResponseCode == 200;
 		return resultat;
 	}
-
+	/**
+	 * Appel POST 
+	 * @param clientHTTP client utilisé
+	 * @param url url appelée
+	 * @param formData data envoyées
+	 * @return
+	 */
+	public boolean callHTTPJsonPost(Invocation.Builder invocation, String formData){
+		boolean resultat;
+		LOGGER.debug("[HTTP POST] Appel de l'URI [{}]", invocation);
+		try{
+			invocation.header("Content-type", "application/json");
+			Response response = invocation.post(Entity.json(formData));
+			LOGGER.debug("[HTTP POST] Resultat : {}", response);
+			if(response != null){
+				this.lastResponseCode = response.getStatus();
+			}
+			else{
+				this.lastResponseCode = 500;
+			}
+		}
+		catch(Exception e){
+			LOGGER.error("> Resultat : Erreur lors de l'appel HTTP POST", e);
+			this.lastResponseCode = 500;
+		}
+		resultat = this.lastResponseCode == 200;
+		return resultat;
+	}
 
 	/**
 	 * Appel HTTP GET
@@ -155,18 +179,11 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
-	@Override
-	public void run() {
-		httpClientRun();
-	}
 
 	/**
 	 * Méthode de traitement runnable
 	 */
-	public abstract void httpClientRun();
+	public abstract void executeMessagesTask();
 
 
 
@@ -185,19 +202,6 @@ public abstract class AbstractHTTPClientRunnable implements Runnable {
 	public abstract void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents);
 
 
-	/**
-	 * @param service the service to set
-	 */
-	public void setService(MessagingBusinessService service) {
-		this.service = service;
-	}
-
-	/**
-	 * @return the service
-	 */
-	public MessagingBusinessService getService() {
-		return service;
-	}
 
 	/**
 	 * @param code
