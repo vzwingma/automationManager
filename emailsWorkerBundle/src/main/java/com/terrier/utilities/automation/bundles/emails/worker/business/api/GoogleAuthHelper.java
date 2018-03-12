@@ -9,6 +9,9 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -21,15 +24,19 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
-import com.google.api.services.gmail.model.ListMessagesResponse;
-import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.Label;
+import com.google.api.services.gmail.model.ListLabelsResponse;
 
 /**
  * A helper class for Google's Gmail API.
- * https://developers.google.com/gmail/api/quickstart/java
+ * A partir de  https://developers.google.com/gmail/api/quickstart/java
  *
  */
 public final class GoogleAuthHelper {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger( GoogleAuthHelper.class );
+	
+	
 	   /** Application name. */
     private static final String APPLICATION_NAME =
         "Gmail API Java Quickstart";
@@ -60,8 +67,7 @@ public final class GoogleAuthHelper {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
         } catch (Throwable t) {
-            t.printStackTrace();
-            System.exit(1);
+            LOGGER.error("Erreur lors de l'initialisation ", t);
         }
     }
 
@@ -86,8 +92,7 @@ public final class GoogleAuthHelper {
                 .build();
         Credential credential = new AuthorizationCodeInstalledApp(
             flow, new LocalServerReceiver()).authorize("user");
-        System.out.println(
-                "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+        LOGGER.info("Les credentials sont enregistrés ici : {}", DATA_STORE_DIR.getAbsolutePath());
         return credential;
     }
 
@@ -114,21 +119,15 @@ public final class GoogleAuthHelper {
 
         // Print the labels in the user's account.
         String user = "me";
-        ListMessagesResponse listResponse =
-            service.users().messages().list(user).setLabelIds(Arrays.asList("INBOX")).execute();
-        List<Message> labels = listResponse.getMessages();
+        ListLabelsResponse listResponse = service.users().labels().list(user).execute(); //messages().list(user).setLabelIds(Arrays.asList("INBOX")).execute();
+        List<Label> labels = listResponse.getLabels();
         if (labels.size() == 0) {
-            System.out.println("No labels found.");
+           LOGGER.warn("No labels found.");
         } else {
-            System.out.println("Labels:");
-            for (Message label : labels) {
-                System.out.print(label.getSizeEstimate());
-                Message message = service.users().messages().get(user, label.getId()).execute();
-
-                System.out.println("Message snippet: " + message.getSnippet());
-
+            LOGGER.info("Labels:");
+            for (Label label : labels) {
+                LOGGER.info("- {}", label);
             }
         }
     }
-
 }
