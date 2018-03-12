@@ -1,4 +1,4 @@
-# Automation Manager v1.6.1
+# Automation Manager v1.7.0
 Gestionnaire de tâches automatisées
 
 <a href='https://travis-ci.org/vzwingma/automationManager'><img src='https://api.travis-ci.org/vzwingma/automationManager.svg?branch=master' alt='Build Status' /></a>
@@ -29,6 +29,11 @@ Gestionnaire de tâches automatisées
   *  Générateur d'inventaire pour BoxCryptor
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=boxcryptorInventoryGeneratorBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=boxcryptorInventoryGeneratorBundle%2Fpom.xml)
 
+#### [emailsWorkerBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v0.0.1
+  *  Traitement des emails reçus
+  *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=emailsWorkerBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=emailsWorkerBundle%2Fpom.xml)
+
+
 #### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) 1.1.4
   *  Libraire de copie de fichier ou de répertoire
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=saveToBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=saveToBundle%2Fpom.xml)
@@ -46,13 +51,14 @@ Gestionnaire de tâches automatisées
 
 #### à partir de GitHub
 
-     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.6.1/feature.xml
+     feature:repo-add https://github.com/vzwingma/automationManager/releases/download/v1.7.0/feature.xml
      feature:install automation-manager
      
 #### à partir de Maven
 
-     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.6.1/xml/features
+     feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/1.7.0/xml/features
      feature:install automation-supervision
      feature:install automation-messaging
      feature:install automation-boxcryptor-inventory
+     feature:install automation-emails-worker
      feature:install automation-save-to
