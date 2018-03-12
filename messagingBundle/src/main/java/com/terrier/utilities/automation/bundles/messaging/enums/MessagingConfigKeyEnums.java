@@ -16,8 +16,11 @@ public enum MessagingConfigKeyEnums {
 
 	SMS_USER("automation.bundle.messaging.sms.user"),
 	SMS_PASS("automation.bundle.messaging.sms.pass"),
-	SMS_URL("automation.bundle.messaging.sms.free.url");
+	SMS_URL("automation.bundle.messaging.sms.free.url"),
 
+	SLACK_URL("automation.bundle.messaging.notification.slack.url"),
+	SLACK_KEY("automation.bundle.messaging.notification.slack.key");
+	
 	// Code de la clé dans le fichier de configuration
 	private String codeKey;
 

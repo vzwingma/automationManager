@@ -14,7 +14,6 @@ import com.terrier.utilities.automation.bundles.boxcryptor.business.BoxcryptorBu
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.exceptions.InventoryNotFoundException;
 import com.terrier.utilities.automation.bundles.boxcryptor.communs.utils.BCUtils;
 import com.terrier.utilities.automation.bundles.boxcryptor.objects.BCInventaireRepertoire;
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
 
 /**
  * Main class of BoxCryptor Inventory Generator
@@ -148,7 +147,7 @@ public class BCInventoryGeneratorRunnable implements Runnable {
 	protected void sendMessage(String message){
 		if(service != null){
 			String date = BCUtils.getLibelleDateUTCFromMillis(Calendar.getInstance().getTimeInMillis());
-			service.sendNotificationMessage(MessageTypeEnum.EMAIL, "Génération inventaire BoxCryptor", date + " :: " + message);
+			service.sendNotificationMessage("Génération inventaire BoxCryptor", date + " :: " + message);
 		}
 	}
 }

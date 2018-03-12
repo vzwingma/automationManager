@@ -1,10 +1,13 @@
 package com.terrier.utilities.automation.bundles.messaging.http.client;
 
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import javax.net.ssl.X509TrustManager;
-import java.security.cert.X509Certificate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manager sans vérification
@@ -13,8 +16,12 @@ import java.security.cert.X509Certificate;
  */
 public class SendAPITrustManager implements X509TrustManager {
 
-	private static final String[] CERTIFICATS_CN = {"CN=*.mailgun.net", "CN=*.free-mobile.fr" };
+	private static final String[] CERTIFICATS_CN = {"CN=*.mailgun.net", "CN=*.free-mobile.fr", "CN=slack.com" };
 
+
+	private static final Logger LOGGER = LoggerFactory.getLogger( SendAPITrustManager.class );
+
+	
 	public X509Certificate[] getAcceptedIssuers() {
 		return new X509Certificate[0];
 	}
@@ -33,7 +40,8 @@ public class SendAPITrustManager implements X509TrustManager {
 									.stream()
 									.anyMatch(trusted -> cert.getSubjectX500Principal().getName().contains(trusted))
 		)){		
-			throw new CertificateException("Le certificat ne correspond pas à un élément de la liste");
+			Arrays.asList(certificates).stream().forEach(t -> LOGGER.debug(t.getSubjectX500Principal().getName()));
+			throw new CertificateException("Le certificat [{}] ne correspond pas à un élément de la liste");
 		}
 	}
 
@@ -50,6 +58,7 @@ public class SendAPITrustManager implements X509TrustManager {
 									.stream()
 									.anyMatch(trusted -> cert.getSubjectX500Principal().getName().contains(trusted))
 		)){		
+			Arrays.asList(certificates).stream().forEach(t -> LOGGER.debug(t.getSubjectX500Principal().getName()));
 			throw new CertificateException("Le certificat ne correspond pas à un élément de la liste");
 		}
 	}

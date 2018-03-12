@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.communs.utils.AutomationUtils;
@@ -250,7 +249,7 @@ public class SaveToTaskRunnable implements Runnable {
 				msg.append(part);
 			}
 			LOGGER.debug("Envoi du message Copie vers BoxCryptor : [{}]", msg);
-			service.sendNotificationMessage(MessageTypeEnum.EMAIL, "Copie vers BoxCryptor", msg.toString());
+			service.sendNotificationMessage("Copie vers BoxCryptor", msg.toString());
 		}
 	}
 

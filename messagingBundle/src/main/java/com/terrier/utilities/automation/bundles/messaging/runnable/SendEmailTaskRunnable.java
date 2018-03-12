@@ -3,12 +3,12 @@
  */
 package com.terrier.utilities.automation.bundles.messaging.runnable;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -21,14 +21,13 @@ import org.slf4j.LoggerFactory;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
-import com.terrier.utilities.automation.bundles.messaging.http.client.AbstractHTTPClientRunnable;
 
 /**
  * Tâche d'envoi des mails
  * @author vzwingma
  *
  */
-public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
+public class SendEmailTaskRunnable extends AbstractSendTaskRunnable  {
 
 
 
@@ -43,7 +42,7 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	private String apiService;
 	private String listeDestinataires;
 	
-	private List<List<String>> sentMessages = new ArrayList<>();
+
 	
 	/**
 	 * Constructeur de la tâche d'envoi
@@ -62,9 +61,9 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	 * @see java.lang.Runnable#run()
 	 */
 	@Override
-	public void httpClientRun() {
+	public void executeMessagesTask() {
 		LOGGER.info("Envoi des emails : {} messages en attente", getService().getEmailsSendingQueue().size());
-		if(getService().getEmailsSendingQueue().size() > 0){
+		if(! getService().getEmailsSendingQueue().isEmpty()){
 			boolean resultat = sendAllMessages();
 			LOGGER.info("> Résulat des envois : {}", resultat);
 		}
@@ -74,7 +73,7 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 	/**
 	 * @return résultat de l'envoi des messages
 	 */
-	public boolean sendAllMessages(){
+	private boolean sendAllMessages(){
 
 		boolean allResponses = true;
 
@@ -86,7 +85,7 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 				MultivaluedMap<String, String> formData = getFormData(groupeMessages.getKey(), groupeMessages.getValue());
 				LOGGER.debug("Envoi du mail : {}", formData.get("subject"));
 				
-				if(sentMessages.contains(formData.get("html"))){
+				if(super.sentMessages.contains(formData.get("html"))){
 					LOGGER.warn("Le message a déjà été envoyé. Pas d'envoi");
 					gmIterator.remove();
 				}
@@ -96,16 +95,16 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 						    .credentials("api", this.apiKey)
 						    .build();
 					Invocation.Builder invocation = getInvocation(getClient(feature), this.apiURL + this.apiDomain, this.apiService, MediaType.APPLICATION_FORM_URLENCODED_TYPE);
-					boolean resultat = callHTTPPost(invocation , formData);
+					boolean resultat = callHTTPPost(invocation , Entity.form(formData));
 					if(resultat){
 						LOGGER.debug("Suppression des messages de [{}] de la liste d'envoi", groupeMessages.getKey());
 						sentMessages.add(formData.get("html"));
 						gmIterator.remove();
 					}
 					else{
+						// si erreur, on utilise l'autre canal pour envoyer le message d'erreur
 						getService().sendNotificationSMS("Erreur lors de l'envoi du mail, les messages de ["+groupeMessages.getKey()+"] n'ont pas été envoyé.");
 						LOGGER.error("Erreur lors de l'envoi, les messages de [{}] sont reprogrammés pour la prochaine échéance", groupeMessages.getKey());
-						// si erreur, on utilise l'autre canal pour envoyer le message d'erreur
 					}
 					allResponses &= resultat;
 				}
@@ -152,6 +151,4 @@ public class SendEmailTaskRunnable extends AbstractHTTPClientRunnable  {
 						"Dernier d'appel du service " + this.apiURL, 
 						this.getLastResponseCode() == 0 ? "?" : this.getLastResponseCode(), getCode(this.getLastResponseCode())));
 	}
-	
-
 }

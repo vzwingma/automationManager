@@ -24,11 +24,9 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 
 import com.terrier.utilities.automation.bundles.boxcryptor.business.runnables.BCInventoryGeneratorRunnable;
-import com.terrier.utilities.automation.bundles.boxcryptor.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
+import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
-import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 
 /**
@@ -130,7 +128,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 	 * @param p
 	 */
 	private void startTreatment(int p){
-		Long periode = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+		Long periode = Long.parseLong(getKey(ConfigKeyEnums.BXCPTR_PERIOD_SCAN, p));
 		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
 				p,
 				this.yaml, 
@@ -150,15 +148,15 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		boolean configValid = false;
 
 		LOGGER.info("** [{}] **", p);
-		LOGGER.info("[{}] > Période de scan : {} minutes", p, getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+		LOGGER.info("[{}] > Période de scan : {} minutes", p, getKey(ConfigKeyEnums.BXCPTR_PERIOD_SCAN, p));
 		LOGGER.info("[{}] > Répertoire d'entrée : {}", p, getKey(ConfigKeyEnums.SOURCE_DIRECTORY, p));
 		LOGGER.info("[{}] > Répertoire de sortie : {}", p, getKey(ConfigKeyEnums.CRYPTED_DIRECTORY, p));
 		Long period = null;
 		try{
-			period = Long.parseLong(getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+			period = Long.parseLong(getKey(ConfigKeyEnums.BXCPTR_PERIOD_SCAN, p));
 		}
 		catch(NumberFormatException e){
-			LOGGER.error("[{}] > Erreur : la période {} est incorrecte", p, getKey(ConfigKeyEnums.PERIOD_SCAN, p));
+			LOGGER.error("[{}] > Erreur : la période {} est incorrecte", p, getKey(ConfigKeyEnums.BXCPTR_PERIOD_SCAN, p));
 		}
 		configValid = period != null
 				&& getKey(ConfigKeyEnums.SOURCE_DIRECTORY, p) != null
@@ -166,7 +164,7 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 
 		if(!configValid){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
-			sendNotificationMessage(MessageTypeEnum.SMS, "Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
+			sendNotificationMessage("Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
 		}
 		return configValid;
 	}
@@ -181,42 +179,6 @@ public class BoxcryptorBusinessService extends AbstractAutomationService{
 		return nbInventaires;
 	}
 
-
-	/**
-	 * @param key clé
-	 * @return valeur dans la config correspondante
-	 */
-	protected String getKey(ConfigKeyEnums key){
-		try {
-			if(key != null){
-				return super.getConfig(key.getCodeKey());
-			}
-		} catch (KeyNotFoundException e) {
-			LOGGER.error("La clé {} est introuvable", key);
-		}
-		return null;
-	}
-
-	/**
-	 * @param key clé
-	 * @return valeur dans la config correspondante
-	 * @throws KeyNotFoundException
-	 */
-	protected String getKey(final ConfigKeyEnums key, int indice){
-		try {
-			String keyValue = key != null ? key.getCodeKey() : null;
-
-			if(keyValue != null){
-				if(indice >= 0){
-					keyValue += "." + indice;
-				}
-				return super.getConfig(keyValue);
-			}
-			return null;
-		} catch (KeyNotFoundException e) {
-			return null;
-		}
-	}
 
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#updateSupervisionEvents(java.util.List)
