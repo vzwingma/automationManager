@@ -8,6 +8,8 @@
 	<packaging>pom</packaging>
 
 	<properties>
+	 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	 
 		<automation.commons.version>1.2.2</automation.commons.version>
 		<automation.save.to.version>1.1.4</automation.save.to.version>
 		<automation.boxcryptor.inventory.version>2.0.1</automation.boxcryptor.inventory.version>
