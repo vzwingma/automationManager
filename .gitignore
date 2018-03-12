@@ -3,3 +3,5 @@
 /target/
 /feature.xml
 saveToBundle/src/test/resources/bc/d1.txt
+emailsWorkerBundle/src/main/resources/client_secret.json
+emailsWorkerBundle/src/main/resources/credentials/gmail/StoredCredential

@@ -21,8 +21,8 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
-import com.google.api.services.gmail.model.Label;
-import com.google.api.services.gmail.model.ListLabelsResponse;
+import com.google.api.services.gmail.model.ListMessagesResponse;
+import com.google.api.services.gmail.model.Message;
 
 /**
  * A helper class for Google's Gmail API.
@@ -53,7 +53,7 @@ public final class GoogleAuthHelper {
      * at ~/.credentials/gmail-java-quickstart
      */
     private static final List<String> SCOPES =
-        Arrays.asList(GmailScopes.GMAIL_LABELS);
+        Arrays.asList(GmailScopes.MAIL_GOOGLE_COM);
 
     static {
         try {
@@ -103,21 +103,30 @@ public final class GoogleAuthHelper {
                 .build();
     }
 
+    /**
+     * Executer pour peupler les credentials
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         // Build a new authorized API client service.
         Gmail service = getGmailService();
 
         // Print the labels in the user's account.
         String user = "me";
-        ListLabelsResponse listResponse =
-            service.users().labels().list(user).execute();
-        List<Label> labels = listResponse.getLabels();
+        ListMessagesResponse listResponse =
+            service.users().messages().list(user).setLabelIds(Arrays.asList("INBOX")).execute();
+        List<Message> labels = listResponse.getMessages();
         if (labels.size() == 0) {
             System.out.println("No labels found.");
         } else {
             System.out.println("Labels:");
-            for (Label label : labels) {
-                System.out.printf("- %s\n", label.getName());
+            for (Message label : labels) {
+                System.out.print(label.getSizeEstimate());
+                Message message = service.users().messages().get(user, label.getId()).execute();
+
+                System.out.println("Message snippet: " + message.getSnippet());
+
             }
         }
     }
