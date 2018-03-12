@@ -95,10 +95,6 @@ public class TestSMSAPI {
 		verify(mockWebResourceBuilder, times(1)).get();
 
 		assertEquals(3, service.getSmsSendingQueue().size());
-		// Envoi d'un mail indiquant l'erreur d'envoi
-		assertEquals(1, service.getEmailsSendingQueue().size());
-
-		
 		// Run
 		runnable.run();
 		// Cette fois tout est passé
@@ -203,7 +199,7 @@ public class TestSMSAPI {
 		
 		assertEquals(1, service.getSmsSendingQueue().size());
 		// Envoi d'un mail indiquant l'erreur d'envoi
-		assertEquals(1, service.getEmailsSendingQueue().size());
+		assertEquals(0, service.getEmailsSendingQueue().size());
 
 	}	
 
