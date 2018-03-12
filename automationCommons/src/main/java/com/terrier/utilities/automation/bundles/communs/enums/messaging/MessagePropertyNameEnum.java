@@ -13,8 +13,7 @@ import com.terrier.utilities.automation.bundles.communs.enums.IAutomationTopicPr
 public enum MessagePropertyNameEnum implements IAutomationTopicPropertyNamesEnum {
 	MESSAGE,
 	TIME,
-	TITRE_MESSAGE,
-	TYPE_MESSAGE
+	TITRE_MESSAGE
 	;
 
 	/* (non-Javadoc)

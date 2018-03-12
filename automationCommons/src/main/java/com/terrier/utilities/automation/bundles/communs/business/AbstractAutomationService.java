@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTopicNameEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessagePropertyNameEnum;
-import com.terrier.utilities.automation.bundles.communs.enums.messaging.MessageTypeEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyNameEnum;
 import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundException;
@@ -91,7 +90,7 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 			logger.info("Mise à jour du fichier de configuration {}", this.configPID);
 			this.dictionnaire = (Dictionary<String, String>)properties;
 			notifyUpdateDictionary();
-			sendNotificationMessage(MessageTypeEnum.SMS, "Configuration", "Mise à jour du fichier de configuration /etc/"+ this.configPID +".cfg");
+			sendNotificationMessage("Configuration", "Mise à jour du fichier de configuration /etc/"+ this.configPID +".cfg");
 		}
 		else{
 			logger.error("Impossible de trouver le fichier de configuration");
@@ -150,13 +149,12 @@ public abstract class AbstractAutomationService extends AutomationEventPublisher
 	 * Envoi d'un message pour publication
 	 * @param message message à envoyer
 	 */
-	public void sendNotificationMessage(MessageTypeEnum typeMessage, String titreMessage, String message)
+	public void sendNotificationMessage(String titreMessage, String message)
 	{
 		EnumMap<MessagePropertyNameEnum, Object> propertiesMessages = new EnumMap<>(MessagePropertyNameEnum.class);
 		propertiesMessages.put(MessagePropertyNameEnum.TITRE_MESSAGE, titreMessage);
 		propertiesMessages.put(MessagePropertyNameEnum.MESSAGE, message);
 		propertiesMessages.put(MessagePropertyNameEnum.TIME, System.currentTimeMillis());
-		propertiesMessages.put(MessagePropertyNameEnum.TYPE_MESSAGE, typeMessage);
 		messagePublisher.publishToTopic(EventsTopicNameEnum.NOTIFIFY_MESSAGE, propertiesMessages);
 	}
 

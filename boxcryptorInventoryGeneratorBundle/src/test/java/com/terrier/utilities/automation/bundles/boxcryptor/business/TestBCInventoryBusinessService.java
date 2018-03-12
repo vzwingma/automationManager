@@ -64,7 +64,7 @@ public class TestBCInventoryBusinessService {
 			
 		});
 		
-		doNothing().when(service).sendNotificationMessage(any(), anyString(), anyString());
+		doNothing().when(service).sendNotificationMessage(anyString(), anyString());
 	}
 	
 
