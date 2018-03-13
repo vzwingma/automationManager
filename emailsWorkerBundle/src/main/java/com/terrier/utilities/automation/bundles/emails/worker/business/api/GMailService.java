@@ -19,7 +19,7 @@ import com.google.api.services.gmail.model.Message;
 public class GMailService{
 
 
-	protected final Logger LOGGER = LoggerFactory.getLogger( GMailService.class );
+	protected final Logger LOGGER = LoggerFactory.getLogger( this.getClass() );
 
 	// API Gmails
 	private Gmail gmailAPI;

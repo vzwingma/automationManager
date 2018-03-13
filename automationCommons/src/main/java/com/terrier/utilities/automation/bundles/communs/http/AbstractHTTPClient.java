@@ -57,7 +57,7 @@ public abstract class AbstractHTTPClient {
 		if(feature != null){
 			clientConfig.register(feature);
 		}
-		
+
 		try {
 			// Install the all-trusting trust manager
 			SSLContext sslcontext = SSLContext.getInstance("TLS");
@@ -75,7 +75,7 @@ public abstract class AbstractHTTPClient {
 		}
 	}
 
-	
+
 	/**
 	 * @param clientHTTP
 	 * @param url
@@ -85,7 +85,7 @@ public abstract class AbstractHTTPClient {
 	 */
 	public Invocation.Builder getInvocation(Client clientHTTP, String url, String path, MediaType type){
 		if(clientHTTP != null){
-			LOGGER.debug("[HTTP] Appel de l'URI [{}{}]", url, path != null ? path : "");
+			LOGGER.debug("[HTTP] Appel de l'URI [{}{}]", url, path);
 			WebTarget wt = clientHTTP.target(url);
 			if(path != null){
 				wt = wt.path(path);
@@ -96,7 +96,7 @@ public abstract class AbstractHTTPClient {
 	}
 
 
-	
+
 	/**
 	 * Appel POST 
 	 * @param clientHTTP client utilisé
@@ -125,8 +125,8 @@ public abstract class AbstractHTTPClient {
 		resultat = this.lastResponseCode == 200;
 		return resultat;
 	}
-	
-	
+
+
 	/**
 	 * Appel HTTP GET
 	 * @param clientHTTP client HTTP
@@ -136,13 +136,15 @@ public abstract class AbstractHTTPClient {
 	 */
 	public boolean callHTTPGet(Invocation.Builder invocation){
 		LOGGER.debug("[HTTP GET] Appel du service");
-		boolean resultat;
+		boolean resultat = false;
 		try{
 
 			Response response = invocation.get();
-			LOGGER.debug("[HTTP GET] Resultat : {}", response.getStatus());
-			this.lastResponseCode = response != null ? response.getStatus() : 0;
-			resultat = response != null && response.getStatus() == 200;
+			if(response != null){
+				LOGGER.debug("[HTTP GET] Resultat : {}", response.getStatus());
+				this.lastResponseCode = response.getStatus();
+				resultat = response.getStatus() == 200;
+			}
 		}
 		catch(Exception e){
 			LOGGER.error("> Resultat : Erreur lors de l'appel HTTP GET", e);
@@ -151,8 +153,8 @@ public abstract class AbstractHTTPClient {
 		}
 		return resultat;
 	}
-	
-	
+
+
 	/**
 	 * Appel HTTP GET
 	 * @param clientHTTP client HTTP
@@ -165,15 +167,17 @@ public abstract class AbstractHTTPClient {
 		try{
 
 			Response response = invocation.get();
-			LOGGER.debug("[HTTP GET] Resultat : {} / MediaType {}", response, response.getMediaType());
-			this.lastResponseCode = response != null ? response.getStatus() : 0;
+			if(response != null){
+				LOGGER.debug("[HTTP GET] Resultat : {} / MediaType {}", response, response.getMediaType());
+				this.lastResponseCode = response.getStatus();
+			}
 			return response;
 		}
 		catch(Exception e){
 			LOGGER.error("> Resultat : Erreur lors de l'appel HTTP GET", e);
-			this.lastResponseCode = 500;
-			return null;
 		}
+		this.lastResponseCode = 500;
+		return null;
 	}
 
 

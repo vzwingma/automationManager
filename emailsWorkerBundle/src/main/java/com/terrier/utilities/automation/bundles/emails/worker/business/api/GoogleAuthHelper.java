@@ -65,7 +65,7 @@ public final class GoogleAuthHelper {
         try {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             LOGGER.error("Erreur lors de l'initialisation ", t);
         }
     }

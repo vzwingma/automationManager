@@ -151,7 +151,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	 */
 	protected boolean validateConfig(int p){
 
-		boolean configValid = false;
+		boolean configValid = true;
 
 		LOGGER.info("** [{}] **", p);
 		LOGGER.info("[{}] > Période de scan : {} minutes", p, getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
@@ -162,11 +162,11 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 		catch(NumberFormatException e){
 			LOGGER.error("[{}] > Erreur dans le format de la période {}", p, getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
 		}
-		configValid = period != null;
+		configValid &= period != null;
 		
 		String rule = getKey(ConfigKeyEnums.EMAIL_WORKER_RULE, p);
 		LOGGER.info("[{}] > Règle : {}", p, rule);
-		configValid = rule != null && EmailRuleEnum.valueOf(rule.toUpperCase()) != null;
+		configValid &= rule != null && EmailRuleEnum.valueOf(rule.toUpperCase()) != null;
 		
 		if(!configValid){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");

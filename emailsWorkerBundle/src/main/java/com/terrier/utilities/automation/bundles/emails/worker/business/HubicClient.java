@@ -24,11 +24,11 @@ public class HubicClient extends AbstractHTTPClient{
 	private static final Logger LOGGER = LoggerFactory.getLogger( HubicClient.class );
 
 
-	public InputStream telechargementFichier(String url) throws Exception{
+	public InputStream telechargementFichier(String url){
 		Invocation.Builder invocation = getInvocation(getClient(), url, null, MediaType.APPLICATION_OCTET_STREAM_TYPE);
 		Response response = callHTTPGetData(invocation);
 		// La réponse est un PDF
-		if(!"application/pdf".equals(response.getMediaType())){
+		if("application/pdf".equals(response.getMediaType().getType())){
 			return response.readEntity(InputStream.class);
 		}
 		else{
