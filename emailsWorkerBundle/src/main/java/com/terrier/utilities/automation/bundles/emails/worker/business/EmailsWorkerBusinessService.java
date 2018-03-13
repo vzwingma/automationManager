@@ -20,6 +20,7 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
+import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.emails.worker.business.api.GoogleAuthHelper;
 import com.terrier.utilities.automation.bundles.emails.worker.business.enums.EmailRuleEnum;
@@ -182,8 +183,22 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 
 	@Override
 	public void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents) {
-		// TODO Auto-generated method stub
-
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Activité de traitements périodiques", 
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated(),
+						!this.scheduledThreadPool.isShutdown() && !this.scheduledThreadPool.isTerminated() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.ERROR ));
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Threads utilisés", 
+						this.scheduledThreadPool.getQueue().size() + "/" + this.scheduledThreadPool.getPoolSize(),
+						this.scheduledThreadPool.getQueue().size() <= this.scheduledThreadPool.getPoolSize() ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
+		
+		supervisionEvents.add(
+				new StatutPropertyBundleObject(
+						"Nombre de patterns de copie", 
+						this.nombrePatterns,
+						this.nombrePatterns > 0 ? StatutPropertyBundleEnum.OK : StatutPropertyBundleEnum.WARNING));
 	}
 
 	/**

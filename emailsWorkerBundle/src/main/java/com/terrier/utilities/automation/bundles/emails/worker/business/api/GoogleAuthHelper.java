@@ -123,7 +123,7 @@ public final class GoogleAuthHelper {
         String user = "me";
         ListLabelsResponse listResponse = service.users().labels().list(user).execute();
         List<Label> labels = listResponse.getLabels();
-        if (labels.size() == 0) {
+        if (labels.isEmpty()) {
            LOGGER.warn("No labels found.");
         } else {
             LOGGER.info("Labels:");
