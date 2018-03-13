@@ -39,7 +39,7 @@ public final class GoogleAuthHelper {
 	
 	   /** Application name. */
     private static final String APPLICATION_NAME =
-        "Gmail API Java Quickstart";
+        "Gmail API for Automation";
 
     /** Directory to store user credentials for this application. */
     private static final java.io.File DATA_STORE_DIR = new java.io.File("src/main/resources/credentials/gmail");
