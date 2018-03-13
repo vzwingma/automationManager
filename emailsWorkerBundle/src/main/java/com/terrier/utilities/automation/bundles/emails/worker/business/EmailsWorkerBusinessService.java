@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.GmailScopes;
 import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService;
 import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
@@ -36,6 +37,8 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	public static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.emails.worker";
 
 	private Gmail gmailService;
+	private String scope = GmailScopes.GMAIL_LABELS;
+	
 
 	// Nombre de patterns écrits
 	protected int nombrePatterns = 0;
@@ -102,10 +105,10 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	 */
 	protected Gmail getGMailService(){
 		
-		if(gmailService == null){
+		if(gmailService == null && scope != null){
 			LOGGER.info("Initialisation du Gmail Service");
 			try {
-				gmailService = GoogleAuthHelper.getGmailService();
+				gmailService = GoogleAuthHelper.getGmailService(scope);
 			} catch (IOException e) {
 				LOGGER.error("Erreur lors de l'initialisation du service GMail", e);
 			}
@@ -158,5 +161,14 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 		// TODO Auto-generated method stub
 
 	}
+
+	/**
+	 * @param scope the scope to set
+	 */
+	protected final void setScope(String scope) {
+		this.scope = scope;
+	}
+	
+	
 
 }

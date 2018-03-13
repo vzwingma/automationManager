@@ -59,8 +59,7 @@ public final class GoogleAuthHelper {
      * If modifying these scopes, delete your previously saved credentials
      * at ~/.credentials/gmail-java-quickstart
      */
-    private static final List<String> SCOPES =
-        Arrays.asList(GmailScopes.MAIL_GOOGLE_COM);
+    private static List<String> SCOPES;
 
     static {
         try {
@@ -101,7 +100,10 @@ public final class GoogleAuthHelper {
      * @return an authorized Gmail client service
      * @throws IOException
      */
-    public static Gmail getGmailService() throws IOException {
+    public static Gmail getGmailService(String scope) throws IOException {
+    	
+    	SCOPES = Arrays.asList(scope);
+    	
         Credential credential = authorize();
         return new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
@@ -115,7 +117,7 @@ public final class GoogleAuthHelper {
      */
     public static void main(String[] args) throws IOException {
         // Build a new authorized API client service.
-        Gmail service = getGmailService();
+        Gmail service = getGmailService(GmailScopes.GMAIL_LABELS);
 
         // Print the labels in the user's account.
         String user = "me";

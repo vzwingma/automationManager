@@ -18,8 +18,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.api.services.gmail.Gmail;
 import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
@@ -64,6 +62,7 @@ public class TestEmailsBusinessService {
 		});
 		
 		Gmail mockGMail = mock(Gmail.class);
+		service.setScope(null);
 		when(service.getGMailService()).thenReturn(mockGMail);
 		
 		service.startDelay = 0L;
