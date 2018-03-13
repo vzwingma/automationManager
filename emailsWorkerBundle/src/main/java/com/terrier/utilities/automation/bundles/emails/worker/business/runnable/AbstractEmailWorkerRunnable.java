@@ -16,7 +16,7 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.api.GMail
  */
 public abstract class AbstractEmailWorkerRunnable extends GMailService implements Runnable {
 
-	protected final Logger LOGGER = LoggerFactory.getLogger( this.getClass() );
+
 	
 	private final int index;
 	
