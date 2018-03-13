@@ -27,7 +27,7 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.
 import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.HubicEmailsWorkerRunnable;
 
 /**
- * Service m�tier du worker
+ * Service métier du worker
  * @author PVZN02821
  *
  */
@@ -39,7 +39,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	public static final String CONFIG_PID = "com.terrier.utilities.automation.bundles.emails.worker";
 
 	private Gmail gmailService;
-	private String scope = GmailScopes.GMAIL_LABELS;
+	private String scope = GmailScopes.MAIL_GOOGLE_COM;
 
 
 	// Nombre de patterns écrits

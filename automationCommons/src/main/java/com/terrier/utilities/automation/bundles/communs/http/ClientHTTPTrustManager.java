@@ -1,4 +1,4 @@
-package com.terrier.utilities.automation.bundles.messaging.http.client;
+package com.terrier.utilities.automation.bundles.communs.http;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -14,12 +14,16 @@ import org.slf4j.LoggerFactory;
  * @author PVZN02821
  *
  */
-public class SendAPITrustManager implements X509TrustManager {
+public class ClientHTTPTrustManager implements X509TrustManager {
 
-	private static final String[] CERTIFICATS_CN = {"CN=*.mailgun.net", "CN=*.free-mobile.fr", "CN=slack.com" };
+	private static final String[] CERTIFICATS_CN = {
+			"CN=*.mailgun.net", 
+			"CN=*.free-mobile.fr", 
+			"CN=slack.com",
+			"CN=ovh.com"};
 
 
-	private static final Logger LOGGER = LoggerFactory.getLogger( SendAPITrustManager.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( ClientHTTPTrustManager.class );
 
 	
 	public X509Certificate[] getAcceptedIssuers() {

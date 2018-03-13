@@ -1,12 +1,11 @@
 /**
  * 
  */
-package com.terrier.utilities.automation.bundles.messaging.http.client;
+package com.terrier.utilities.automation.bundles.communs.http;
 
 
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -25,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPropertyBundleEnum;
-import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 
 /**
  * Classe d'un client HTTP
@@ -64,7 +62,7 @@ public abstract class AbstractHTTPClient {
 			// Install the all-trusting trust manager
 			SSLContext sslcontext = SSLContext.getInstance("TLS");
 
-			sslcontext.init(null,  new TrustManager[] { new SendAPITrustManager() }, new java.security.SecureRandom());
+			sslcontext.init(null,  new TrustManager[] { new ClientHTTPTrustManager() }, new java.security.SecureRandom());
 			HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
 			return ClientBuilder.newBuilder()
 					.sslContext(sslcontext)
@@ -87,6 +85,7 @@ public abstract class AbstractHTTPClient {
 	 */
 	public Invocation.Builder getInvocation(Client clientHTTP, String url, String path, MediaType type){
 		if(clientHTTP != null){
+			LOGGER.debug("[HTTP] Appel de l'URI [{}{}]", url, path != null ? path : "");
 			WebTarget wt = clientHTTP.target(url);
 			if(path != null){
 				wt = wt.path(path);
@@ -107,7 +106,7 @@ public abstract class AbstractHTTPClient {
 	 */
 	public boolean callHTTPPost(Invocation.Builder invocation, Entity<?> entityData){
 		boolean resultat;
-		LOGGER.debug("[HTTP POST] Appel de l'URI [{}]", invocation);
+		LOGGER.debug("[HTTP POST] Appel du service");
 		try{
 			invocation.header("Content-type", "application/json");
 			Response response = invocation.post(entityData);
@@ -136,12 +135,12 @@ public abstract class AbstractHTTPClient {
 	 * @return résultat de l'appel
 	 */
 	public boolean callHTTPGet(Invocation.Builder invocation){
-		LOGGER.debug("[HTTP GET] Appel de l'URI [{}]", invocation);
+		LOGGER.debug("[HTTP GET] Appel du service");
 		boolean resultat;
 		try{
 
 			Response response = invocation.get();
-			LOGGER.debug("[HTTP GET] Resultat : {}", response);
+			LOGGER.debug("[HTTP GET] Resultat : {}", response.getStatus());
 			this.lastResponseCode = response != null ? response.getStatus() : 0;
 			resultat = response != null && response.getStatus() == 200;
 		}
@@ -152,15 +151,30 @@ public abstract class AbstractHTTPClient {
 		}
 		return resultat;
 	}
-
-
-
+	
+	
 	/**
-	 * Méthode de traitement runnable
+	 * Appel HTTP GET
+	 * @param clientHTTP client HTTP
+	 * @param url racine de l'URL
+	 * @param urlParams paramètres de l'URL (à part pour ne pas les tracer)
+	 * @return résultat de l'appel
 	 */
-	public abstract void executeMessagesTask();
+	public Response callHTTPGetData(Invocation.Builder invocation){
+		LOGGER.debug("[HTTP GET] Appel du service");
+		try{
 
-
+			Response response = invocation.get();
+			LOGGER.debug("[HTTP GET] Resultat : {} / MediaType {}", response, response.getMediaType());
+			this.lastResponseCode = response != null ? response.getStatus() : 0;
+			return response;
+		}
+		catch(Exception e){
+			LOGGER.error("> Resultat : Erreur lors de l'appel HTTP GET", e);
+			this.lastResponseCode = 500;
+			return null;
+		}
+	}
 
 
 	/**
@@ -169,12 +183,6 @@ public abstract class AbstractHTTPClient {
 	public int getLastResponseCode() {
 		return lastResponseCode;
 	}
-
-	/**
-	 * Ajout des informations du bundle à superviser
-	 * @param supervisionEvents événements de supervision, sous la forme titre->Données
-	 */
-	public abstract void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents);
 
 
 

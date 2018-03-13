@@ -11,7 +11,10 @@
 	<version>${automation.commons.version}</version>
 	<packaging>bundle</packaging>
 	<description>Commons OSGi bundle project.</description>
-
+	<properties>
+		<jersey.version>2.26</jersey.version>
+		<jersey.core.version>2.26</jersey.core.version>
+	</properties>
 
 	<build>
 		<plugins>
@@ -31,4 +34,22 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-common</artifactId>
+			<version>${jersey.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+	</dependencies>
 </project>

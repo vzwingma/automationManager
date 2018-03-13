@@ -6,8 +6,9 @@ package com.terrier.utilities.automation.bundles.messaging.runnable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.terrier.utilities.automation.bundles.communs.http.AbstractHTTPClient;
+import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.messaging.MessagingBusinessService;
-import com.terrier.utilities.automation.bundles.messaging.http.client.AbstractHTTPClient;
 
 /**
  * Classe abstraite d'envoi
@@ -30,6 +31,12 @@ public abstract class AbstractSendTaskRunnable extends AbstractHTTPClient implem
 	}
 	
 
+
+	/**
+	 * Méthode de traitement runnable
+	 */
+	public abstract void executeMessagesTask();
+	
 	/**
 	 * @param service the service to set
 	 */
@@ -43,4 +50,12 @@ public abstract class AbstractSendTaskRunnable extends AbstractHTTPClient implem
 	public MessagingBusinessService getService() {
 		return service;
 	}
+	
+	/**
+	 * Ajout des informations du bundle à superviser
+	 * @param supervisionEvents événements de supervision, sous la forme titre->Données
+	 */
+	public abstract void updateSupervisionEvents(List<StatutPropertyBundleObject> supervisionEvents);
+
+
 }

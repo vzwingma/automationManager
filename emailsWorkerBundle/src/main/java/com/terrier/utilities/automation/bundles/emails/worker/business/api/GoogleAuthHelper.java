@@ -121,7 +121,7 @@ public final class GoogleAuthHelper {
 
         // Print the labels in the user's account.
         String user = "me";
-        ListLabelsResponse listResponse = service.users().labels().list(user).execute(); //messages().list(user).setLabelIds(Arrays.asList("INBOX")).execute();
+        ListLabelsResponse listResponse = service.users().labels().list(user).execute();
         List<Label> labels = listResponse.getLabels();
         if (labels.size() == 0) {
            LOGGER.warn("No labels found.");
