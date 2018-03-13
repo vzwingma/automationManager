@@ -29,7 +29,7 @@ public class FileUtils {
 		File targetFile = new File(nomFichier);
 		try(InputStream iStream = stream){
 			try(OutputStream out = new FileOutputStream(targetFile)){
-				byte buf[]=new byte[1024];
+				byte[] buf=new byte[1024];
 				int len;
 				while((len=stream.read(buf))>0){
 					out.write(buf,0,len);

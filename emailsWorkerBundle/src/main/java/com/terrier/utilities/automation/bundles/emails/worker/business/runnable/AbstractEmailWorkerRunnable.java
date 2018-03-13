@@ -23,7 +23,7 @@ public abstract class AbstractEmailWorkerRunnable extends GMailService implement
 		super(gmailAPI);
 		this.index = index;
 		this.service = service;
-		LOGGER.info("[{}] Worker {}", index, this.getClass().getSimpleName());
+		logger.info("[{}] Worker {}", index, this.getClass().getSimpleName());
 	}
 	
 	

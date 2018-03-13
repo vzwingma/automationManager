@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePartHeader;
 import com.google.api.services.gmail.model.ModifyMessageRequest;
 
 /**
@@ -20,7 +21,7 @@ import com.google.api.services.gmail.model.ModifyMessageRequest;
 public class GMailService{
 
 
-	protected final Logger LOGGER = LoggerFactory.getLogger( this.getClass() );
+	protected final Logger logger = LoggerFactory.getLogger( this.getClass() );
 
 	// API Gmails
 	private Gmail gmailAPI;
@@ -41,7 +42,7 @@ public class GMailService{
 				return gmailAPI.users().messages().list(USER_ME).setLabelIds(Arrays.asList("INBOX")).execute().getMessages();
 			}
 		} catch (Exception e) {
-			LOGGER.error("Erreur lors de la recherche des emails", e);
+			logger.error("Erreur lors de la recherche des emails", e);
 		}
 		return new ArrayList<>();
 	}
@@ -55,7 +56,7 @@ public class GMailService{
 			try {
 				return gmailAPI.users().messages().get(USER_ME, idMessage).execute();
 			} catch (Exception e) {
-				LOGGER.error("Erreur lors du chargement du mail [{}]", idMessage, e);
+				logger.error("Erreur lors du chargement du mail [{}]", idMessage, e);
 			}
 		}
 		return null;
@@ -71,10 +72,10 @@ public class GMailService{
 			try {
 				ModifyMessageRequest archive = new ModifyMessageRequest();
 				archive.setRemoveLabelIds(Arrays.asList("INBOX"));
-				LOGGER.info("Archivage de {}", idMessage);
+				logger.info("Archivage de {}", idMessage);
 				return gmailAPI.users().messages().modify(USER_ME, idMessage, archive).execute() != null;
 			} catch (Exception e) {
-				LOGGER.error("Erreur lors de l'archivage du mail [{}]", idMessage, e);
+				logger.error("Erreur lors de l'archivage du mail [{}]", idMessage, e);
 			}
 		}
 		return false;
@@ -110,7 +111,7 @@ public class GMailService{
 			Optional<String> sender = message.getPayload().getHeaders()
 					.stream()
 					.filter(header -> header.getName().equals(headerName))
-					.map(header -> header.getValue()).findFirst();
+					.map(MessagePartHeader::getValue).findFirst();
 			if(sender.isPresent()){
 				return sender.get();
 			}

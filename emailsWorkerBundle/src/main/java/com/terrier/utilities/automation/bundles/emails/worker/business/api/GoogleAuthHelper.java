@@ -45,26 +45,26 @@ public final class GoogleAuthHelper {
     private static final java.io.File DATA_STORE_DIR = new java.io.File("src/main/resources/credentials/gmail");
 
     /** Global instance of the {@link FileDataStoreFactory}. */
-    private static FileDataStoreFactory DATA_STORE_FACTORY;
+    private static FileDataStoreFactory datastoreFactory;
 
     /** Global instance of the JSON factory. */
     private static final JsonFactory JSON_FACTORY =
         JacksonFactory.getDefaultInstance();
 
     /** Global instance of the HTTP transport. */
-    private static HttpTransport HTTP_TRANSPORT;
+    private static HttpTransport httpTransport;
 
     /** Global instance of the scopes required by this quickstart.
      *
      * If modifying these scopes, delete your previously saved credentials
-     * at ~/.credentials/gmail-java-quickstart
+     * at ~/.credentials/*
      */
-    private static List<String> SCOPES;
+    private static List<String> scopesAPI;
 
     static {
         try {
-            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-            DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            datastoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
         } catch (Exception t) {
             LOGGER.error("Erreur lors de l'initialisation ", t);
         }
@@ -85,8 +85,8 @@ public final class GoogleAuthHelper {
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow =
                 new GoogleAuthorizationCodeFlow.Builder(
-                        HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(DATA_STORE_FACTORY)
+                        httpTransport, JSON_FACTORY, clientSecrets, scopesAPI)
+                .setDataStoreFactory(datastoreFactory)
                 .setAccessType("offline")
                 .build();
         Credential credential = new AuthorizationCodeInstalledApp(
@@ -102,10 +102,10 @@ public final class GoogleAuthHelper {
      */
     public static Gmail getGmailService(String scope) throws IOException {
     	
-    	SCOPES = Arrays.asList(scope);
+    	scopesAPI = Arrays.asList(scope);
     	
         Credential credential = authorize();
-        return new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+        return new Gmail.Builder(httpTransport, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }

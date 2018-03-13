@@ -42,7 +42,7 @@ public class HubicEmailsWorkerRunnable extends AbstractEmailWorkerRunnable {
 		List<Message> messagesInbox = getMailsInbox();
 		long nbMessagesTraites = 0L;
 		// Traitement des messages
-		LOGGER.info("Traitement des mails HUBIC parmi {}" , messagesInbox.size() );
+		logger.info("Traitement des mails HUBIC parmi {}" , messagesInbox.size() );
 		if(!messagesInbox.isEmpty()){
 			nbMessagesTraites = messagesInbox
 			.parallelStream()
@@ -68,16 +68,16 @@ public class HubicEmailsWorkerRunnable extends AbstractEmailWorkerRunnable {
 	protected boolean downloadFacture(String messageHubic){
 		String getURL = getURLFromBody(messageHubic);
 		String reference =  getReference(getURL);
-		LOGGER.info("Téléchargement de la facture [{}] : [{}]", reference, getURL);
+		logger.info("Téléchargement de la facture [{}] : [{}]", reference, getURL);
 
 		try {
 			InputStream streamPdf = client.telechargementFichier(getURL);
 			FileUtils.saveStreamToFile(streamPdf, repertoire+"/Facture_" + reference+".pdf");
-			LOGGER.info("Fichier téléchargé [{}]", new File(repertoire).getAbsolutePath());
+			logger.info("Fichier téléchargé [{}]", new File(repertoire).getAbsolutePath());
 			getBusinessService().sendNotificationMessage(NOTIF_HEADER, "La facture " + reference + " a été téléchargée");
 			return true;
 		} catch (Exception e) {
-			LOGGER.error("Erreur lors du téléchargement de la facture {}", e);
+			logger.error("Erreur lors du téléchargement de la facture {}", e);
 			getBusinessService().sendNotificationMessage(NOTIF_HEADER, "Erreur lors du traitement de la facture " + reference);
 			return false;
 		}

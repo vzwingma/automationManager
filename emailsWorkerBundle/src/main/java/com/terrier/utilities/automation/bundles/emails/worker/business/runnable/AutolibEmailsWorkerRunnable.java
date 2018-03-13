@@ -32,12 +32,11 @@ public class AutolibEmailsWorkerRunnable extends AbstractEmailWorkerRunnable {
 		// Liste des messages
 		List<Message> messagesInbox = getMailsInbox();
 		// Traitement des messages
-		LOGGER.info("Traitement des mails Autolib parmi {}" , messagesInbox.size() );
+		logger.info("Traitement des mails Autolib parmi {}" , messagesInbox.size() );
 		if(!messagesInbox.isEmpty()){
 			nbMessagesTraites = messagesInbox
 			.stream()
 			.filter(m -> AUTOLIB_SENDER.equalsIgnoreCase(getSender(m.getId())))
-			.peek(m -> System.out.println(m.getId()))
 			.filter(m -> archiveMessage(m.getId()))
 			.count();
 			getBusinessService().sendNotificationMessage(EmailsWorkerBusinessService.NOTIF_HEADER, "Archivage de " + nbMessagesTraites + " mails Autolib parmi " + messagesInbox.size());
