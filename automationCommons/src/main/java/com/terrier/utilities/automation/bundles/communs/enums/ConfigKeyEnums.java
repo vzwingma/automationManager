@@ -34,7 +34,7 @@ public enum ConfigKeyEnums  {
 	/** EMAIL_WORKER **/
 	// Période scannée
 	EMAIL_WORKER_PERIOD("automation.bundle.emails.worker.period"),
-	
+	EMAIL_WORKER_RULE("automation.bundle.emails.worker.rule"),
 	;
 	
 	

@@ -13,16 +13,16 @@ import com.google.api.services.gmail.Gmail;
  * @author PVZN02821
  *
  */
-public class EmailWorkerRunnable implements Runnable {
+public abstract class AbstractEmailWorkerRunnable implements Runnable {
 
 
-	private static final Logger LOGGER = LoggerFactory.getLogger( EmailWorkerRunnable.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( AbstractEmailWorkerRunnable.class );
 	
 	private final int index;
 	
 	private final Gmail gmailService;
 	
-	public EmailWorkerRunnable(int index, final Gmail gmailService){
+	public AbstractEmailWorkerRunnable(int index, final Gmail gmailService){
 		this.index = index;
 		this.gmailService = gmailService;
 		LOGGER.info("[{}] Worker", index);
@@ -30,8 +30,8 @@ public class EmailWorkerRunnable implements Runnable {
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		
+		executeRule();
 	}
 
+	public abstract void executeRule(); 
 }

@@ -22,7 +22,9 @@ import com.terrier.utilities.automation.bundles.communs.business.AbstractAutomat
 import com.terrier.utilities.automation.bundles.communs.enums.ConfigKeyEnums;
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.emails.worker.business.api.GoogleAuthHelper;
-import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.EmailWorkerRunnable;
+import com.terrier.utilities.automation.bundles.emails.worker.business.enums.EmailRuleEnum;
+import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.AbstractEmailWorkerRunnable;
+import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.HubicEmailsWorkerRunnable;
 
 /**
  * Service m�tier du worker
@@ -38,7 +40,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 
 	private Gmail gmailService;
 	private String scope = GmailScopes.GMAIL_LABELS;
-	
+
 
 	// Nombre de patterns écrits
 	protected int nombrePatterns = 0;
@@ -50,11 +52,11 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	/**
 	 * Liste des tâches schedulées
 	 */
-	protected List<EmailWorkerRunnable> listeScheduled = new ArrayList<>();
+	protected List<AbstractEmailWorkerRunnable> listeScheduled = new ArrayList<>();
 
 	// Durée d'attente avec le démarrage réel
 	protected Long startDelay = 10L;
-
+	private Long periode = 60L;
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#startService()
 	 */
@@ -69,8 +71,12 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	public void notifyUpdateDictionary() {
 
 		LOGGER.info("** Configuration **");
+
+		periode = Long.parseLong(getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
+		LOGGER.info(" > Démarrage de l'exécution des règles dans {} minutes puis toutes les {} minutes", startDelay, periode);
+
 		int nbPatterns = 0;
-		while(getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD, nbPatterns) != null){
+		while(getKey(ConfigKeyEnums.EMAIL_WORKER_RULE, nbPatterns) != null){
 			nbPatterns++;
 		}
 		LOGGER.info(" > Nombre de pattern : {}", nbPatterns);
@@ -104,7 +110,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	 * @return GMail Service
 	 */
 	protected Gmail getGMailService(){
-		
+
 		if(gmailService == null && scope != null){
 			LOGGER.info("Initialisation du Gmail Service");
 			try {
@@ -120,14 +126,23 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	 * Démarrage du traitement
 	 * @param p
 	 */
-	protected void startTreatment(int p){
-		Long periode = Long.parseLong(getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD, p));
-		EmailWorkerRunnable workerRunnable = new EmailWorkerRunnable(
-				p, 
-				getGMailService());
-		LOGGER.info("[{}] Démarrage du scheduler dans {} minutes puis toutes les {} minutes", p, startDelay, periode);
-		this.listeScheduled.add(workerRunnable);
-		scheduledThreadPool.scheduleWithFixedDelay(workerRunnable, startDelay, periode, TimeUnit.MINUTES);
+	protected void startTreatment(int index){
+		EmailRuleEnum rule = EmailRuleEnum.valueOf(getKey(ConfigKeyEnums.EMAIL_WORKER_RULE, index).toUpperCase());
+
+		AbstractEmailWorkerRunnable workerRunnable = null;
+		switch (rule) {
+		case HUBIC:
+			workerRunnable = new HubicEmailsWorkerRunnable(index, gmailService);
+			break;
+
+		default:
+			break;
+		}
+		if(workerRunnable != null){
+			LOGGER.info("[{}] Démarrage de la règle : {} : {}", index, rule, workerRunnable);
+			this.listeScheduled.add(workerRunnable);
+			scheduledThreadPool.scheduleWithFixedDelay(workerRunnable, startDelay, periode, TimeUnit.MINUTES);
+		}
 	}
 
 
@@ -139,15 +154,20 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 		boolean configValid = false;
 
 		LOGGER.info("** [{}] **", p);
-		LOGGER.info("[{}] > Période de scan : {} minutes", p, getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD, p));
+		LOGGER.info("[{}] > Période de scan : {} minutes", p, getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
 		Long period = null;
 		try{
-			period = Long.parseLong(getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD, p));
+			period = Long.parseLong(getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
 		}
 		catch(NumberFormatException e){
-			LOGGER.error("[{}] > Erreur dans le format de la période {}", p, getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD, p));
+			LOGGER.error("[{}] > Erreur dans le format de la période {}", p, getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
 		}
 		configValid = period != null;
+		
+		String rule = getKey(ConfigKeyEnums.EMAIL_WORKER_RULE, p);
+		LOGGER.info("[{}] > Règle : {}", p, rule);
+		configValid = rule != null && EmailRuleEnum.valueOf(rule.toUpperCase()) != null;
+		
 		if(!configValid){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
 			sendNotificationMessage("Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
@@ -168,7 +188,4 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	protected final void setScope(String scope) {
 		this.scope = scope;
 	}
-	
-	
-
 }
