@@ -24,6 +24,7 @@ import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBund
 import com.terrier.utilities.automation.bundles.emails.worker.business.api.GoogleAuthHelper;
 import com.terrier.utilities.automation.bundles.emails.worker.business.enums.EmailRuleEnum;
 import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.AbstractEmailWorkerRunnable;
+import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.AutolibEmailsWorkerRunnable;
 import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.HubicEmailsWorkerRunnable;
 
 /**
@@ -135,7 +136,9 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 		case HUBIC:
 			workerRunnable = new HubicEmailsWorkerRunnable(index, gmailService, this);
 			break;
-
+		case AUTOLIB:
+			workerRunnable = new AutolibEmailsWorkerRunnable(index, gmailService, this);
+			break;
 		default:
 			break;
 		}

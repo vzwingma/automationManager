@@ -9,5 +9,5 @@ package com.terrier.utilities.automation.bundles.emails.worker.business.enums;
  *
  */
 public enum EmailRuleEnum {
-	HUBIC
+	HUBIC, AUTOLIB;
 }
