@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.ModifyMessageRequest;
 
 /**
  * Service des API Gmail
@@ -60,6 +61,24 @@ public class GMailService{
 		return null;
 	}
 
+
+	/**
+	 * @param idMessage
+	 * @return message
+	 */
+	public boolean archiveMessage(String idMessage){
+		if(gmailAPI != null){
+			try {
+				ModifyMessageRequest archive = new ModifyMessageRequest();
+				archive.setRemoveLabelIds(Arrays.asList("INBOX"));
+				LOGGER.info("Archivage de {}", idMessage);
+				return gmailAPI.users().messages().modify(USER_ME, idMessage, archive).execute() != null;
+			} catch (Exception e) {
+				LOGGER.error("Erreur lors de l'archivage du mail [{}]", idMessage, e);
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * @param idMessage

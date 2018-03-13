@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import com.terrier.utilities.automation.bundles.communs.utils.files.FileUtils;
+import com.terrier.utilities.automation.bundles.emails.worker.business.EmailsWorkerBusinessService;
 import com.terrier.utilities.automation.bundles.emails.worker.business.HubicClient;
 
 /**
@@ -19,52 +19,53 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.HubicClie
  */
 public class HubicEmailsWorkerRunnable extends AbstractEmailWorkerRunnable {
 
-	public HubicEmailsWorkerRunnable(int index, Gmail gmailService) {
-		super(index, gmailService);
+	/**
+	 * @param index
+	 * @param gmailService
+	 * @param service
+	 */
+	public HubicEmailsWorkerRunnable(int index, Gmail gmailService, EmailsWorkerBusinessService service) {
+		super(index, gmailService, service);
 	}
 
 	protected static final String HUBIC_SENDER = "no-reply@hubic.com";
 
+	private static final String NOTIF_HEADER = "Emails Worker";
+	
 	private HubicClient client = new HubicClient();
 
 	protected String repertoire = "src/test/resources";
 
 	@Override
-	public void executeRule() {
+	public long executeRule() {
 		// Liste des messages
 		List<Message> messagesInbox = getMailsInbox();
-
-		List<String> messagesHubic = getMessagesHubic(messagesInbox);
+		long nbMessagesTraites = 0L;
 		// Traitement des messages
-		LOGGER.info("Traitement des {} mails HUBIC parmi {}" , messagesHubic.size(), messagesInbox.size() );
-		if(!messagesHubic.isEmpty()){
-			messagesHubic
+		LOGGER.info("Traitement des mails HUBIC parmi {}" , messagesInbox.size() );
+		if(!messagesInbox.isEmpty()){
+			nbMessagesTraites = messagesInbox
 			.parallelStream()
-			.forEach(hubic -> downloadFacture(hubic));
+			.filter(m -> HUBIC_SENDER.equalsIgnoreCase(getSender(m.getId())))
+			.filter(m -> {
+				String body = getBody(m.getId()); 
+				return downloadFacture(body);	
+			})
+			.filter(m -> archiveMessage(m.getId()))
+			.count();
+			
+			getBusinessService().sendNotificationMessage(NOTIF_HEADER, "Traitement de " + nbMessagesTraites + " parmi " + messagesInbox.size());
 		}
-
+		return nbMessagesTraites;
 	}
 
-	/**
-	 * @param messagesInbox
-	 * @return liste des messages body pour le sender HUBIC_SENDER
-	 */
-	private List<String> getMessagesHubic(List<Message> messagesInbox){
-		// Chargement des body
-		List<String> messagesHubic = messagesInbox
-				.parallelStream()
-				.filter(m -> getSender(m.getId()).equalsIgnoreCase(HUBIC_SENDER))
-				.map(m -> getBody(m.getId()))
-				.collect(Collectors.toList());
-		return messagesHubic;
-	}
 
 
 	/**
 	 * Téléchargement de la facture
 	 * @param messageHubic
 	 */
-	protected void downloadFacture(String messageHubic){
+	protected boolean downloadFacture(String messageHubic){
 		String getURL = getURLFromBody(messageHubic);
 		String reference =  getReference(getURL);
 		LOGGER.info("Téléchargement de la facture [{}] : [{}]", reference, getURL);
@@ -73,8 +74,12 @@ public class HubicEmailsWorkerRunnable extends AbstractEmailWorkerRunnable {
 			InputStream streamPdf = client.telechargementFichier(getURL);
 			FileUtils.saveStreamToFile(streamPdf, repertoire+"/Facture_" + reference+".pdf");
 			LOGGER.info("Fichier téléchargé [{}]", new File(repertoire).getAbsolutePath());
+			getBusinessService().sendNotificationMessage(NOTIF_HEADER, "La facture " + reference + " a été téléchargée");
+			return true;
 		} catch (Exception e) {
 			LOGGER.error("Erreur lors du téléchargement de la facture {}", e);
+			getBusinessService().sendNotificationMessage(NOTIF_HEADER, "Erreur lors du traitement de la facture " + reference);
+			return false;
 		}
 	}
 
@@ -104,6 +109,4 @@ public class HubicEmailsWorkerRunnable extends AbstractEmailWorkerRunnable {
 	public final void setClient(HubicClient client) {
 		this.client = client;
 	}
-	
-	
 }

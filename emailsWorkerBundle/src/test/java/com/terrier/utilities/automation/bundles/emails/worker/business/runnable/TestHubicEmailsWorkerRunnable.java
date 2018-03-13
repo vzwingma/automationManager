@@ -3,7 +3,7 @@ package com.terrier.utilities.automation.bundles.emails.worker.business.runnable
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,11 +18,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
+import com.terrier.utilities.automation.bundles.emails.worker.business.EmailsWorkerBusinessService;
 import com.terrier.utilities.automation.bundles.emails.worker.business.HubicClient;
 import com.terrier.utilities.automation.bundles.emails.worker.business.api.GoogleAuthHelper;
 
@@ -34,12 +34,13 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.api.Googl
 @RunWith(MockitoJUnitRunner.class)
 public class TestHubicEmailsWorkerRunnable {
 
-
-	@Spy
-	private HubicEmailsWorkerRunnable runnable = new HubicEmailsWorkerRunnable(0, null);
-
+	@Mock
+	private EmailsWorkerBusinessService service;
+	
 	@Mock
 	private HubicClient mockClient;
+	
+	private HubicEmailsWorkerRunnable runnable ;
 	
 	private static final String BODY_MAIL_URL = "Le PDF de la facture HUBICEU631909 est consultable sur https://www.ovh.com/cgi-bin/order/bill.pdf?reference=HUBICEU631909&passwd=aphn \r\n Suite du mail";
 
@@ -53,17 +54,21 @@ public class TestHubicEmailsWorkerRunnable {
 		m2.setId("22222");
 		m2.set("From", "test");
 
+		runnable = spy(new HubicEmailsWorkerRunnable(0, null, service));
+		
 		when(runnable.getMailsInbox()).thenReturn(Arrays.asList(m, m2));
 		when(runnable.getSender(anyString())).thenReturn(HubicEmailsWorkerRunnable.HUBIC_SENDER, "test");
 		when(runnable.getBody(anyString())).thenReturn(BODY_MAIL_URL);
 		
+		
 		runnable.setClient(mockClient);
 		when(mockClient.callHTTPGetData(any(Invocation.Builder.class))).thenReturn(Response.ok().build());
+		when(runnable.archiveMessage(anyString())).thenReturn(true);
 	}
 
 	//Before
 	public void init() throws IOException{
-		runnable = new HubicEmailsWorkerRunnable(0, GoogleAuthHelper.getGmailService(GmailScopes.MAIL_GOOGLE_COM));
+		runnable = new HubicEmailsWorkerRunnable(0, GoogleAuthHelper.getGmailService(GmailScopes.MAIL_GOOGLE_COM), service);
 	}
 
 	/**
@@ -71,8 +76,7 @@ public class TestHubicEmailsWorkerRunnable {
 	 */
 	@Test
 	public void testRuleFilter(){
-		runnable.executeRule();
-		verify(runnable, times(1)).downloadFacture(eq(BODY_MAIL_URL));
+		assertEquals(1, runnable.executeRule());
 	}
 
 

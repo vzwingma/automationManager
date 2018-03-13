@@ -15,8 +15,11 @@ import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import com.google.api.services.gmail.Gmail;
@@ -28,8 +31,10 @@ import com.terrier.utilities.automation.bundles.communs.exceptions.KeyNotFoundEx
  * @author PVZN02821
  *
  */
+@RunWith(MockitoJUnitRunner.class)
 public class TestEmailsBusinessService {
 
+	@Spy
 	private EmailsWorkerBusinessService service;
 
 	/**
@@ -38,7 +43,7 @@ public class TestEmailsBusinessService {
 	 */
 	@Before
 	public void mockDictionnary() throws KeyNotFoundException{
-		service = Mockito.spy(new EmailsWorkerBusinessService());
+
 		Properties properties = new Properties();
 		try {
 		    properties.load(new FileInputStream(new File("src/test/resources/test.bundles.emails.worker.cfg")));

@@ -41,6 +41,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	private Gmail gmailService;
 	private String scope = GmailScopes.MAIL_GOOGLE_COM;
 
+	public static final String NOTIF_HEADER = "Emails Worker";
 
 	// Nombre de patterns écrits
 	protected int nombrePatterns = 0;
@@ -132,7 +133,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 		AbstractEmailWorkerRunnable workerRunnable = null;
 		switch (rule) {
 		case HUBIC:
-			workerRunnable = new HubicEmailsWorkerRunnable(index, gmailService);
+			workerRunnable = new HubicEmailsWorkerRunnable(index, gmailService, this);
 			break;
 
 		default:
