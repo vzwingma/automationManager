@@ -2,22 +2,64 @@
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.3.0" name="automationManagerFeature">
     <feature name="automation-boxcryptor-inventory" description="Boxcryptor Inventory Generator" version="${project.version}">
         <details>Feature associée au module Boxcryptor Inventory Generator</details>
+        <feature prerequisite="true" dependency="false">wrap</feature>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/boxcryptorInventoryGeneratorBundle-${automation.boxcryptor.inventory.version}.jar</bundle>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/automationCommons-${automation.commons.version}.jar</bundle>
+        <bundle>mvn:org.glassfish.jersey.core/jersey-common/2.26</bundle>
+        <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.1</bundle>
+        <bundle>mvn:javax.annotation/javax.annotation-api/1.2</bundle>
+        <bundle>mvn:org.glassfish.hk2.external/javax.inject/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2/osgi-resource-locator/1.0.1</bundle>
+        <bundle>mvn:org.glassfish.jersey.core/jersey-client/2.26</bundle>
+        <bundle>mvn:org.glassfish.jersey.inject/jersey-hk2/2.26</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-locator/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2.external/aopalliance-repackaged/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-api/2.5.0-b42</bundle>
+        <bundle>wrap:mvn:javax.inject/javax.inject/1</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-utils/2.5.0-b42</bundle>
+        <bundle>mvn:org.javassist/javassist/3.22.0-CR2</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
         <bundle>mvn:org.yaml/snakeyaml/1.19</bundle>
-    </feature>
+	</feature>
     <feature name="automation-supervision" description="Supervision" version="${project.version}">
         <details>Feature associée au module Supervision</details>
+		<feature prerequisite="true" dependency="false">wrap</feature>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/supervisionBundle-${automation.supervision.version}.jar</bundle>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/automationCommons-${automation.commons.version}.jar</bundle>
+        <bundle>mvn:org.glassfish.jersey.core/jersey-common/2.26</bundle>
+        <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.1</bundle>
+        <bundle>mvn:javax.annotation/javax.annotation-api/1.2</bundle>
+        <bundle>mvn:org.glassfish.hk2.external/javax.inject/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2/osgi-resource-locator/1.0.1</bundle>
+        <bundle>mvn:org.glassfish.jersey.core/jersey-client/2.26</bundle>
+        <bundle>mvn:org.glassfish.jersey.inject/jersey-hk2/2.26</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-locator/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2.external/aopalliance-repackaged/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-api/2.5.0-b42</bundle>
+        <bundle>wrap:mvn:javax.inject/javax.inject/1</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-utils/2.5.0-b42</bundle>
+        <bundle>mvn:org.javassist/javassist/3.22.0-CR2</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
         <bundle>mvn:javax.servlet/javax.servlet-api/4.0.0</bundle>
     </feature>
     <feature name="automation-emails-worker" description="Emails Worker" version="${project.version}">
         <details>Feature associée au module Emails Worker</details>
+        <feature prerequisite="true" dependency="false">wrap</feature>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/emailWorkerBundle-${automation.emails.worker.version}.jar</bundle>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/automationCommons-${automation.commons.version}.jar</bundle>
+        <bundle>mvn:org.glassfish.jersey.core/jersey-common/2.26</bundle>
+        <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.1</bundle>
+        <bundle>mvn:javax.annotation/javax.annotation-api/1.2</bundle>
+        <bundle>mvn:org.glassfish.hk2.external/javax.inject/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2/osgi-resource-locator/1.0.1</bundle>
+        <bundle>mvn:org.glassfish.jersey.core/jersey-client/2.26</bundle>
+        <bundle>mvn:org.glassfish.jersey.inject/jersey-hk2/2.26</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-locator/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2.external/aopalliance-repackaged/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-api/2.5.0-b42</bundle>
+        <bundle>wrap:mvn:javax.inject/javax.inject/1</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-utils/2.5.0-b42</bundle>
+        <bundle>mvn:org.javassist/javassist/3.22.0-CR2</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
         <bundle>mvn:javax.servlet/javax.servlet-api/4.0.0</bundle>
         <bundle>wrap:mvn:com.google.apis/google-api-services-gmail/v1-rev82-1.23.0</bundle>
@@ -40,15 +82,11 @@
     </feature>	
     <feature name="automation-save-to" description="SaveTo" version="${project.version}">
          <details>Feature associée au module SaveTo</details>
+        <feature prerequisite="true" dependency="false">wrap</feature>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/saveToBundle-${automation.save.to.version}.jar</bundle>
         <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/automationCommons-${automation.commons.version}.jar</bundle>
-        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
-    </feature>
-    <feature name="automation-messaging" description="Messaging Service" version="${project.version}">
-        <details>Feature associée au module Messaging Service</details>
-        <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/messagingBundle-${automation.messaging.version}.jar</bundle>
-        <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/automationCommons-${automation.commons.version}.jar</bundle>
-        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
+        <bundle>mvn:com.terrier.utilities.automation.bundles/saveToBundle/1.2.0</bundle>
+        <bundle>mvn:com.terrier.utilities.automation.bundles/automationCommons/1.3.0</bundle>
         <bundle>mvn:org.glassfish.jersey.core/jersey-common/2.26</bundle>
         <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.1</bundle>
         <bundle>mvn:javax.annotation/javax.annotation-api/1.2</bundle>
@@ -62,6 +100,27 @@
         <bundle>wrap:mvn:javax.inject/javax.inject/1</bundle>
         <bundle>mvn:org.glassfish.hk2/hk2-utils/2.5.0-b42</bundle>
         <bundle>mvn:org.javassist/javassist/3.22.0-CR2</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
+    </feature>
+    <feature name="automation-messaging" description="Messaging Service" version="${project.version}">
+        <details>Feature associée au module Messaging Service</details>
+        <feature prerequisite="true" dependency="false">wrap</feature>
+        <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/messagingBundle-${automation.messaging.version}.jar</bundle>
+        <bundle start-level="80">https://github.com/vzwingma/automationManager/releases/download/v${project.version}/automationCommons-${automation.commons.version}.jar</bundle>
+        <bundle>mvn:org.glassfish.jersey.core/jersey-common/2.26</bundle>
+        <bundle>mvn:javax.ws.rs/javax.ws.rs-api/2.1</bundle>
+        <bundle>mvn:javax.annotation/javax.annotation-api/1.2</bundle>
+        <bundle>mvn:org.glassfish.hk2.external/javax.inject/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2/osgi-resource-locator/1.0.1</bundle>
+        <bundle>mvn:org.glassfish.jersey.core/jersey-client/2.26</bundle>
+        <bundle>mvn:org.glassfish.jersey.inject/jersey-hk2/2.26</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-locator/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2.external/aopalliance-repackaged/2.5.0-b42</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-api/2.5.0-b42</bundle>
+        <bundle>wrap:mvn:javax.inject/javax.inject/1</bundle>
+        <bundle>mvn:org.glassfish.hk2/hk2-utils/2.5.0-b42</bundle>
+        <bundle>mvn:org.javassist/javassist/3.22.0-CR2</bundle>
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-inject/1_2</bundle>
     </feature>
     <feature name="automation-manager" description="Automation Manager Service" version="${project.version}">
         <details>Feature associée au module Messaging Service</details>
