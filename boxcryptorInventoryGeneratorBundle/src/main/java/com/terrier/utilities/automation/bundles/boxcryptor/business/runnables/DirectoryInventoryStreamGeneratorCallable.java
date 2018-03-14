@@ -119,7 +119,7 @@ public class DirectoryInventoryStreamGeneratorCallable implements Callable<BCInv
 					index, 
 					this.nomTraitementParent,
 					BCUtils.getLibelleDateUTCFromMillis(ssRepertoire.getDateModificationDernierInventaire()),
-					ssRepertoire.get_NomFichierClair()); 
+					ssRepertoire.getNomFichierClair()); 
 			// Mise à jour de la date
 			if(inventaireR.getDateModificationDernierInventaire() == null
 					|| (ssRepertoire.getDateModificationDernierInventaire() != null 

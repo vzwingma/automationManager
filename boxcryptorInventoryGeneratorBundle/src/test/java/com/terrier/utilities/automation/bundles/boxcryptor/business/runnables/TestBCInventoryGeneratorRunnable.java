@@ -79,12 +79,12 @@ public class TestBCInventoryGeneratorRunnable {
 
 		BCInventaireRepertoire inventaire = BCUtils.loadYMLInventory(new Yaml(), inventoryFile.getAbsolutePath());
 		assertNotNull(inventaire);
-		assertEquals("bc", inventaire.get_NomFichierChiffre());
-		assertEquals("clear", inventaire.get_NomFichierClair());
+		assertEquals("bc", inventaire.getNomFichierChiffre());
+		assertEquals("clear", inventaire.getNomFichierClair());
 		assertEquals(1, inventaire.getMapInventaireFichiers().size());
-		assertEquals("d1.txt", inventaire.getMapInventaireFichiers().get("a3659ab46c89c840217d619179d6c138f0e9b63d8b75ada9ef52ced858813e13").get_NomFichierClair());
+		assertEquals("d1.txt", inventaire.getMapInventaireFichiers().get("a3659ab46c89c840217d619179d6c138f0e9b63d8b75ada9ef52ced858813e13").getNomFichierClair());
 		assertEquals(1, inventaire.getMapInventaireSousRepertoires().size());
-		assertEquals("subdir", inventaire.getMapInventaireSousRepertoires().get("bdf6c15545b679e2500a451b7ff7c30b8784658e2a553d4913adb4651c0a78d3").get_NomFichierClair());
+		assertEquals("subdir", inventaire.getMapInventaireSousRepertoires().get("bdf6c15545b679e2500a451b7ff7c30b8784658e2a553d4913adb4651c0a78d3").getNomFichierClair());
 
 
 		Long dateMiseAJour = inventaire.getDateModificationDernierInventaire();
