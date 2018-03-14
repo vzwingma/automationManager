@@ -37,6 +37,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.terrier.utilities.automation.features</groupId>
+			<artifactId>automation-commons</artifactId>
+			<version>${project.version}</version>
+			<type>xml</type>
+			<classifier>features</classifier>
+		</dependency>	
+		<dependency>
+			<groupId>com.terrier.utilities.automation.features</groupId>
 			<artifactId>automation-boxcryptor-inventory</artifactId>
 			<version>${project.version}</version>
 			<type>xml</type>
