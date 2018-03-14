@@ -31,7 +31,6 @@
 		</plugins>
 	</build>
 
-
 	<dependencies>
 		<dependency>
 			<groupId>com.terrier.utilities.automation.bundles</groupId>
@@ -41,4 +40,3 @@
 	</dependencies>
 	<description>Feature associée au module Communs</description>
 </project>  
-</project>
