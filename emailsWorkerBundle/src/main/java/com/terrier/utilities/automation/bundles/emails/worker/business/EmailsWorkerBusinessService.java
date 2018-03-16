@@ -246,7 +246,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	/**
 	 * @return the destinationDirectory
 	 */
-	public final String getDestinationDirectory() {
+	public String getDestinationDirectory() {
 		return destinationDirectory;
 	}
 }

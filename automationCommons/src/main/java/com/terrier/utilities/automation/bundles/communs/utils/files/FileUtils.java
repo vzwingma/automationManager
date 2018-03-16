@@ -17,7 +17,7 @@ public class FileUtils {
 
 
 	private static final Logger LOGGER = LoggerFactory.getLogger( FileUtils.class );
-	
+
 	// Constructeur privé
 	private FileUtils(){}
 	/**
@@ -27,20 +27,22 @@ public class FileUtils {
 	 */
 	public static void saveStreamToFile(InputStream stream, String nomFichier) {
 		File targetFile = new File(nomFichier);
-		try(InputStream iStream = stream){
-			try(OutputStream out = new FileOutputStream(targetFile)){
-				byte[] buf=new byte[1024];
-				int len;
-				while((len=stream.read(buf))>0){
-					out.write(buf,0,len);
+		if(stream != null){
+			try(InputStream iStream = stream){
+				try(OutputStream out = new FileOutputStream(targetFile)){
+					byte[] buf=new byte[1024];
+					int len;
+					while((len=stream.read(buf))>0){
+						out.write(buf,0,len);
+					}
+				}
+				catch (Exception e) {
+					LOGGER.error("Erreur lors de l'enregistrement du flux dans {}", targetFile.getAbsolutePath(), e);
 				}
 			}
-			catch (Exception e) {
+			catch(Exception e){
 				LOGGER.error("Erreur lors de l'enregistrement du flux", e);
 			}
-		}
-		catch(Exception e){
-			LOGGER.error("Erreur lors de l'enregistrement du flux", e);
 		}
 	}
 }

@@ -3,6 +3,7 @@ package com.terrier.utilities.automation.bundles.emails.worker.business.runnable
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,7 +35,6 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.api.Googl
 @RunWith(MockitoJUnitRunner.class)
 public class TestHubicDLRunnable {
 
-	@Mock
 	private EmailsWorkerBusinessService service;
 	
 	@Mock
@@ -46,6 +46,10 @@ public class TestHubicDLRunnable {
 
 	@Before
 	public void mockRunnable() throws Exception{
+		
+		service = mock(EmailsWorkerBusinessService.class);
+		when(service.getDestinationDirectory()).thenReturn("src/test/resources");
+		
 		Message m = new Message();
 		m.setId("11111");
 		m.set("From", HubicDLRunnable.HUBIC_SENDER);
