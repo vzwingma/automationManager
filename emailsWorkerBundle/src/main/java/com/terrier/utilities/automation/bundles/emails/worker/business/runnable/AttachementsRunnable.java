@@ -1,5 +1,6 @@
 package com.terrier.utilities.automation.bundles.emails.worker.business.runnable;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +30,7 @@ public class AttachementsRunnable extends AbstractEmailRunnable {
 	}
 
 
-	private static final String MIME_PDF = "application/pdf";
+	public static final String MIME_PDF = "application/pdf";
 
 
 	@Override
@@ -50,8 +51,8 @@ public class AttachementsRunnable extends AbstractEmailRunnable {
 			.forEach(pj ->  {
 				logger.info("Téléchargement de la pièce jointe de {} : {}", pj.get(GMailService.HEADER_FROM), pj.get(GMailService.HEADER_SUBJECT));
 				downloadPdfFromMulipart(pj);
+				nbMessagesTraites.incrementAndGet();
 			}); 
-			nbMessagesTraites.incrementAndGet();
 		};
 
 		getBusinessService().sendNotificationMessage(EmailsWorkerBusinessService.NOTIF_HEADER, "Téléchargement de " + nbMessagesTraites.get() + " pièces jointes parmi " + messagesInbox.size());
@@ -67,8 +68,8 @@ public class AttachementsRunnable extends AbstractEmailRunnable {
 	private void downloadPdfFromMulipart(MessagePartBody attachPart) {
 		try{
 			byte[] fileByteArray = Base64.decodeBase64(attachPart.getData());
-			FileOutputStream fileOutFile =
-					new FileOutputStream(this.getBusinessService().getDestinationDirectory() + attachPart.get(GMailService.PART_FILENAME));
+			File fichier = new File(this.getBusinessService().getDestinationDirectory(), attachPart.get(GMailService.PART_FILENAME).toString());
+			FileOutputStream fileOutFile =	new FileOutputStream(fichier);
 			fileOutFile.write(fileByteArray);
 			fileOutFile.close();
 		}
