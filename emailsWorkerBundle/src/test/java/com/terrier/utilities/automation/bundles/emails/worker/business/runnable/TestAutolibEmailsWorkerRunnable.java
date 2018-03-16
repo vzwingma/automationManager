@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -72,7 +73,7 @@ public class TestAutolibEmailsWorkerRunnable {
 		when(runnable.archiveMessage(anyString())).thenReturn(true);
 	}
 
-	@Test
+	@Ignore
 	public void testRealAPI() throws IOException{
 		runnable = new AutolibEmailsWorkerRunnable(0, GoogleAuthHelper.getGmailService(GmailScopes.MAIL_GOOGLE_COM), service);
 		runnable.executeRule();
