@@ -189,7 +189,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 			LOGGER.error("Erreur : [{}] n'est pas une règle existante", rule);
 		}
 		
-		configValid &= rule != null && ruleName != null;
+		configValid &= ruleName != null;
 		
 		if(!configValid){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");

@@ -46,14 +46,14 @@ public class AttachementsRunnable extends AbstractEmailRunnable {
 			.parallelStream()
 			// Recherche des PJs
 			.map(m -> getAttachements(m, MIME_PDF))
-			.flatMap(pjs -> pjs.stream())
+			.flatMap(List::stream)
 			// Recherche des pieces jointes 
 			.forEach(pj ->  {
 				logger.info("Téléchargement de la pièce jointe de {} : {}", pj.get(GMailService.HEADER_FROM), pj.get(GMailService.HEADER_SUBJECT));
 				downloadPdfFromMulipart(pj);
 				nbMessagesTraites.incrementAndGet();
 			}); 
-		};
+		}
 
 		getBusinessService().sendNotificationMessage(EmailsWorkerBusinessService.NOTIF_HEADER, "Téléchargement de " + nbMessagesTraites.get() + " pièces jointes parmi " + messagesInbox.size());
 		return nbMessagesTraites.get();
@@ -66,12 +66,10 @@ public class AttachementsRunnable extends AbstractEmailRunnable {
 	 * @throws IOException 
 	 */
 	private void downloadPdfFromMulipart(MessagePartBody attachPart) {
-		try{
-			byte[] fileByteArray = Base64.decodeBase64(attachPart.getData());
-			File fichier = new File(this.getBusinessService().getDestinationDirectory(), attachPart.get(GMailService.PART_FILENAME).toString());
-			FileOutputStream fileOutFile =	new FileOutputStream(fichier);
+		byte[] fileByteArray = Base64.decodeBase64(attachPart.getData());
+		File fichier = new File(this.getBusinessService().getDestinationDirectory(), attachPart.get(GMailService.PART_FILENAME).toString());
+		try(FileOutputStream fileOutFile =	new FileOutputStream(fichier)){
 			fileOutFile.write(fileByteArray);
-			fileOutFile.close();
 		}
 		catch(Exception e){
 			logger.error("Erreur lors du téléchargement de la pièce jointe {}", attachPart.get(GMailService.PART_FILENAME));

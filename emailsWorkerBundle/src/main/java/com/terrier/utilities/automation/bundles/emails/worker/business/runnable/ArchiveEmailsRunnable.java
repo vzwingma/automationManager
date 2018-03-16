@@ -43,7 +43,6 @@ public class ArchiveEmailsRunnable extends AbstractEmailRunnable {
 			.parallel()
 			.filter(m -> archiveMessage(m))
 			.count();
-			
 			getBusinessService().sendNotificationMessage(EmailsWorkerBusinessService.NOTIF_HEADER, "Archivage de " + nbMessagesTraites + " mails Autolib parmi " + messagesInbox.size());
 		}
 		return nbMessagesTraites;

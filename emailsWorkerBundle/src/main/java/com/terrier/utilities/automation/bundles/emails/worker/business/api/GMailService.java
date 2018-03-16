@@ -45,9 +45,6 @@ public class GMailService{
 	public static final String PART_FILENAME 	= "FileName";
 	public static final String PART_MIME	 	= "MIME";
 	
-	private static final String PART_MIME_PDF	= "application/pdf";
-	
-	
 	/**
 	 * @return liste des mails Inbox
 	 */
@@ -92,7 +89,7 @@ public class GMailService{
 			return message.getPayload().getParts()
 					.stream()
 					.filter(p -> p.getBody().getAttachmentId() != null
-							&& PART_MIME_PDF.equals(p.getMimeType())
+							&& (mime == null || mime.equals(p.getMimeType()))
 							)
 					// Map en attachement
 					.map(
@@ -177,6 +174,4 @@ public class GMailService{
 		}
 		return null;
 	}
-
-
 }
