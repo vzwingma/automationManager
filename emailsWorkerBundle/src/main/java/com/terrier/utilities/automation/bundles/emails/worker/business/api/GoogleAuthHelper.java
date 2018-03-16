@@ -23,9 +23,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
-import com.google.api.services.gmail.GmailScopes;
-import com.google.api.services.gmail.model.Label;
-import com.google.api.services.gmail.model.ListLabelsResponse;
 
 /**
  * A helper class for Google's Gmail API.
@@ -36,10 +33,8 @@ public final class GoogleAuthHelper {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger( GoogleAuthHelper.class );
 	
-	
-	   /** Application name. */
-    private static final String APPLICATION_NAME =
-        "Gmail API for Automation";
+   /** Application name. */
+    private static final String APPLICATION_NAME = "Gmail API for Automation";
 
     /** Directory to store user credentials for this application. */
     private static final java.io.File DATA_STORE_DIR = new java.io.File("src/main/resources/credentials/gmail");
@@ -77,22 +72,13 @@ public final class GoogleAuthHelper {
      */
     public static Credential authorize() throws IOException {
         // Load client secrets.
-        InputStream in =
-        		GoogleAuthHelper.class.getResourceAsStream("/client_secret.json");
-        GoogleClientSecrets clientSecrets =
-            GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+        InputStream in = GoogleAuthHelper.class.getResourceAsStream("/client_secret.json");
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow =
-                new GoogleAuthorizationCodeFlow.Builder(
-                        httpTransport, JSON_FACTORY, clientSecrets, scopesAPI)
-                .setDataStoreFactory(datastoreFactory)
-                .setAccessType("offline")
-                .build();
-        Credential credential = new AuthorizationCodeInstalledApp(
-            flow, new LocalServerReceiver()).authorize("user");
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, scopesAPI).setDataStoreFactory(datastoreFactory).setAccessType("offline").build();
         LOGGER.info("Les credentials sont enregistrés ici : {}", DATA_STORE_DIR.getAbsolutePath());
-        return credential;
+        return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
     }
 
     /**
@@ -100,36 +86,9 @@ public final class GoogleAuthHelper {
      * @return an authorized Gmail client service
      * @throws IOException
      */
-    public static Gmail getGmailService(String scope) throws IOException {
-    	
+    public static Gmail getGmailService(String... scope) throws IOException {
     	scopesAPI = Arrays.asList(scope);
-    	
         Credential credential = authorize();
-        return new Gmail.Builder(httpTransport, JSON_FACTORY, credential)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-    }
-
-    /**
-     * Executer pour peupler les credentials
-     * @param args
-     * @throws IOException
-     */
-    public static void main(String[] args) throws IOException {
-        // Build a new authorized API client service.
-        Gmail service = getGmailService(GmailScopes.GMAIL_LABELS);
-
-        // Print the labels in the user's account.
-        String user = "me";
-        ListLabelsResponse listResponse = service.users().labels().list(user).execute();
-        List<Label> labels = listResponse.getLabels();
-        if (labels.isEmpty()) {
-           LOGGER.warn("No labels found.");
-        } else {
-            LOGGER.info("Labels:");
-            for (Label label : labels) {
-                LOGGER.info("- {}", label);
-            }
-        }
+        return new Gmail.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
     }
 }
