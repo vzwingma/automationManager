@@ -1,7 +1,7 @@
 package com.terrier.utilities.automation.bundles.emails.worker.business.runnable;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -59,18 +59,18 @@ public class TestArchiveEmailsRunnable {
 		runnable = spy(new ArchiveEmailsRunnable(0, "Autolib'", null, service));
 		
 		when(runnable.getMailsInbox()).thenReturn(Arrays.asList(m, m2, m3, m4));
-		when(runnable.getSender(anyString())).thenReturn(
+		when(runnable.getSender(any(Message.class))).thenReturn(
 				(String) m.get("From"), 
 				(String) m2.get("From"), 
 				(String) m3.get("From"), 
 				(String) m4.get("From"));
 		
-		when(runnable.getObject(anyString())).thenReturn(
+		when(runnable.getObject(any(Message.class))).thenReturn(
 				(String) m.get("Subject"), 
 				(String) m2.get("Subject"), 
 				(String) m3.get("Subject"), 
 				(String) m4.get("Subject"));
-		when(runnable.archiveMessage(anyString())).thenReturn(true);
+		when(runnable.archiveMessage(any(Message.class))).thenReturn(true);
 	}
 
 	@Ignore

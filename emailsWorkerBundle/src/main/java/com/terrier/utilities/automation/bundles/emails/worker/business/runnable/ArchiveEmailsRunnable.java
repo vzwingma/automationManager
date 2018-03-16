@@ -38,10 +38,10 @@ public class ArchiveEmailsRunnable extends AbstractEmailRunnable {
 		if(!messagesInbox.isEmpty()){
 			nbMessagesTraites = messagesInbox
 			.stream()
-			.filter(m -> AUTOLIB_SENDER.equalsIgnoreCase(getSender(m.getId())))
+			.filter(m -> AUTOLIB_SENDER.equalsIgnoreCase(getSender(m))
+					&& AUTOLIB_OBJECTS.contains(getObject(m)))
 			.parallel()
-			.filter(m -> AUTOLIB_OBJECTS.contains(getObject(m.getId())))
-			.filter(m -> archiveMessage(m.getId()))
+			.filter(m -> archiveMessage(m))
 			.count();
 			
 			getBusinessService().sendNotificationMessage(EmailsWorkerBusinessService.NOTIF_HEADER, "Archivage de " + nbMessagesTraites + " mails Autolib parmi " + messagesInbox.size());

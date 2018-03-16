@@ -57,13 +57,13 @@ public class TestHubicDLRunnable {
 		runnable = spy(new HubicDLRunnable(0, "Hubic", null, service));
 		
 		when(runnable.getMailsInbox()).thenReturn(Arrays.asList(m, m2));
-		when(runnable.getSender(anyString())).thenReturn(HubicDLRunnable.HUBIC_SENDER, "test");
-		when(runnable.getBody(anyString())).thenReturn(BODY_MAIL_URL);
+		when(runnable.getSender(any(Message.class))).thenReturn(HubicDLRunnable.HUBIC_SENDER, "test");
+		when(runnable.getBody(any(Message.class))).thenReturn(BODY_MAIL_URL);
 		
 		
 		runnable.setClient(mockClient);
 		when(mockClient.callHTTPGetData(any(Invocation.Builder.class))).thenReturn(Response.ok().build());
-		when(runnable.archiveMessage(anyString())).thenReturn(true);
+		when(runnable.archiveMessage(any(Message.class))).thenReturn(true);
 	}
 
 	//Before

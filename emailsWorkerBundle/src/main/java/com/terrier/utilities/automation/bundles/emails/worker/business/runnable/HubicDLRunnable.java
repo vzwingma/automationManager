@@ -34,8 +34,6 @@ public class HubicDLRunnable extends AbstractEmailRunnable {
 	
 	private HubicClient client = new HubicClient();
 
-	protected String repertoire = "src/test/resources";
-
 	@Override
 	public long executeRule() {
 		// Liste des messages
@@ -46,12 +44,12 @@ public class HubicDLRunnable extends AbstractEmailRunnable {
 		if(!messagesInbox.isEmpty()){
 			nbMessagesTraites = messagesInbox
 			.parallelStream()
-			.filter(m -> HUBIC_SENDER.equalsIgnoreCase(getSender(m.getId())))
+			.filter(m -> HUBIC_SENDER.equalsIgnoreCase(getSender(m)))
 			.filter(m -> {
-				String body = getBody(m.getId()); 
+				String body = getBody(m); 
 				return downloadFacture(body);	
 			})
-			.filter(m -> archiveMessage(m.getId()))
+			.filter(m -> archiveMessage(m))
 			.count();
 			
 			getBusinessService().sendNotificationMessage(NOTIF_HEADER, "Traitement de " + nbMessagesTraites + " parmi " + messagesInbox.size());
@@ -72,8 +70,8 @@ public class HubicDLRunnable extends AbstractEmailRunnable {
 
 		try {
 			InputStream streamPdf = client.telechargementFichier(getURL);
-			FileUtils.saveStreamToFile(streamPdf, repertoire+"/Facture_" + reference+".pdf");
-			logger.info("Fichier téléchargé [{}]", new File(repertoire).getAbsolutePath());
+			FileUtils.saveStreamToFile(streamPdf, this.getBusinessService().getDestinationDirectory()+"/Facture_" + reference+".pdf");
+			logger.info("Fichier téléchargé [{}]", new File(this.getBusinessService().getDestinationDirectory()).getAbsolutePath());
 			getBusinessService().sendNotificationMessage(NOTIF_HEADER, "La facture " + reference + " a été téléchargée");
 			return true;
 		} catch (Exception e) {

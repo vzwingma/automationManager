@@ -26,6 +26,7 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.api.Googl
 import com.terrier.utilities.automation.bundles.emails.worker.business.enums.EmailRuleEnum;
 import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.AbstractEmailRunnable;
 import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.ArchiveEmailsRunnable;
+import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.AttachementsRunnable;
 import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.HubicDLRunnable;
 
 /**
@@ -47,7 +48,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 
 	// Nombre de patterns écrits
 	protected int nombrePatterns = 0;
-
+	private String destinationDirectory = null;
 	/**
 	 * Threads pool
 	 */
@@ -93,7 +94,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 			}
 			this.listeScheduled.clear();
 
-			if(getGMailService() != null){
+			if(getGMailService() != null && validateConfig()){
 				// Démarrage des treatments reprogrammées
 				for (int p = 0; p < nbPatterns; p++) {
 					if(validateConfig(p)){
@@ -124,6 +125,12 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 		case AUTOLIB:
 			workerRunnable = new ArchiveEmailsRunnable(index, "Autolib'", gmailService, this);
 			break;
+		case FREE_MOBILE:
+			workerRunnable = new AttachementsRunnable(index, "FreeMobile", gmailService, this);
+			break;
+		case AWS:
+			workerRunnable = new AttachementsRunnable(index, "AWS", gmailService, this);
+			break;			
 		default:
 			break;
 		}
@@ -138,21 +145,39 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	/**
 	 * @return validation de la configuration
 	 */
-	protected boolean validateConfig(int p){
+	protected boolean validateConfig(){
 
 		boolean configValid = true;
 
-		LOGGER.info("** [{}] **", p);
-		LOGGER.info("[{}] > Période de scan : {} minutes", p, getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
+		LOGGER.info("Période de scan : {} minutes", getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
 		Long period = null;
 		try{
 			period = Long.parseLong(getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
 		}
 		catch(NumberFormatException e){
-			LOGGER.error("[{}] > Erreur dans le format de la période {}", p, getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
+			LOGGER.error("Erreur dans le format de la période {}", getKey(ConfigKeyEnums.EMAIL_WORKER_PERIOD));
 		}
 		configValid &= period != null;
 		
+		destinationDirectory = getKey(ConfigKeyEnums.EMAIL_WORKER_DESTDIR);
+		LOGGER.info("Répertoire de destination {}", destinationDirectory);
+		configValid &= destinationDirectory != null;
+		
+		if(!configValid){
+			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
+			sendNotificationMessage("Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
+		}
+		return configValid;
+	}
+
+	/**
+	 * @return validation de la configuration
+	 */
+	protected boolean validateConfig(int p){
+
+		boolean configValid = true;
+
+		LOGGER.info("** [{}] **", p);
 		String rule = getKey(ConfigKeyEnums.EMAIL_WORKER_RULE, p);
 		LOGGER.info("[{}] > Règle : {}", p, rule);
 		
@@ -216,5 +241,12 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	 */
 	protected final void setScope(String scope) {
 		this.scope = scope;
+	}
+
+	/**
+	 * @return the destinationDirectory
+	 */
+	public final String getDestinationDirectory() {
+		return destinationDirectory;
 	}
 }
