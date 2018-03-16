@@ -21,42 +21,42 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.EmailsWor
 import com.terrier.utilities.automation.bundles.emails.worker.business.api.GoogleAuthHelper;
 
 /**
- * Test du worker Autolib
+ * Test du worker avec PJ
  * @author PVZN02821
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class TestAutolibEmailsWorkerRunnable {
+public class TestAttachementsRunnable {
 
 	@Mock
 	private EmailsWorkerBusinessService service;
 	
-	private AutolibEmailsWorkerRunnable runnable ;
+	private AttachementsRunnable runnable ;
 	
 	@Before
 	public void mockRunnable() throws Exception{
 		Message m = new Message();
 		m.setId("11111");
-		m.set("From", AutolibEmailsWorkerRunnable.AUTOLIB_SENDER);
-		m.set("Subject", AutolibEmailsWorkerRunnable.AUTOLIB_OBJECTS.get(0));
+		m.set("From", ArchiveEmailsRunnable.AUTOLIB_SENDER);
+		m.set("Subject", ArchiveEmailsRunnable.AUTOLIB_OBJECTS.get(0));
 		
 		Message m2 = new Message();
 		m2.setId("22222");
-		m2.set("From", AutolibEmailsWorkerRunnable.AUTOLIB_SENDER);
-		m2.set("Subject", AutolibEmailsWorkerRunnable.AUTOLIB_OBJECTS.get(1));
+		m2.set("From", ArchiveEmailsRunnable.AUTOLIB_SENDER);
+		m2.set("Subject", ArchiveEmailsRunnable.AUTOLIB_OBJECTS.get(1));
 		
 		Message m3 = new Message();
 		m3.setId("33333");
-		m3.set("From", AutolibEmailsWorkerRunnable.AUTOLIB_SENDER);
+		m3.set("From", ArchiveEmailsRunnable.AUTOLIB_SENDER);
 		m3.set("Subject", "Autolib' : Ticket de débit - information sur votre paiement");
 		
 		Message m4 = new Message();
 		m4.setId("44444");
 		m4.set("From", "test");
-		m4.set("Subject", AutolibEmailsWorkerRunnable.AUTOLIB_OBJECTS.get(1));
+		m4.set("Subject", ArchiveEmailsRunnable.AUTOLIB_OBJECTS.get(1));
 
 		
-		runnable = spy(new AutolibEmailsWorkerRunnable(0, null, service));
+		runnable = spy(new AttachementsRunnable(0, "Autolib'", null, service));
 		
 		when(runnable.getMailsInbox()).thenReturn(Arrays.asList(m, m2, m3, m4));
 		when(runnable.getSender(anyString())).thenReturn(
@@ -75,7 +75,7 @@ public class TestAutolibEmailsWorkerRunnable {
 
 	@Ignore
 	public void testRealAPI() throws IOException{
-		runnable = new AutolibEmailsWorkerRunnable(0, GoogleAuthHelper.getGmailService(GmailScopes.MAIL_GOOGLE_COM), service);
+		runnable = new AttachementsRunnable(0, "Autolib'", GoogleAuthHelper.getGmailService(GmailScopes.MAIL_GOOGLE_COM), service);
 		runnable.executeRule();
 	}
 

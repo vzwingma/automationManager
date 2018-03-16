@@ -12,18 +12,21 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.api.GMail
  * @author PVZN02821
  *
  */
-public abstract class AbstractEmailWorkerRunnable extends GMailService implements Runnable {
+public abstract class AbstractEmailRunnable extends GMailService implements Runnable {
 
 	private final EmailsWorkerBusinessService service;
 	
 	
 	private final int index;
+	private final String nomFournisseur;
 	
-	public AbstractEmailWorkerRunnable(int index, Gmail gmailAPI, EmailsWorkerBusinessService service) {
+	
+	public AbstractEmailRunnable(int index, String nomFournisseur, Gmail gmailAPI, EmailsWorkerBusinessService service) {
 		super(gmailAPI);
 		this.index = index;
+		this.nomFournisseur = nomFournisseur;
 		this.service = service;
-		logger.info("[{}] Worker {}", index, this.getClass().getSimpleName());
+		logger.info("[{}][{}] Worker {}", this.index, this.nomFournisseur, this.getClass().getSimpleName());
 	}
 	
 	

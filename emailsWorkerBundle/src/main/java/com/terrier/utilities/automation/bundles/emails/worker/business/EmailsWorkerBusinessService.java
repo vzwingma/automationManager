@@ -24,9 +24,9 @@ import com.terrier.utilities.automation.bundles.communs.enums.statut.StatutPrope
 import com.terrier.utilities.automation.bundles.communs.model.StatutPropertyBundleObject;
 import com.terrier.utilities.automation.bundles.emails.worker.business.api.GoogleAuthHelper;
 import com.terrier.utilities.automation.bundles.emails.worker.business.enums.EmailRuleEnum;
-import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.AbstractEmailWorkerRunnable;
-import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.AutolibEmailsWorkerRunnable;
-import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.HubicEmailsWorkerRunnable;
+import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.AbstractEmailRunnable;
+import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.ArchiveEmailsRunnable;
+import com.terrier.utilities.automation.bundles.emails.worker.business.runnable.HubicDLRunnable;
 
 /**
  * Service métier du worker
@@ -55,7 +55,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	/**
 	 * Liste des tâches schedulées
 	 */
-	protected List<AbstractEmailWorkerRunnable> listeScheduled = new ArrayList<>();
+	protected List<AbstractEmailRunnable> listeScheduled = new ArrayList<>();
 
 	// Durée d'attente avec le démarrage réel
 	protected Long startDelay = 10L;
@@ -110,35 +110,19 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 
 
 	/**
-	 * @return GMail Service
-	 */
-	protected Gmail getGMailService(){
-
-		if(gmailService == null && scope != null){
-			LOGGER.info("Initialisation du Gmail Service");
-			try {
-				gmailService = GoogleAuthHelper.getGmailService(scope);
-			} catch (IOException e) {
-				LOGGER.error("Erreur lors de l'initialisation du service GMail", e);
-			}
-		}
-		return gmailService;
-	}
-
-	/**
 	 * Démarrage du traitement
 	 * @param p
 	 */
 	protected void startTreatment(int index){
 		EmailRuleEnum rule = EmailRuleEnum.valueOf(getKey(ConfigKeyEnums.EMAIL_WORKER_RULE, index).toUpperCase());
 
-		AbstractEmailWorkerRunnable workerRunnable = null;
+		AbstractEmailRunnable workerRunnable = null;
 		switch (rule) {
 		case HUBIC:
-			workerRunnable = new HubicEmailsWorkerRunnable(index, gmailService, this);
+			workerRunnable = new HubicDLRunnable(index, "Hubic", gmailService, this);
 			break;
 		case AUTOLIB:
-			workerRunnable = new AutolibEmailsWorkerRunnable(index, gmailService, this);
+			workerRunnable = new ArchiveEmailsRunnable(index, "Autolib'", gmailService, this);
 			break;
 		default:
 			break;
@@ -171,13 +155,39 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 		
 		String rule = getKey(ConfigKeyEnums.EMAIL_WORKER_RULE, p);
 		LOGGER.info("[{}] > Règle : {}", p, rule);
-		configValid &= rule != null && EmailRuleEnum.valueOf(rule.toUpperCase()) != null;
+		
+		EmailRuleEnum ruleName = null;
+		try{
+			ruleName = EmailRuleEnum.valueOf(rule.toUpperCase());
+		}
+		catch(IllegalArgumentException e){
+			LOGGER.error("Erreur : [{}] n'est pas une règle existante", rule);
+		}
+		
+		configValid &= rule != null && ruleName != null;
 		
 		if(!configValid){
 			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
 			sendNotificationMessage("Erreur de configuration", "La configuration de "+CONFIG_PID+" est incorrecte");
 		}
 		return configValid;
+	}
+
+
+	/**
+	 * @return GMail Service
+	 */
+	protected Gmail getGMailService(){
+
+		if(gmailService == null && scope != null){
+			LOGGER.info("Initialisation du Gmail Service");
+			try {
+				gmailService = GoogleAuthHelper.getGmailService(scope);
+			} catch (IOException e) {
+				LOGGER.error("Erreur lors de l'initialisation du service GMail", e);
+			}
+		}
+		return gmailService;
 	}
 
 

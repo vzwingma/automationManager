@@ -32,7 +32,7 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.api.Googl
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class TestHubicEmailsWorkerRunnable {
+public class TestHubicDLRunnable {
 
 	@Mock
 	private EmailsWorkerBusinessService service;
@@ -40,7 +40,7 @@ public class TestHubicEmailsWorkerRunnable {
 	@Mock
 	private HubicClient mockClient;
 	
-	private HubicEmailsWorkerRunnable runnable ;
+	private HubicDLRunnable runnable ;
 	
 	private static final String BODY_MAIL_URL = "Le PDF de la facture HUBICEU631909 est consultable sur https://www.ovh.com/cgi-bin/order/bill.pdf?reference=HUBICEU631909&passwd=aphn \r\n Suite du mail";
 
@@ -48,16 +48,16 @@ public class TestHubicEmailsWorkerRunnable {
 	public void mockRunnable() throws Exception{
 		Message m = new Message();
 		m.setId("11111");
-		m.set("From", HubicEmailsWorkerRunnable.HUBIC_SENDER);
+		m.set("From", HubicDLRunnable.HUBIC_SENDER);
 
 		Message m2 = new Message();
 		m2.setId("22222");
 		m2.set("From", "test");
 
-		runnable = spy(new HubicEmailsWorkerRunnable(0, null, service));
+		runnable = spy(new HubicDLRunnable(0, "Hubic", null, service));
 		
 		when(runnable.getMailsInbox()).thenReturn(Arrays.asList(m, m2));
-		when(runnable.getSender(anyString())).thenReturn(HubicEmailsWorkerRunnable.HUBIC_SENDER, "test");
+		when(runnable.getSender(anyString())).thenReturn(HubicDLRunnable.HUBIC_SENDER, "test");
 		when(runnable.getBody(anyString())).thenReturn(BODY_MAIL_URL);
 		
 		
@@ -68,7 +68,7 @@ public class TestHubicEmailsWorkerRunnable {
 
 	//Before
 	public void init() throws IOException{
-		runnable = new HubicEmailsWorkerRunnable(0, GoogleAuthHelper.getGmailService(GmailScopes.MAIL_GOOGLE_COM), service);
+		runnable = new HubicDLRunnable(0, "Hubic", GoogleAuthHelper.getGmailService(GmailScopes.MAIL_GOOGLE_COM), service);
 	}
 
 	/**

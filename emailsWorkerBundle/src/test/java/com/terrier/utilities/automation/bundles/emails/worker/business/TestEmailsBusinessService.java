@@ -82,12 +82,14 @@ public class TestEmailsBusinessService {
 		assertNotNull(service);
 		assertTrue(service.validateConfig(0));
 		assertTrue(service.validateConfig(1));
+		assertTrue(service.validateConfig(2));
+		assertTrue(service.validateConfig(3));
 	}
 	
 	@Test
 	public void testStartService(){
 		assertNotNull(service);
 		service.notifyUpdateDictionary();
-		assertEquals(2, service.listeScheduled.size());
+		assertEquals(service.nombrePatterns, service.listeScheduled.size());
 	}
 }

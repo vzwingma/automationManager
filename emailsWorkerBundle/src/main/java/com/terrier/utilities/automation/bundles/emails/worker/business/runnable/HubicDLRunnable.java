@@ -13,19 +13,19 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.EmailsWor
 import com.terrier.utilities.automation.bundles.emails.worker.business.HubicClient;
 
 /**
- * Travail sur les mails HUBIC
+ * Travail sur les mails qui nécessitent de télécharger depuis un lien (ex: HUBIC)
  * @author PVZN02821
  *
  */
-public class HubicEmailsWorkerRunnable extends AbstractEmailWorkerRunnable {
+public class HubicDLRunnable extends AbstractEmailRunnable {
 
 	/**
-	 * @param index
-	 * @param gmailService
+	 * @param index de la configuration
+	 * @param gmailService service email
 	 * @param service
 	 */
-	public HubicEmailsWorkerRunnable(int index, Gmail gmailService, EmailsWorkerBusinessService service) {
-		super(index, gmailService, service);
+	public HubicDLRunnable(int index, String nomFournisseur, Gmail gmailService, EmailsWorkerBusinessService service) {
+		super(index, nomFournisseur, gmailService, service);
 	}
 
 	protected static final String HUBIC_SENDER = "no-reply@hubic.com";

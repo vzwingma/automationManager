@@ -12,15 +12,15 @@ import com.terrier.utilities.automation.bundles.emails.worker.business.EmailsWor
  * @author PVZN02821
  *
  */
-public class AutolibEmailsWorkerRunnable extends AbstractEmailWorkerRunnable {
+public class ArchiveEmailsRunnable extends AbstractEmailRunnable {
 
 	/**
 	 * @param index
 	 * @param gmailService
 	 * @param service
 	 */
-	public AutolibEmailsWorkerRunnable(int index, Gmail gmailService, EmailsWorkerBusinessService service) {
-		super(index, gmailService, service);
+	public ArchiveEmailsRunnable(int index, String nomFournisseur,Gmail gmailService, EmailsWorkerBusinessService service) {
+		super(index, nomFournisseur, gmailService, service);
 	}
 
 	protected static final String AUTOLIB_SENDER = "no-reply@autolib.eu";

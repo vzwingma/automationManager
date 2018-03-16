@@ -31,6 +31,8 @@ public class GMailService{
 	}
 
 	private static final String USER_ME = "me";
+	private static final String HEADER_FROM 	= "From";
+	private static final String HEADER_SUBJECT 	= "Subject";
 
 
 	/**
@@ -97,7 +99,7 @@ public class GMailService{
 	 * @return sender du message
 	 */
 	public String getSender(String idMessage){
-		return getHeader(idMessage, "From");
+		return getHeader(idMessage, HEADER_FROM);
 	}
 
 	/**
@@ -105,14 +107,14 @@ public class GMailService{
 	 * @return objet du message
 	 */
 	public String getObject(String idMessage){
-		return getHeader(idMessage, "Subject");
+		return getHeader(idMessage, HEADER_SUBJECT);
 	}
 	
 	
 	/**
 	 * @param idMessage
 	 * @param headerName
-	 * @return entête
+	 * @return entête correspondant au header
 	 */
 	private String getHeader(String idMessage, String headerName){
 		Message message = getMessage(idMessage);
