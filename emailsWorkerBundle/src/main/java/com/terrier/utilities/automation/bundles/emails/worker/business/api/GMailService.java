@@ -102,6 +102,15 @@ public class GMailService{
 
 	/**
 	 * @param idMessage
+	 * @return objet du message
+	 */
+	public String getObject(String idMessage){
+		return getHeader(idMessage, "Subject");
+	}
+	
+	
+	/**
+	 * @param idMessage
 	 * @param headerName
 	 * @return entête
 	 */

@@ -37,28 +37,53 @@ public class TestAutolibEmailsWorkerRunnable {
 		Message m = new Message();
 		m.setId("11111");
 		m.set("From", AutolibEmailsWorkerRunnable.AUTOLIB_SENDER);
-
+		m.set("Subject", AutolibEmailsWorkerRunnable.AUTOLIB_OBJECTS.get(0));
+		
 		Message m2 = new Message();
 		m2.setId("22222");
-		m2.set("From", "test");
+		m2.set("From", AutolibEmailsWorkerRunnable.AUTOLIB_SENDER);
+		m2.set("Subject", AutolibEmailsWorkerRunnable.AUTOLIB_OBJECTS.get(1));
+		
+		Message m3 = new Message();
+		m3.setId("33333");
+		m3.set("From", AutolibEmailsWorkerRunnable.AUTOLIB_SENDER);
+		m3.set("Subject", "Autolib' : Ticket de débit - information sur votre paiement");
+		
+		Message m4 = new Message();
+		m4.setId("44444");
+		m4.set("From", "test");
+		m4.set("Subject", AutolibEmailsWorkerRunnable.AUTOLIB_OBJECTS.get(1));
 
+		
 		runnable = spy(new AutolibEmailsWorkerRunnable(0, null, service));
 		
-		when(runnable.getMailsInbox()).thenReturn(Arrays.asList(m, m2));
-		when(runnable.getSender(anyString())).thenReturn(AutolibEmailsWorkerRunnable.AUTOLIB_SENDER, "test");
+		when(runnable.getMailsInbox()).thenReturn(Arrays.asList(m, m2, m3, m4));
+		when(runnable.getSender(anyString())).thenReturn(
+				(String) m.get("From"), 
+				(String) m2.get("From"), 
+				(String) m3.get("From"), 
+				(String) m4.get("From"));
+		
+		when(runnable.getObject(anyString())).thenReturn(
+				(String) m.get("Subject"), 
+				(String) m2.get("Subject"), 
+				(String) m3.get("Subject"), 
+				(String) m4.get("Subject"));
 		when(runnable.archiveMessage(anyString())).thenReturn(true);
 	}
 
-	//Before
-	public void init() throws IOException{
+	@Test
+	public void testRealAPI() throws IOException{
 		runnable = new AutolibEmailsWorkerRunnable(0, GoogleAuthHelper.getGmailService(GmailScopes.MAIL_GOOGLE_COM), service);
+		runnable.executeRule();
 	}
 
 	/**
 	 * Filtre des messages
+	 * Seuls les 2 premiers doivent fonctionner
 	 */
 	@Test
 	public void testRuleFilter(){
-		assertEquals(1, runnable.executeRule());
+		assertEquals(2, runnable.executeRule());
 	}
 }
