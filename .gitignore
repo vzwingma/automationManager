@@ -5,3 +5,5 @@
 saveToBundle/src/test/resources/bc/d1.txt
 emailsWorkerBundle/src/main/resources/client_secret.json
 emailsWorkerBundle/src/main/resources/credentials/gmail/StoredCredential
+emailsWorkerBundle/src/test/resources/message1.txt
+emailsWorkerBundle/${KARAF_HOME}/credentials/gmail/StoredCredential
