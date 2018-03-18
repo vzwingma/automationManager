@@ -143,7 +143,7 @@ public class TestBCInventoryGeneratorRunnable {
 		generateInventoryRunnable.run();
 	}
 	
-	@Test
+	@Ignore
 	public void testRealDocs(){
 		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
 				0,
