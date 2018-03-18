@@ -110,7 +110,7 @@ public class TestBCInventoryGeneratorRunnable {
 		generateInventoryRunnable.run();
 	}
 	
-	@Test
+	@Ignore
 	public void testRealSync(){
 		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
 				0,
