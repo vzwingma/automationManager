@@ -20,8 +20,8 @@ public abstract class AbstractBCInventaireStructure {
 	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBCInventaireStructure.class);
 
-	private String _nomFichierChiffre; 
-	private String _nomFichierClair;
+	private String nomFichierChiffre; 
+	private String nomFichierClair;
 
 
 	/**
@@ -30,15 +30,15 @@ public abstract class AbstractBCInventaireStructure {
 	public AbstractBCInventaireStructure(){ }
 	
 	public AbstractBCInventaireStructure(String nomFichierChiffre, String nomFichierClair){
-		this._nomFichierChiffre = nomFichierChiffre;
-		this._nomFichierClair = nomFichierClair;
+		this.nomFichierChiffre = nomFichierChiffre;
+		this.nomFichierClair = nomFichierClair;
 	}
 
 	/**
 	 * @return la clé
 	 */
 	public String getCleMap(){
-		return getCleMap(this._nomFichierClair);
+		return getCleMap(this.nomFichierClair);
 	}
 	
 	/**
@@ -73,28 +73,28 @@ public abstract class AbstractBCInventaireStructure {
 	/**
 	 * @return the nomFichierChiffre
 	 */
-	public String get_NomFichierChiffre() {
-		return _nomFichierChiffre;
+	public String getNomFichierChiffre() {
+		return nomFichierChiffre;
 	}
 
 	/**
 	 * @param nomFichierChiffre the nomFichierChiffre to set
 	 */
-	public void set_NomFichierChiffre(String nomFichierChiffre) {
-		this._nomFichierChiffre = nomFichierChiffre;
+	public void setNomFichierChiffre(String nomFichierChiffre) {
+		this.nomFichierChiffre = nomFichierChiffre;
 	}
 
 	/**
 	 * @return the nomFichierClair
 	 */
-	public String get_NomFichierClair() {
-		return _nomFichierClair;
+	public String getNomFichierClair() {
+		return nomFichierClair;
 	}
 
 	/**
 	 * @param nomFichierClair the nomFichierClair to set
 	 */
-	public void set_NomFichierClair(String nomFichierClair) {
-		this._nomFichierClair = nomFichierClair;
+	public void setNomFichierClair(String nomFichierClair) {
+		this.nomFichierClair = nomFichierClair;
 	}
 }

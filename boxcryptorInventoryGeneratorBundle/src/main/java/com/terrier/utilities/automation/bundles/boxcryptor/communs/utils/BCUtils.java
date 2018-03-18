@@ -120,8 +120,8 @@ public class BCUtils {
 
 			boolean found = true;
 			for (String search : allSearchValues) {
-				found &= inventoryItem.get_NomFichierChiffre().toUpperCase().contains(search.toUpperCase())
-						|| inventoryItem.get_NomFichierClair().toUpperCase().contains(search.toUpperCase());
+				found &= inventoryItem.getNomFichierChiffre().toUpperCase().contains(search.toUpperCase())
+						|| inventoryItem.getNomFichierClair().toUpperCase().contains(search.toUpperCase());
 			}
 			return found;
 		}
