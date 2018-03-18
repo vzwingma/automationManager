@@ -109,4 +109,48 @@ public class TestBCInventoryGeneratorRunnable {
 				null);
 		generateInventoryRunnable.run();
 	}
+	
+	@Test
+	public void testRealSync(){
+		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
+				0,
+				new Yaml(), 
+				"X:\\hubiC",
+				"D:\\BC\\encrypted-sync",
+				null);
+		generateInventoryRunnable.run();
+	}
+	
+	@Ignore
+	public void testRealKino(){
+		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
+				2,
+				new Yaml(), 
+				"X:\\Films\\Kino",
+				"D:\\Perso\\Films\\Kino",
+				null);
+		generateInventoryRunnable.run();
+	}
+	
+	@Ignore
+	public void testRealTemp(){
+		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
+				0,
+				new Yaml(), 
+				"X:\\encrypted-temp",
+				"D:\\BC\\encrypted-temp",
+				null);
+		generateInventoryRunnable.run();
+	}
+	
+	@Test
+	public void testRealDocs(){
+		BCInventoryGeneratorRunnable generateInventoryRunnable = new BCInventoryGeneratorRunnable(
+				0,
+				new Yaml(), 
+				"X:\\Documents",
+				"D:\\Perso\\Documents",
+				null);
+		generateInventoryRunnable.run();
+	}
 }
