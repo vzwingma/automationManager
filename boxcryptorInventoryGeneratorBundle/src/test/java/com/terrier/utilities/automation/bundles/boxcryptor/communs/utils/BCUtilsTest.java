@@ -84,9 +84,9 @@ public class BCUtilsTest {
 		// Load
 		BCInventaireRepertoire loadedInventory = BCUtils.loadYMLInventory(new Yaml(), testDir.getPath());
 		assertNotNull(loadedInventory);
-		assertEquals(testInventory.get_NomFichierChiffre(), loadedInventory.get_NomFichierChiffre());
-		assertEquals(testInventory.get_NomFichierClair(), loadedInventory.get_NomFichierClair());
-		assertEquals(testInventory.getMapInventaireFichiers().values().iterator().next().get_NomFichierChiffre(), loadedInventory.getMapInventaireFichiers().values().iterator().next().get_NomFichierChiffre());
+		assertEquals(testInventory.getNomFichierChiffre(), loadedInventory.getNomFichierChiffre());
+		assertEquals(testInventory.getNomFichierClair(), loadedInventory.getNomFichierClair());
+		assertEquals(testInventory.getMapInventaireFichiers().values().iterator().next().getNomFichierChiffre(), loadedInventory.getMapInventaireFichiers().values().iterator().next().getNomFichierChiffre());
 		
 	}
 	
