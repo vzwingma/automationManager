@@ -33,7 +33,6 @@ Gestionnaire de tâches automatisées
   *  Traitement des emails reçus
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=emailsWorkerBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=emailsWorkerBundle%2Fpom.xml)
 
-
 #### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) ${automation.save.to.version}
   *  Libraire de copie de fichier ou de répertoire
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=saveToBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=saveToBundle%2Fpom.xml)

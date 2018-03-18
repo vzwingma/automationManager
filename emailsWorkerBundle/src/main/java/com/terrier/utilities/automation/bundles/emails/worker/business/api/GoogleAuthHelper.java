@@ -23,9 +23,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
-import com.google.api.services.gmail.GmailScopes;
-import com.google.api.services.gmail.model.Label;
-import com.google.api.services.gmail.model.ListLabelsResponse;
 
 /**
  * A helper class for Google's Gmail API.
@@ -40,7 +37,7 @@ public final class GoogleAuthHelper {
     private static final String APPLICATION_NAME = "Gmail API for Automation";
 
     /** Directory to store user credentials for this application. */
-    private static final java.io.File DATA_STORE_DIR = new java.io.File("${KARAF_HOME}/credentials/gmail");
+    private static final java.io.File DATA_STORE_DIR = new java.io.File("etc/credentials/gmail");
 
     /** Global instance of the {@link FileDataStoreFactory}. */
     private static FileDataStoreFactory datastoreFactory;
