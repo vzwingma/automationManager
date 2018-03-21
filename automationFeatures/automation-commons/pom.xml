@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.terrier.utilities.automation.features</groupId>
+    <artifactId>automationFeatures</artifactId>
+    <version>1.7.0</version>
+  </parent>
+  <artifactId>automation-commons</artifactId>
+	<name>[Features] Communs</name>
+	<packaging>feature</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.karaf.tooling</groupId>
+				<artifactId>karaf-maven-plugin</artifactId>
+				<version>${karaf.maven.plugin.version}</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>generate-features-file</id>
+						<phase>package</phase>
+						<goals>
+							<goal>features-generate-descriptor</goal>
+						</goals>
+						<configuration>
+							<aggregateFeatures>true</aggregateFeatures>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.terrier.utilities.automation.bundles</groupId>
+			<artifactId>automationCommons</artifactId>
+			<version>${automation.commons.version}</version>
+		</dependency>
+	</dependencies>
+	<description>Feature associée au module Communs</description>
+</project>  
