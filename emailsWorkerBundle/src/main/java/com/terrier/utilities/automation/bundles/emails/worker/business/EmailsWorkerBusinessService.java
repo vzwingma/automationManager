@@ -59,7 +59,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 	protected List<AbstractEmailRunnable> listeScheduled = new ArrayList<>();
 
 	// Durée d'attente avec le démarrage réel
-	protected Long startDelay = 10L;
+	protected Long startDelay = 2L;
 	private Long periode = 60L;
 	/* (non-Javadoc)
 	 * @see com.terrier.utilities.automation.bundles.communs.business.AbstractAutomationService#startService()
@@ -135,7 +135,7 @@ public class EmailsWorkerBusinessService extends AbstractAutomationService {
 			break;
 		}
 		if(workerRunnable != null){
-			LOGGER.info("[{}] Démarrage de la règle : {} : {}", index, rule, workerRunnable);
+			LOGGER.info("[{}] Planification de la règle : {} : {}", index, rule, workerRunnable);
 			this.listeScheduled.add(workerRunnable);
 			scheduledThreadPool.scheduleWithFixedDelay(workerRunnable, startDelay, periode, TimeUnit.MINUTES);
 		}

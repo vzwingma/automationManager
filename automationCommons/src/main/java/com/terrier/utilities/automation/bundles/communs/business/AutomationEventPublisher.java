@@ -105,7 +105,7 @@ public class AutomationEventPublisher<T extends IAutomationTopicPropertyNamesEnu
 				return eventAdmin;
 			}
 			catch(Exception e){
-				logger.error("Erreur lors de la recherche de l'EventAdmin dans le bundleContext", e);
+				logger.error("Erreur lors de la recherche de l'EventAdmin dans le bundleContext [{}]", bundle.getBundleContext(), e);
 			}
 		}
 		else{
