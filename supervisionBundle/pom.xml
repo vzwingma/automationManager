@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.terrier.utilities.automation.bundles</groupId>
 		<artifactId>AutomationManager</artifactId>
-		<version>1.6.1</version>
+		<version>1.7.0</version>
 	</parent>
 	<artifactId>supervisionBundle</artifactId>
 	<name>[Automation] Supervision</name>
@@ -18,21 +18,13 @@
 			<artifactId>automationCommons</artifactId>
 			<version>${automation.commons.version}</version>
 		</dependency>
-		<!-- Inject -->
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
-			<version>1_2</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>4.0.0</version>
 		</dependency>
-
 	</dependencies>
-
 
 	<build>
 		<plugins>

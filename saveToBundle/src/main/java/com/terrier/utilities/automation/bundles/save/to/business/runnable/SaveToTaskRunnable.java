@@ -138,44 +138,20 @@ public class SaveToTaskRunnable implements Runnable {
 
 		boolean resultatGlobal = true;
 		try (DirectoryStream<Path> downloadDirectoryPath = Files.newDirectoryStream(FileSystems.getDefault().getPath(scanDir));){
+
 			for (Path fichier : downloadDirectoryPath) {
 				LOGGER.debug("[{}] Traitement du fichier : {}", index, fichier.getFileName());
-				if(fichier.getFileName().toString().matches(regExMatch)){
-					LOGGER.trace("{} > match avec {}", fichier.getFileName(), regExMatch);
-					// Vérification vis à vis de la date de modification
-					// Ou si Move (#12)
-					if(dateDernierScan == null 
-							|| Files.getLastModifiedTime(fichier).toMillis() > dateDernierScan.getTimeInMillis()
-							|| CommandeEnum.MOVE.equals(commande)){
-						String outputPattern = patternSortie;
-						if(patternSortie == null || patternSortie.isEmpty()){
-							outputPattern = fichier.getFileName().toString();
-						}
-						boolean resultat = copyFichierTo(fichier, 
-								AutomationUtils.replacePatterns(fichier.getFileName().toString(), outputPattern), 
-								repertoireDestinataire);		
-						if(resultat){
-							LOGGER.info("[{}] Copie réalisée vers {}", index, repertoireDestinataire);
-							if(CommandeEnum.MOVE.equals(commande)){
-								// Suppression du fichier source
-								Files.delete(fichier);
-								// Et notification du déplacement
-								sendNotificationMessage("Déplacement de ",fichier.getFileName().toString(), " vers ", repertoireDestinataire);
-							}
-							else{
-								sendNotificationMessage("Copie de ",fichier.getFileName().toString(), " vers ", repertoireDestinataire);
-							}
-						}
-						else{
-							LOGGER.error("[{}] Erreur lors de la copie vers {}", index, repertoireDestinataire);
-							// Et notification de l'erreur
-							sendNotificationMessage("Erreur lors de la copie de ",fichier.getFileName().toString(), " vers ", repertoireDestinataire);
-						}
-						resultatGlobal &= resultat;
+				if(fichier.getFileName().toString().matches(regExMatch)
+						&&(dateDernierScan == null
+						// Vérification vis à vis de la date de modification Ou si Move (#12)
+						|| Files.getLastModifiedTime(fichier).toMillis() > dateDernierScan.getTimeInMillis()
+						|| CommandeEnum.MOVE.equals(commande))){
+					String outputPattern = patternSortie;
+					if(patternSortie == null || patternSortie.isEmpty()){
+						outputPattern = fichier.getFileName().toString();
 					}
-					else{
-						LOGGER.debug("[{}] Le fichier {} n'a pas été modifié", index, fichier.getFileName());
-					}
+					boolean resultat = traitementFichierSaveTo(fichier, outputPattern);
+					resultatGlobal &= resultat;
 				}
 			}
 		} catch (IOException e) {
@@ -185,6 +161,37 @@ public class SaveToTaskRunnable implements Runnable {
 		return resultatGlobal;
 	}
 
+	
+	/**
+	 * @param fichier
+	 * @param outputPattern
+	 * @return résultat du déplacement/copie du fichier
+	 * @throws IOException
+	 */
+	private boolean traitementFichierSaveTo(Path fichier, String outputPattern) throws IOException{
+		boolean resultat = copyFichierTo(fichier, 
+				AutomationUtils.replacePatterns(fichier.getFileName().toString(), outputPattern), 
+				repertoireDestinataire);		
+		if(resultat){
+			LOGGER.info("[{}] Copie réalisée vers {}", index, repertoireDestinataire);
+			if(CommandeEnum.MOVE.equals(commande)){
+				// Suppression du fichier source
+				Files.delete(fichier);
+				// Et notification du déplacement
+				sendNotificationMessage("Déplacement de ",fichier.getFileName().toString(), " vers ", repertoireDestinataire);
+			}
+			else{
+				sendNotificationMessage("Copie de ",fichier.getFileName().toString(), " vers ", repertoireDestinataire);
+			}
+		}
+		else{
+			LOGGER.error("[{}] Erreur lors de la copie vers {}", index, repertoireDestinataire);
+			// Et notification de l'erreur
+			sendNotificationMessage("Erreur lors de la copie de ",fichier.getFileName().toString(), " vers ", repertoireDestinataire);
+		}
+		return resultat;
+	}
+	
 	/**
 	 * Copie d'un répertoire complet, s'il a changé
 	 * @param scanDir scan dir
@@ -234,7 +241,7 @@ public class SaveToTaskRunnable implements Runnable {
 			}
 			errors.append("</ul>");
 		}
-		
+
 		return errors.toString();
 	}
 

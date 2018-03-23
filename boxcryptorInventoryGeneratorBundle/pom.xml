@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.terrier.utilities.automation.bundles</groupId>
 		<artifactId>AutomationManager</artifactId>
-		<version>1.6.1</version>
+		<version>1.7.0</version>
 	</parent>
 	<artifactId>boxcryptorInventoryGeneratorBundle</artifactId>
 	<name>[Automation] Boxcryptor Inventory Generator</name>
@@ -18,11 +18,6 @@
 			<version>${automation.commons.version}</version>
 		</dependency>
 		<!-- Inject -->
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
-			<version>1_2</version>
-		</dependency>		
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>

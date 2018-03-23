@@ -31,6 +31,10 @@ Gestionnaire de tâches automatisées
   *  Générateur d'inventaire pour BoxCryptor
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=boxcryptorInventoryGeneratorBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=boxcryptorInventoryGeneratorBundle%2Fpom.xml)
 
+#### [emailsWorkerBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v${automation.emails.worker.version}
+  *  Traitement des emails reçus
+  *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=emailsWorkerBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=emailsWorkerBundle%2Fpom.xml)
+
 #### [saveToBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-SaveTo) ${automation.save.to.version}
   *  Libraire de copie de fichier ou de répertoire
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=saveToBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=saveToBundle%2Fpom.xml)
@@ -57,4 +61,5 @@ Gestionnaire de tâches automatisées
      feature:install automation-supervision
      feature:install automation-messaging
      feature:install automation-boxcryptor-inventory
+     feature:install automation-emails-worker
      feature:install automation-save-to

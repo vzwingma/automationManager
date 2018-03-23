@@ -24,9 +24,9 @@ import com.terrier.utilities.automation.bundles.communs.enums.messaging.EventsTo
  * @author vzwingma
  *
  * @param <T> nom du topic
- * @param <PT> liste des propriétés du message
+ * @param <T> liste des propriétés du message
  */
-public class AutomationEventPublisher<PT extends IAutomationTopicPropertyNamesEnum> {
+public class AutomationEventPublisher<T extends IAutomationTopicPropertyNamesEnum> {
 
 
 
@@ -39,7 +39,7 @@ public class AutomationEventPublisher<PT extends IAutomationTopicPropertyNamesEn
 	 * @param topic enum du nom du topic
 	 * @param propertiesMessages 
 	 */
-	public void publishToTopic(EventsTopicNameEnum topic, Map<PT, Object> propertiesMessages){
+	public void publishToTopic(EventsTopicNameEnum topic, Map<T, Object> propertiesMessages){
 
 		EventAdmin eventAdmin = getEventAdmin();
 		if (eventAdmin != null)  {
@@ -105,7 +105,7 @@ public class AutomationEventPublisher<PT extends IAutomationTopicPropertyNamesEn
 				return eventAdmin;
 			}
 			catch(Exception e){
-				logger.error("Erreur lors de la recherche de l'EventAdmin dans le bundleContext", e);
+				logger.error("Erreur lors de la recherche de l'EventAdmin dans le bundleContext [{}]", bundle.getBundleContext(), e);
 			}
 		}
 		else{

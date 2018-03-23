@@ -30,6 +30,12 @@ public enum ConfigKeyEnums  {
 	FILES_PATTERN_OUT("automation.bundle.boxcryptor.save.out.pattern.file"),
 	// Sous répertoire BC
 	FILES_DIRECTORY_OUT("automation.bundle.boxcryptor.save.out.repertoire"),
+	
+	/** EMAIL_WORKER **/
+	// Période scannée
+	EMAIL_WORKER_PERIOD("automation.bundle.emails.worker.period"),
+	EMAIL_WORKER_RULE("automation.bundle.emails.worker.rule"),
+	EMAIL_WORKER_DESTDIR("automation.bundle.emails.worker.destination.directory")
 	;
 	
 	
