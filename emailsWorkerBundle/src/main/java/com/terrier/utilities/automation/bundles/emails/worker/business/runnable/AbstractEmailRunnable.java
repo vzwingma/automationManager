@@ -35,7 +35,7 @@ public abstract class AbstractEmailRunnable extends GMailService implements Runn
 		logger.info("[{}][{}] Exécution de la règle", this.index, this.nomFournisseur);
 		try{
 			long nbres = executeRule();
-			logger.error("[{}][{}] {} éléments traités", this.index, this.nomFournisseur, nbres);
+			logger.debug("[{}][{}] {} éléments traités", this.index, this.nomFournisseur, nbres);
 		}
 		catch(Exception e){
 			logger.error("[{}][{}] Erreur lors de l'exécution de la règle", this.index, this.nomFournisseur, e);

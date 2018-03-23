@@ -36,15 +36,8 @@ public final class GoogleAuthHelper {
    /** Application name. */
     private static final String APPLICATION_NAME = "Gmail API for Automation";
 
-    /** Directory to store user credentials for this application. */
-    private static final java.io.File DATA_STORE_DIR = new java.io.File("etc/credentials/gmail");
-
-    /** Global instance of the {@link FileDataStoreFactory}. */
-    private static FileDataStoreFactory datastoreFactory;
-
     /** Global instance of the JSON factory. */
-    private static final JsonFactory JSON_FACTORY =
-        JacksonFactory.getDefaultInstance();
+    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
     /** Global instance of the HTTP transport. */
     private static HttpTransport httpTransport;
@@ -59,7 +52,6 @@ public final class GoogleAuthHelper {
     static {
         try {
             httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-            datastoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
         } catch (Exception t) {
             LOGGER.error("Erreur lors de l'initialisation ", t);
         }
@@ -76,8 +68,7 @@ public final class GoogleAuthHelper {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, scopesAPI).setDataStoreFactory(datastoreFactory).setAccessType("offline").build();
-        LOGGER.info("Les credentials sont enregistrés ici : {}", DATA_STORE_DIR.getAbsolutePath());
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, scopesAPI).setAccessType("offline").build();
         return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
     }
 
