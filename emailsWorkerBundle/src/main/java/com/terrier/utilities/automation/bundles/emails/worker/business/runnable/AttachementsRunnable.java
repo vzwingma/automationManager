@@ -50,12 +50,11 @@ public class AttachementsRunnable extends AbstractEmailRunnable {
 			// Recherche des pieces jointes 
 			.forEach(pj ->  {
 				logger.info("Téléchargement de la pièce jointe de {} : {}", pj.get(GMailService.HEADER_FROM), pj.get(GMailService.HEADER_SUBJECT));
+				getBusinessService().sendNotificationMessage(EmailsWorkerBusinessService.NOTIF_HEADER, "Téléchargement de la pièce jointe de " + pj.get(GMailService.HEADER_FROM) + "/" +  pj.get(GMailService.HEADER_SUBJECT));
 				downloadPdfFromMulipart(pj);
 				nbMessagesTraites.incrementAndGet();
 			}); 
 		}
-
-		getBusinessService().sendNotificationMessage(EmailsWorkerBusinessService.NOTIF_HEADER, "Téléchargement de " + nbMessagesTraites.get() + " pièces jointes parmi " + messagesInbox.size());
 		return nbMessagesTraites.get();
 	}
 

@@ -51,8 +51,6 @@ public class HubicDLRunnable extends AbstractEmailRunnable {
 			})
 			.filter(m -> archiveMessage(m))
 			.count();
-			
-			getBusinessService().sendNotificationMessage(NOTIF_HEADER, "Traitement de " + nbMessagesTraites + " parmi " + messagesInbox.size());
 		}
 		return nbMessagesTraites;
 	}
