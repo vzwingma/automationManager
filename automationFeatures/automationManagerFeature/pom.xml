@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.terrier.utilities.automation.features</groupId>
 		<artifactId>automationFeatures</artifactId>
-		<version>1.7.0</version>
+		<version>1.8.0</version>
 	</parent>
 	<artifactId>automationManagerFeature</artifactId>
 	<name>[Features] Features d'Automation Manager </name>
@@ -42,13 +42,6 @@
 			<type>xml</type>
 			<classifier>features</classifier>
 		</dependency>	
-		<dependency>
-			<groupId>com.terrier.utilities.automation.features</groupId>
-			<artifactId>automation-boxcryptor-inventory</artifactId>
-			<version>${project.version}</version>
-			<type>xml</type>
-			<classifier>features</classifier>
-		</dependency>
 		<dependency>
 			<groupId>com.terrier.utilities.automation.features</groupId>
 			<artifactId>automation-supervision</artifactId>

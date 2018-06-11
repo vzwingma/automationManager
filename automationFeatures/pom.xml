@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.terrier.utilities.automation.bundles</groupId>
 		<artifactId>AutomationManager</artifactId>
-		<version>1.7.0</version>
+		<version>1.8.0</version>
 	</parent>
 	<groupId>com.terrier.utilities.automation.features</groupId>
 	<artifactId>automationFeatures</artifactId>
@@ -17,7 +17,6 @@
 		<module>automation-messaging</module>
 		<module>automation-supervision</module>
 		<module>automation-save-to</module>
-		<module>automation-boxcryptor-inventory</module>
 		<module>automation-emails-worker</module>
 		<module>automationManagerFeature</module>		
 	</modules>

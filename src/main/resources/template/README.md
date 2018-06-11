@@ -5,7 +5,7 @@ Gestionnaire de tâches automatisées
 <a href='https://github.com/vzwingma/automationManager/issues'><img src='http://githubbadges.herokuapp.com/vzwingma/automationManager/issues?style=square' alt='Issues number' /></a>
 
 [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=pom.xml)
-[![Dependency Status](https://beta.gemnasium.com/badges/github.com/vzwingma/automationManager.svg)](https://beta.gemnasium.com/projects/github.com/vzwingma/automationManager)
+[![Dependency Status](https://img.shields.io/librariesio/github/vzwingma/automationManager.svg)](https://libraries.io/github/vzwingma/automationManager)
 
 <a href="https://sonarcloud.io/dashboard?id=automationManager"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/project_badges/measure?project=automationManager&metric=coverage" /></a>
 <a href="https://sonarcloud.io/dashboard?id=automationManager"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/project_badges/measure?project=automationManager&metric=sqale_rating" /></a>
@@ -27,10 +27,6 @@ Gestionnaire de tâches automatisées
   *  Librairie d'envoi de mail et de SMS
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=messagingBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=messagingBundle%2Fpom.xml)
 
-#### [boxcryptorInventoryBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v${automation.boxcryptor.inventory.version}
-  *  Générateur d'inventaire pour BoxCryptor
-  *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=boxcryptorInventoryGeneratorBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=boxcryptorInventoryGeneratorBundle%2Fpom.xml)
-
 #### [emailsWorkerBundle](https://github.com/vzwingma/automationManager/wiki/%5BBUNDLE%5D-Boxcryptor-Inventory-Generator) v${automation.emails.worker.version}
   *  Traitement des emails reçus
   *  [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=emailsWorkerBundle%2Fpom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=emailsWorkerBundle%2Fpom.xml)
@@ -45,7 +41,7 @@ Gestionnaire de tâches automatisées
 
 ### Désinstallation des features
 
-     feature:uninstall automation-supervision automation-messaging automation-boxcryptor-inventory automation-save-to
+     feature:uninstall automation-supervision automation-messaging automation-save-to
      feature:repo-remove automationManagerFeature
 
 ### Ajout du repository de features
@@ -60,6 +56,5 @@ Gestionnaire de tâches automatisées
      feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/${project.version}/xml/features
      feature:install automation-supervision
      feature:install automation-messaging
-     feature:install automation-boxcryptor-inventory
      feature:install automation-emails-worker
      feature:install automation-save-to
