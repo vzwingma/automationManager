@@ -5,7 +5,7 @@ Gestionnaire de tâches automatisées
 <a href='https://github.com/vzwingma/automationManager/issues'><img src='http://githubbadges.herokuapp.com/vzwingma/automationManager/issues?style=square' alt='Issues number' /></a>
 
 [![Known Vulnerabilities](https://snyk.io/test/github/vzwingma/automationmanager/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/vzwingma/automationmanager?targetFile=pom.xml)
-[![Dependency Status](https://beta.gemnasium.com/badges/github.com/vzwingma/automationManager.svg)](https://beta.gemnasium.com/projects/github.com/vzwingma/automationManager)
+[![Dependency Status](https://img.shields.io/librariesio/github/vzwingma/automationManager.svg)](https://libraries.io/github/vzwingma/automationManager)
 
 <a href="https://sonarcloud.io/dashboard?id=automationManager"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/project_badges/measure?project=automationManager&metric=coverage" /></a>
 <a href="https://sonarcloud.io/dashboard?id=automationManager"><img alt="Sonar Build Status" src="https://sonarcloud.io/api/project_badges/measure?project=automationManager&metric=sqale_rating" /></a>

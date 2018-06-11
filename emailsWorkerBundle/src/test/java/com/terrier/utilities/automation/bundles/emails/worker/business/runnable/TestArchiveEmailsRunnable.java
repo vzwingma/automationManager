@@ -73,7 +73,7 @@ public class TestArchiveEmailsRunnable {
 		when(runnable.archiveMessage(any(Message.class))).thenReturn(true);
 	}
 
-	@Ignore
+	@Test
 	public void testRealAPI() throws IOException{
 		runnable = new ArchiveEmailsRunnable(0, "Autolib'", GoogleAuthHelper.getGmailService(GmailScopes.MAIL_GOOGLE_COM), service);
 		runnable.executeRule();
