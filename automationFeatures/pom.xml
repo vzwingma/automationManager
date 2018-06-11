@@ -17,7 +17,6 @@
 		<module>automation-messaging</module>
 		<module>automation-supervision</module>
 		<module>automation-save-to</module>
-		<module>automation-boxcryptor-inventory</module>
 		<module>automation-emails-worker</module>
 		<module>automationManagerFeature</module>		
 	</modules>
