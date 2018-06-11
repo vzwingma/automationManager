@@ -41,7 +41,7 @@ Gestionnaire de tâches automatisées
 
 ### Désinstallation des features
 
-     feature:uninstall automation-supervision automation-messaging automation-boxcryptor-inventory automation-save-to
+     feature:uninstall automation-supervision automation-messaging automation-save-to
      feature:repo-remove automationManagerFeature
 
 ### Ajout du repository de features
@@ -56,6 +56,5 @@ Gestionnaire de tâches automatisées
      feature:repo-add mvn:com.terrier.utilities.automation.features/automationManagerFeature/${project.version}/xml/features
      feature:install automation-supervision
      feature:install automation-messaging
-     feature:install automation-boxcryptor-inventory
      feature:install automation-emails-worker
      feature:install automation-save-to
