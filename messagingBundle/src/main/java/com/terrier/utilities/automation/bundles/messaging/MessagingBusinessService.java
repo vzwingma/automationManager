@@ -89,16 +89,25 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	 */
 	@Override
 	public void notifyUpdateDictionary() {
-		// Validation de la config
-		boolean configValid = validateConfig();
+
 		// Si correct, reprogrammation de la tâche d'envoi
-		if(configValid){
+		if(validateConfigEmail()){
 			scheduleSendingEmail();
-			scheduleSendingSlack();
+		}
+		else{
+			LOGGER.info("La tâche d'envoi des mails est désactivée");
+		}
+		if(validateConfigSms()){
 			scheduleSendingSMS();
 		}
 		else{
-			LOGGER.error("Impossible d'envoyer les messages à cause d'une erreur de configuration");
+			LOGGER.info("La tâche d'envoi des SMS est désactivée");
+		}
+		if(validateConfigSlack()){
+			scheduleSendingSlack();
+		}
+		else{
+			LOGGER.info("La tâche d'envoi SLACK est désactivée");
 		}
 	}
 
@@ -171,17 +180,9 @@ public class MessagingBusinessService extends AbstractAutomationService {
 	/**
 	 * @return validation de la configuration
 	 */
-	protected boolean validateConfig(){
+	protected boolean validateConfigSlack(){
 
 		LOGGER.info("**  **");
-		LOGGER.info("[EMAIL] > URL du service	: {}", getConfig(MessagingConfigKeyEnums.EMAIL_URL));
-		LOGGER.info("[EMAIL] > Domaine du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
-		LOGGER.info("[EMAIL] > Nom du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
-		LOGGER.info("[EMAIL] > Clé du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_KEY, true));
-		LOGGER.info("[EMAIL] > Destinataires : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
-		LOGGER.info("[ SMS ] > URL du service : {}", getConfig(MessagingConfigKeyEnums.SMS_URL));
-		LOGGER.info("[ SMS ] > User du service : {}", getConfig(MessagingConfigKeyEnums.SMS_USER, true));
-		LOGGER.info("[ SMS ] > Mot de passe du service : {}", getConfig(MessagingConfigKeyEnums.SMS_PASS, true));
 		LOGGER.info("[SLACK] > URL du service : {}", getConfig(MessagingConfigKeyEnums.SLACK_URL));
 		LOGGER.info("[SLACK] > Clé du service : {}", getConfig(MessagingConfigKeyEnums.SLACK_KEY, true));
 		boolean configValide = true;
@@ -203,7 +204,7 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		}
 
 
-		for (MessagingConfigKeyEnums configKey : MessagingConfigKeyEnums.values()) {
+		for (MessagingConfigKeyEnums configKey : MessagingConfigKeyEnums.values("SLACK")) {
 			configValide &= getConfig(configKey) != null;	
 		}
 		if(!configValide){
@@ -215,6 +216,88 @@ public class MessagingBusinessService extends AbstractAutomationService {
 		return configValide;
 	}
 
+
+	/**
+	 * @return validation de la configuration
+	 */
+	protected boolean validateConfigEmail(){
+
+		LOGGER.info("**  **");
+		LOGGER.info("[EMAIL] > URL du service	: {}", getConfig(MessagingConfigKeyEnums.EMAIL_URL));
+		LOGGER.info("[EMAIL] > Domaine du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DOMAIN));
+		LOGGER.info("[EMAIL] > Nom du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_SERVICE));
+		LOGGER.info("[EMAIL] > Clé du service : {}", getConfig(MessagingConfigKeyEnums.EMAIL_KEY, true));
+		LOGGER.info("[EMAIL] > Destinataires : {}", getConfig(MessagingConfigKeyEnums.EMAIL_DESTINATAIRES));
+		boolean configValide = true;
+		try{
+			Long periodeEnvoiMail = Long.parseLong(getConfig(MessagingConfigKeyEnums.SEND_PERIODE_ENVOI));
+			LOGGER.info(" > Période d'envoi	: {} minutes", periodeEnvoiMail);
+			if(periodeEnvoiMail > 0){
+				this.periodeEnvoiMessages = periodeEnvoiMail;
+			}
+			else{
+				configValide = false;
+				LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", periodeEnvoiMail);
+			}
+		}
+		catch(NumberFormatException e){
+			LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", getConfig(MessagingConfigKeyEnums.SEND_PERIODE_ENVOI));
+			configValide = false;
+		}
+
+
+		for (MessagingConfigKeyEnums configKey : MessagingConfigKeyEnums.values("EMAIL")) {
+			configValide &= getConfig(configKey) != null;	
+		}
+		if(!configValide){
+			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
+		}
+		else{
+			LOGGER.info("La configuration est correcte.");
+		}
+		return configValide;
+	}
+
+
+	/**
+	 * @return validation de la configuration
+	 */
+	protected boolean validateConfigSms(){
+
+		LOGGER.info("**  **");
+		LOGGER.info("[ SMS ] > URL du service : {}", getConfig(MessagingConfigKeyEnums.SMS_URL));
+		LOGGER.info("[ SMS ] > User du service : {}", getConfig(MessagingConfigKeyEnums.SMS_USER, true));
+		LOGGER.info("[ SMS ] > Mot de passe du service : {}", getConfig(MessagingConfigKeyEnums.SMS_PASS, true));
+		boolean configValide = true;
+		try{
+			Long periodeEnvoiMail = Long.parseLong(getConfig(MessagingConfigKeyEnums.SEND_PERIODE_ENVOI));
+			LOGGER.info(" > Période d'envoi	: {} minutes", periodeEnvoiMail);
+			if(periodeEnvoiMail > 0){
+				this.periodeEnvoiMessages = periodeEnvoiMail;
+			}
+			else{
+				configValide = false;
+				LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", periodeEnvoiMail);
+			}
+
+		}
+		catch(NumberFormatException e){
+			LOGGER.error("Erreur lors de la mise à jour de la période d'envoi : {}", getConfig(MessagingConfigKeyEnums.SEND_PERIODE_ENVOI));
+			configValide = false;
+		}
+
+
+		for (MessagingConfigKeyEnums configKey : MessagingConfigKeyEnums.values("SMS")) {
+			configValide &= getConfig(configKey) != null;	
+		}
+		if(!configValide){
+			LOGGER.error("La configuration est incorrecte. Veuillez vérifier le fichier de configuration");
+		}
+		else{
+			LOGGER.info("La configuration est correcte.");
+		}
+		return configValide;
+	}
 
 
 

@@ -69,7 +69,9 @@ public class TestBusinessService {
 	 */
 	@Test
 	public void testConfig(){
-		assertTrue(service.validateConfig());
+		assertTrue(service.validateConfigSlack());
+		assertTrue(service.validateConfigEmail());
+		assertTrue(service.validateConfigSms());
 	}
 
 
