@@ -21,17 +21,17 @@
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-gmail</artifactId>
-			<version>v1-rev82-1.23.0</version>
+			<version>v1-rev92-1.24.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.oauth-client</groupId>
 			<artifactId>google-oauth-client-jetty</artifactId>
-			<version>1.23.0</version>
+			<version>1.24.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.api-client</groupId>
 			<artifactId>google-api-client</artifactId>
-			<version>1.23.0</version>
+			<version>1.24.1</version>
 			<exclusions>
 				<!-- Evite les doublons avec Commons -->
 				<exclusion>
